@@ -1,0 +1,14 @@
+{
+  "name": "travio-workspace",
+  "version": "1.0.0",
+  "description": "GlobeTrotter / Trovio travel planning application",
+  "private": true,
+  "scripts": {
+    "dev:all": "node start-all.js",
+    "dev": "node start-all.js",
+    "start": "node start-all.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend start",
+    "build": "npm --prefix frontend run build"
+  }
+}
