@@ -881,25 +881,78 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
                 </div>
               </div>
 
-              {/* Trip Duration Slider */}
+              {/* Trip Duration Controls */}
               <div className="calc-field-group">
                 <div className="slider-label-row">
-                  <label>EXPEDITION DURATION</label>
-                  <span className="slider-val-badge"><strong>{calcDays} Days</strong></span>
+                  <label htmlFor="expedition-duration-range">EXPEDITION DURATION</label>
+                  <div className="duration-counter-control">
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setCalcDays((prev) => Math.max(3, prev - 1))}
+                      disabled={calcDays <= 3}
+                      aria-label="Decrease duration by 1 day"
+                      title="Decrease by 1 day"
+                    >
+                      −
+                    </button>
+                    <span className="slider-val-badge">
+                      <strong>{calcDays}</strong> {calcDays === 1 ? 'Day' : 'Days'}
+                    </span>
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setCalcDays((prev) => Math.min(28, prev + 1))}
+                      disabled={calcDays >= 28}
+                      aria-label="Increase duration by 1 day"
+                      title="Increase by 1 day"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="3"
-                  max="28"
-                  value={calcDays}
-                  onChange={(e) => setCalcDays(Number(e.target.value))}
-                  className="calc-range-slider"
-                />
-                <div className="slider-ticks">
-                  <span>3 Days (Weekend)</span>
-                  <span>7 Days (Week)</span>
-                  <span>14 Days (Two Weeks)</span>
-                  <span>28 Days (Month)</span>
+
+                {/* Range Slider with Exact Active Fill Track */}
+                <div className="slider-track-wrap">
+                  <input
+                    id="expedition-duration-range"
+                    type="range"
+                    min="3"
+                    max="28"
+                    step="1"
+                    value={calcDays}
+                    onChange={(e) => setCalcDays(Number(e.target.value))}
+                    className="calc-range-slider"
+                    style={{
+                      background: `linear-gradient(to right, #0D9488 0%, #0D9488 ${((calcDays - 3) / 25) * 100}%, #E2E8F0 ${((calcDays - 3) / 25) * 100}%, #E2E8F0 100%)`
+                    }}
+                    aria-label="Expedition Duration in Days"
+                  />
+                </div>
+
+                {/* Quick-Select Duration Preset Chips */}
+                <div className="duration-preset-chips" role="group" aria-label="Duration Presets">
+                  {[
+                    { days: 3, label: '3D Weekend' },
+                    { days: 7, label: '7D Week' },
+                    { days: 10, label: '10D Tour' },
+                    { days: 14, label: '14D 2 Weeks' },
+                    { days: 21, label: '21D 3 Weeks' },
+                    { days: 28, label: '28D Month' }
+                  ].map((preset) => {
+                    const isSelected = calcDays === preset.days;
+                    return (
+                      <button
+                        key={preset.days}
+                        type="button"
+                        className={`duration-preset-chip ${isSelected ? 'active' : ''}`}
+                        onClick={() => setCalcDays(preset.days)}
+                        title={`Select ${preset.days} days`}
+                      >
+                        {preset.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
