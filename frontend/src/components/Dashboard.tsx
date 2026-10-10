@@ -200,6 +200,7 @@ export const Dashboard: React.FC<Props> = ({
 
         {activeTab === 'admin' && (user.role === 'Admin' || adminOrigin) && (
           <AdminDashboard
+            adminUser={user}
             onRedirectToUser={(targetUser) => {
               if (onRedirectToUser) onRedirectToUser(targetUser);
             }}

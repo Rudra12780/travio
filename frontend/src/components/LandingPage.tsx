@@ -4,6 +4,7 @@ import { COUNTRIES_DATA, CountryDossier } from '../data/countryData';
 import { CountryDossierModal } from './CountryDossierModal';
 import { SignIn } from './SignIn';
 import { RegisterModal } from './RegisterModal';
+import { TravelDreamscape } from './TravelDreamscape';
 
 interface Props {
   onSignInSuccess: (user: UserProfile) => void;
@@ -126,8 +127,8 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
             <a href="#trip-calculator-section" className="nav-anchor-link">
               <span className="nav-link-icon">🧮</span> Cost Calculator
             </a>
-            <a href="#voyager-reviews-section" className="nav-anchor-link">
-              <span className="nav-link-icon">💬</span> Reviews
+            <a href="#travel-dreamscape-section" className="nav-anchor-link">
+              <span className="nav-link-icon">✨</span> Dreamscape
             </a>
             <a href="#faq-section" className="nav-anchor-link">
               <span className="nav-link-icon">❓</span> FAQ
@@ -1140,67 +1141,13 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
       </section>
 
       {/* -------------------------------------------------------------------- */}
-      {/* 7. VOYAGER TESTIMONIALS & REVIEWS */}
+      {/* 7. TRAVEL DREAMSCAPE IMMERSIVE SHOWCASE */}
       {/* -------------------------------------------------------------------- */}
-      <section className="landing-section" id="voyager-reviews-section">
-        <div className="section-container">
-          <div className="section-header-centered">
-            <span className="section-pill-tag">💬 Real Voyager Stories</span>
-            <h2 className="section-title">Loved by Explorers in 120+ Countries</h2>
-            <p className="section-subtitle">
-              Read how fellow travelers planned their dream honeymoons, solo backpacking adventures, 
-              and multi-generational family expeditions with Trovio.
-            </p>
-          </div>
-
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-rating">★★★★★</div>
-              <p className="testimonial-quote">
-                “Trovio replaced the nightmare of coordinating our 3-week Japan itinerary. The Shinkansen bullet train 
-                transit connectors and automated budget breakdowns saved us over $800 in unexpected transit fees!”
-              </p>
-              <div className="testimonial-user">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80" alt="Marcus Vance" />
-                <div>
-                  <h4>Marcus & Claire Vance</h4>
-                  <span>Tokyo, Kyoto & Osaka (21-Day Voyage)</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="testimonial-rating">★★★★★</div>
-              <p className="testimonial-quote">
-                “The Switzerland country dossier was spot-on! Having the Swiss Travel Pass tips, Gornergrat cogwheel train 
-                times, and fondue tavern recommendations already organized made our Zermatt stay completely unforgettable.”
-              </p>
-              <div className="testimonial-user">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80" alt="Sophia Laurent" />
-                <div>
-                  <h4>Sophia Laurent</h4>
-                  <span>Zurich, Interlaken & Zermatt (10-Day Voyage)</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="testimonial-rating">★★★★★</div>
-              <p className="testimonial-quote">
-                “As a solo backpacker doing the Ring Road in Iceland, the live telemetry radar was a lifesaver. Being able to 
-                monitor weather alerts and road closures alongside my campervan budget gave me total peace of mind.”
-              </p>
-              <div className="testimonial-user">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80" alt="Liam Davies" />
-                <div>
-                  <h4>Liam Davies</h4>
-                  <span>Iceland Ring Road Camper Expedition (14 Days)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <TravelDreamscape 
+        onStartPlanning={(destinationName) => {
+          setShowSignInModal(true);
+        }}
+      />
 
       {/* -------------------------------------------------------------------- */}
       {/* 8. FREQUENTLY ASKED QUESTIONS (FAQ) */}
@@ -1362,7 +1309,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
               <li><button type="button" onClick={() => setShowSignInModal(true)} className="footer-link-btn">Sign In to Dashboard</button></li>
               <li><button type="button" onClick={() => setShowRegisterModal(true)} className="footer-link-btn">Join GlobalTrotters</button></li>
               <li><a href="#faq-section">Traveler Help & FAQ</a></li>
-              <li><a href="#voyager-reviews-section">Verified Reviews</a></li>
+              <li><a href="#travel-dreamscape-section">Travel Dreamscape</a></li>
               <li><a href="#best-countries-section">Best Season Guides</a></li>
               <li><span className="status-live-indicator">● System Status: All Systems Operational</span></li>
             </ul>

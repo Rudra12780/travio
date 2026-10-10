@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AdminStats, UserProfile, Trip, City, Activity } from '../types';
 import { api } from '../api';
 import { GlobalSearchBar } from './GlobalSearchBar';
 import { AdminPlaneRadarBackground } from './AdminPlaneRadarBackground';
 
 interface Props {
+  adminUser?: UserProfile | null;
   onRedirectToUser: (targetUser: UserProfile) => void;
   onAdminSignOut: () => void;
 }
@@ -12,12 +13,35 @@ interface Props {
 type AdminTab = 'manage-users' | 'popular-cities' | 'popular-activities' | 'user-trends';
 export type AdminThemeMode = 'aurora' | 'cyber-teal' | 'glass-light';
 
-export const AdminDashboard: React.FC<Props> = ({ onRedirectToUser, onAdminSignOut }) => {
+export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, onAdminSignOut }) => {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<any[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Admin Profile Dropdown state
+  const [showAdminDropdown, setShowAdminDropdown] = useState(false);
+  const adminProfileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (adminProfileRef.current && !adminProfileRef.current.contains(e.target as Node)) {
+        setShowAdminDropdown(false);
+      }
+    };
+    if (showAdminDropdown) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [showAdminDropdown]);
+
+  const adminDisplayName = adminUser?.name || 'Administrator';
+  const adminEmail = adminUser?.email || 'admin@trovio.com';
+  const adminAvatar = adminUser?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
 
   // Admin Theme state ('aurora' | 'cyber-teal' | 'glass-light') - Previous clean theme by default
   const [adminTheme, setAdminTheme] = useState<AdminThemeMode>('glass-light');
@@ -199,7 +223,208 @@ export const AdminDashboard: React.FC<Props> = ({ onRedirectToUser, onAdminSignO
       {/* Background Animated 3D Commercial Traveler Flight Radar across FULL Admin Panel */}
       <AdminPlaneRadarBackground theme={adminTheme} />
 
-      <div style={{ position: 'relative', zIndex: 1, marginTop: '20px', maxWidth: '1240px', margin: '20px auto 40px' }}>
+      {/* 1. PROPER FULL-WIDTH ADMIN TOP NAVIGATION BAR */}
+      <header className="dash-navbar admin-top-navbar theme-glass-light">
+        <div className="dash-container admin-nav-container">
+          <div className="dash-nav-inner admin-nav-inner">
+            {/* Brand Logo & Mission Control Badge */}
+            <div className="nav-brand admin-nav-brand" onClick={() => setActiveTab('manage-users')} style={{ cursor: 'pointer', flexShrink: 0, marginRight: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="nav-brand-icon" style={{
+                background: 'linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%)',
+                boxShadow: '0 4px 14px rgba(13, 148, 136, 0.4)'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                </svg>
+              </div>
+              <span className="nav-brand-title" style={{ color: '#0F172A', fontWeight: 800 }}>
+                GlobalTrotter
+              </span>
+              <span className="admin-command-badge" style={{ marginLeft: '6px' }}>
+                MISSION CONTROL
+              </span>
+            </div>
+
+            {/* Navigation Tab Links (The Parts like the user nav: Manage Users, Cities, Activities, Analytics) */}
+            <nav className="dash-nav-links-wrapper admin-nav-links" aria-label="Admin Navigation" style={{ flex: '1 1 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0 }}>
+              <ul className="nav-menu" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-link admin-nav-link ${activeTab === 'manage-users' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('manage-users')}
+                    title="Manage Voyagers & Platform Permissions"
+                  >
+                    <span>👥</span>
+                    <span>Manage Users</span>
+                    <span className="admin-nav-pill-badge">{users.length}</span>
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-link admin-nav-link ${activeTab === 'popular-cities' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('popular-cities')}
+                    title="Popular Destination Hubs"
+                  >
+                    <span>🏙️</span>
+                    <span>Popular Cities</span>
+                    <span className="admin-nav-pill-badge">{cities.length}</span>
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-link admin-nav-link ${activeTab === 'popular-activities' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('popular-activities')}
+                    title="Popular Voyager Activities"
+                  >
+                    <span>🎯</span>
+                    <span>Popular Activities</span>
+                    <span className="admin-nav-pill-badge">{activities.length}</span>
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-link admin-nav-link ${activeTab === 'user-trends' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('user-trends')}
+                    title="Real-time User Trends & Flight Telemetry"
+                  >
+                    <span>📈</span>
+                    <span>User Trends & Analytics</span>
+                    <span className="live-badge">LIVE</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+
+            {/* Right Header Controls: Schedule Button and Proper Profile Pill */}
+            <div className="nav-actions admin-nav-actions" style={{ flexShrink: 0, marginLeft: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* + Post & Schedule Trip Button */}
+              <button
+                type="button"
+                className="btn-plan-trip admin-schedule-btn"
+                onClick={() => setShowScheduleModal(true)}
+                title="Post or Schedule Global Voyage"
+              >
+                <span>+ Post & Schedule Trip</span>
+              </button>
+
+              {/* Proper Profile Pill & Interactive Dropdown */}
+              <div className="user-profile-menu admin-profile-menu" ref={adminProfileRef}>
+                <button
+                  type="button"
+                  className="user-profile-pill admin-profile-pill"
+                  onClick={() => setShowAdminDropdown(!showAdminDropdown)}
+                  aria-expanded={showAdminDropdown}
+                  title="Mission Commander Profile"
+                >
+                  <div className="admin-avatar-wrapper">
+                    <img
+                      src={adminAvatar}
+                      alt={adminDisplayName}
+                      className="user-avatar admin-avatar"
+                    />
+                    <span className="admin-online-dot" />
+                  </div>
+                  <div className="admin-pill-text">
+                    <span className="admin-pill-name">{adminDisplayName}</span>
+                    <span className="admin-pill-role">SUPER ADMIN</span>
+                  </div>
+                  <svg className={`admin-chevron ${showAdminDropdown ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu - Clean Profile Details & Sign Out Only */}
+                {showAdminDropdown && (
+                  <div className="admin-profile-dropdown theme-glass-light" style={{ width: '290px' }}>
+                    {/* Header */}
+                    <div className="admin-dropdown-header">
+                      <div className="admin-avatar-wrapper" style={{ width: '42px', height: '42px' }}>
+                        <img
+                          src={adminAvatar}
+                          alt={adminDisplayName}
+                          className="admin-avatar"
+                          style={{ width: '42px', height: '42px' }}
+                        />
+                        <span className="admin-online-dot" style={{ width: '10px', height: '10px' }} />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ fontSize: '13.5px', fontWeight: 800 }}>{adminDisplayName}</span>
+                          <span style={{
+                            fontSize: '9px',
+                            fontWeight: 800,
+                            background: 'rgba(13, 148, 136, 0.15)',
+                            color: '#0D9488',
+                            padding: '1px 5px',
+                            borderRadius: '4px'
+                          }}>
+                            HQ
+                          </span>
+                        </div>
+                        <span style={{ fontSize: '11px', color: '#64748B' }}>
+                          {adminEmail}
+                        </span>
+                        <span style={{
+                          fontSize: '10px',
+                          color: '#0D9488',
+                          fontWeight: 700,
+                          marginTop: '2px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3px'
+                        }}>
+                          ⭐ Super Administrator • Full Access
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Telemetry Status Box */}
+                    <div className="admin-dropdown-telemetry-box">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
+                        <span>✈️</span>
+                        <span>Airspace Radar: 14 Flights Active</span>
+                      </div>
+                      <div style={{ fontSize: '10.5px', marginTop: '3px', opacity: 0.85 }}>
+                        8 Hubs Aligned (DEL, UDR, HND, CDG, JFK) • 0 Delays
+                      </div>
+                    </div>
+
+                    {/* Sign Out Button */}
+                    <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '6px' }}>
+                      <button
+                        type="button"
+                        className="admin-dropdown-item danger"
+                        onClick={() => {
+                          setShowAdminDropdown(false);
+                          onAdminSignOut();
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                          <polyline points="16 17 21 12 16 7" />
+                          <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        <span>Sign Out of Mission Control</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* 2. ADMIN MAIN CONTENT CONTAINER */}
+      <main className="dash-container" style={{ position: 'relative', zIndex: 1, paddingTop: '24px', paddingBottom: '60px' }}>
         {/* Toast Feedback Notification */}
         {toastMsg && (
           <div style={{
@@ -223,271 +448,85 @@ export const AdminDashboard: React.FC<Props> = ({ onRedirectToUser, onAdminSignO
           </div>
         )}
 
-        {/* Screen 12 Header: GlobalTrotter Clean Header & Theme Switcher */}
+        {/* Screen 12 Command Center Telemetry Banner & Search Bar */}
         <div 
-          className={`admin-top-card-container theme-${adminTheme}`}
+          className="admin-top-card-container theme-glass-light"
           style={{
             position: 'relative',
-            borderRadius: '28px',
-            padding: '28px 32px',
-            color: adminTheme === 'glass-light' ? '#0F172A' : '#FFFFFF',
+            zIndex: 40,
+            borderRadius: '24px',
+            padding: '24px 28px',
+            color: '#0F172A',
             marginBottom: '24px',
-            overflow: 'hidden',
-            background: adminTheme === 'aurora' 
-              ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(6, 49, 46, 0.92) 50%, rgba(13, 148, 136, 0.88) 100%)'
-              : adminTheme === 'cyber-teal'
-              ? 'linear-gradient(135deg, rgba(2, 44, 34, 0.96) 0%, rgba(6, 78, 59, 0.92) 55%, rgba(4, 120, 87, 0.88) 100%)'
-              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(204, 251, 241, 0.92) 100%)',
+            overflow: 'visible',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(204, 251, 241, 0.92) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: adminTheme === 'glass-light'
-              ? '1.5px solid rgba(13, 148, 136, 0.25)'
-              : '1.5px solid rgba(45, 212, 191, 0.35)',
-            boxShadow: adminTheme === 'glass-light'
-              ? '0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(13, 148, 136, 0.12)'
-              : '0 25px 60px -15px rgba(6, 49, 46, 0.5), 0 0 0 1px rgba(45, 212, 191, 0.2)',
+            border: '1.5px solid rgba(13, 148, 136, 0.25)',
+            boxShadow: '0 16px 36px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(13, 148, 136, 0.12)',
             transition: 'all 0.3s ease'
           }}
         >
-          {/* Foreground Content */}
-          <div style={{ position: 'relative', zIndex: 2 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 900,
-                  color: '#FFFFFF',
-                  fontSize: '19px',
-                  boxShadow: '0 4px 14px rgba(13, 148, 136, 0.4)'
-                }}>
-                  G
-                </div>
-                <h1 style={{ 
-                  fontSize: '28px', 
-                  fontWeight: 900, 
-                  letterSpacing: '-0.6px', 
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '20px' }}>🛰️</span>
+                <h2 style={{
+                  fontSize: '20px',
+                  fontWeight: 800,
                   margin: 0,
                   color: adminTheme === 'glass-light' ? '#0F172A' : '#FFFFFF'
                 }}>
-                  GlobalTrotter
-                </h1>
+                  Live Airspace Telemetry & Mission Control
+                </h2>
                 <span style={{
                   background: adminTheme === 'glass-light' ? 'rgba(13, 148, 136, 0.12)' : 'rgba(45, 212, 191, 0.18)',
                   color: adminTheme === 'glass-light' ? '#0D9488' : '#2DD4BF',
                   fontSize: '11px',
                   fontWeight: 800,
-                  padding: '4px 11px',
+                  padding: '3px 10px',
                   borderRadius: '999px',
-                  border: adminTheme === 'glass-light' ? '1px solid rgba(13, 148, 136, 0.3)' : '1px solid rgba(45, 212, 191, 0.35)',
-                  letterSpacing: '0.06em'
+                  border: adminTheme === 'glass-light' ? '1px solid rgba(13, 148, 136, 0.3)' : '1px solid rgba(45, 212, 191, 0.35)'
                 }}>
-                  ADMIN COMMAND CENTER • SCREEN 12
+                  SCREEN 12
                 </span>
               </div>
-
-              {/* Subtitle */}
-              <p style={{ 
-                fontSize: '13.5px', 
-                color: adminTheme === 'glass-light' ? '#475569' : '#94A3B8', 
-                margin: '6px 0 0 0',
-                maxWidth: '650px',
-                lineHeight: 1.45
+              <p style={{
+                fontSize: '13px',
+                color: adminTheme === 'glass-light' ? '#475569' : '#94A3B8',
+                margin: '5px 0 0 0',
+                maxWidth: '700px'
               }}>
                 Mission control for traveler management, live global flight telemetry, trending cities, activities, and deep analytics.
               </p>
-
-              {/* Live Airspace Radar Status Banner */}
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: adminTheme === 'glass-light' ? 'rgba(13, 148, 136, 0.08)' : 'rgba(45, 212, 191, 0.12)',
-                border: adminTheme === 'glass-light' ? '1px solid rgba(13, 148, 136, 0.22)' : '1px solid rgba(45, 212, 191, 0.28)',
-                borderRadius: '999px',
-                padding: '4px 14px',
-                fontSize: '12px',
-                fontWeight: 700,
-                color: adminTheme === 'glass-light' ? '#0D9488' : '#2DD4BF',
-                marginTop: '10px'
-              }}>
-                <span style={{
-                  width: '7px',
-                  height: '7px',
-                  borderRadius: '50%',
-                  background: '#10B981',
-                  boxShadow: '0 0 8px #10B981'
-                }} />
-                <span>✈️ Airspace Radar: 14 Global Flights Active • 8 Hubs Aligned (DEL, UDR, HND, CDG, JFK) • 0 Delays</span>
-              </div>
             </div>
 
-            {/* Right Action Controls: Theme Switcher, Schedule, Sign Out, Avatar */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              {/* Theme Switcher */}
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                background: adminTheme === 'glass-light' ? 'rgba(241, 245, 249, 0.9)' : 'rgba(15, 23, 42, 0.65)',
-                padding: '3px',
-                borderRadius: '999px',
-                border: adminTheme === 'glass-light' ? '1px solid #CBD5E1' : '1px solid rgba(255, 255, 255, 0.15)',
-                gap: '2px'
-              }}>
-                <button
-                  type="button"
-                  onClick={() => setAdminTheme('aurora')}
-                  title="Aurora Glass Dark Theme"
-                  style={{
-                    border: 'none',
-                    background: adminTheme === 'aurora' ? 'linear-gradient(135deg, #0D9488, #2DD4BF)' : 'transparent',
-                    color: adminTheme === 'aurora' ? '#FFFFFF' : adminTheme === 'glass-light' ? '#64748B' : '#94A3B8',
-                    padding: '5px 12px',
-                    borderRadius: '999px',
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    transition: 'all 0.2s',
-                    boxShadow: adminTheme === 'aurora' ? '0 2px 8px rgba(13, 148, 136, 0.4)' : 'none'
-                  }}
-                >
-                  <span>🌌</span> Aurora
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAdminTheme('cyber-teal')}
-                  title="Cyber Emerald Theme"
-                  style={{
-                    border: 'none',
-                    background: adminTheme === 'cyber-teal' ? 'linear-gradient(135deg, #047857, #10B981)' : 'transparent',
-                    color: adminTheme === 'cyber-teal' ? '#FFFFFF' : adminTheme === 'glass-light' ? '#64748B' : '#94A3B8',
-                    padding: '5px 12px',
-                    borderRadius: '999px',
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    transition: 'all 0.2s',
-                    boxShadow: adminTheme === 'cyber-teal' ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none'
-                  }}
-                >
-                  <span>🌲</span> Emerald
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAdminTheme('glass-light')}
-                  title="Executive Light Glass Theme"
-                  style={{
-                    border: 'none',
-                    background: adminTheme === 'glass-light' ? '#0D9488' : 'transparent',
-                    color: adminTheme === 'glass-light' ? '#FFFFFF' : '#94A3B8',
-                    padding: '5px 12px',
-                    borderRadius: '999px',
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    transition: 'all 0.2s',
-                    boxShadow: adminTheme === 'glass-light' ? '0 2px 8px rgba(13, 148, 136, 0.3)' : 'none'
-                  }}
-                >
-                  <span>💎</span> Light Glass
-                </button>
-              </div>
-
-              {/* Post & Schedule Trip Button */}
-              <button
-                type="button"
-                onClick={() => setShowScheduleModal(true)}
-                style={{
-                  background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '999px',
-                  padding: '9px 18px',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 4px 14px rgba(13, 148, 136, 0.35)',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <span>+ Post & Schedule Trip</span>
-              </button>
-
-              {/* Sign Out Button */}
-              <button
-                type="button"
-                onClick={onAdminSignOut}
-                style={{
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  color: '#F87171',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  borderRadius: '999px',
-                  padding: '9px 16px',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                Sign Out
-              </button>
-
-              {/* Commander Avatar */}
-              <div 
-                title="Admin Commander Profile"
-                style={{
-                  position: 'relative',
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '50%',
-                  background: '#1E293B',
-                  border: '2px solid #2DD4BF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  overflow: 'visible'
-                }}
-              >
-                <img 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
-                  alt="Admin" 
-                  style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
-                />
-                <span style={{
-                  position: 'absolute',
-                  bottom: '0px',
-                  right: '0px',
-                  width: '11px',
-                  height: '11px',
-                  borderRadius: '50%',
-                  background: '#10B981',
-                  border: '2px solid #0F172A'
-                }} />
-              </div>
+            {/* Radar status indicator */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: adminTheme === 'glass-light' ? 'rgba(13, 148, 136, 0.08)' : 'rgba(45, 212, 191, 0.12)',
+              border: adminTheme === 'glass-light' ? '1px solid rgba(13, 148, 136, 0.22)' : '1px solid rgba(45, 212, 191, 0.28)',
+              borderRadius: '999px',
+              padding: '6px 16px',
+              fontSize: '12px',
+              fontWeight: 700,
+              color: adminTheme === 'glass-light' ? '#0D9488' : '#2DD4BF'
+            }}>
+              <span style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#10B981',
+                boxShadow: '0 0 10px #10B981'
+              }} />
+              <span>✈️ Airspace Radar: 14 Global Flights Active • 8 Hubs Aligned (DEL, UDR, HND, CDG, JFK) • 0 Delays</span>
             </div>
           </div>
 
           {/* Global Search Bar */}
-          <div style={{ marginTop: '22px' }}>
+          <div style={{ marginTop: '18px' }}>
             <GlobalSearchBar
               placeholder="Search users, cities, activities, or telemetry logs....."
               searchTerm={searchTerm}
@@ -504,75 +543,7 @@ export const AdminDashboard: React.FC<Props> = ({ onRedirectToUser, onAdminSignO
               style={{ margin: '0' }}
             />
           </div>
-
-          {/* Sub-Navigation Tabs from Screen 12 Wireframe - Protected Frosted Bar */}
-          <div style={{
-            position: 'relative',
-            zIndex: 10,
-            display: 'flex',
-            gap: '10px',
-            marginTop: '22px',
-            flexWrap: 'wrap',
-            background: adminTheme === 'glass-light' ? 'rgba(255, 255, 255, 0.90)' : 'rgba(15, 23, 42, 0.85)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            padding: '10px 14px',
-            borderRadius: '18px',
-            border: adminTheme === 'glass-light' ? '1px solid rgba(203, 213, 225, 0.8)' : '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: adminTheme === 'glass-light' ? '0 4px 16px rgba(15, 23, 42, 0.04)' : '0 4px 20px rgba(0, 0, 0, 0.3)'
-          }}>
-            {[
-              { id: 'manage-users' as AdminTab, label: 'Manage Users', icon: '👥', count: users.length },
-              { id: 'popular-cities' as AdminTab, label: 'Popular Cities', icon: '🏙️', count: cities.length },
-              { id: 'popular-activities' as AdminTab, label: 'Popular Activities', icon: '🎯', count: activities.length },
-              { id: 'user-trends' as AdminTab, label: 'User Trends and Analytics', icon: '📈', count: 'Live' }
-            ].map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: '999px',
-                    border: isActive
-                      ? 'none'
-                      : adminTheme === 'glass-light' ? '1px solid #CBD5E1' : '1px solid rgba(255, 255, 255, 0.18)',
-                    background: isActive
-                      ? adminTheme === 'glass-light' ? 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)' : 'linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%)'
-                      : adminTheme === 'glass-light' ? '#FFFFFF' : 'rgba(30, 41, 59, 0.95)',
-                    color: isActive
-                      ? '#FFFFFF'
-                      : adminTheme === 'glass-light' ? '#1E293B' : '#F1F5F9',
-                    fontSize: '13.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s',
-                    boxShadow: isActive ? '0 4px 14px rgba(13, 148, 136, 0.35)' : '0 2px 4px rgba(0,0,0,0.03)'
-                  }}
-                >
-                  <span>{tab.icon}</span>
-                  <span style={{ fontWeight: 800 }}>{tab.label}</span>
-                  <span style={{
-                    fontSize: '11px',
-                    background: isActive ? 'rgba(255, 255, 255, 0.25)' : (adminTheme === 'glass-light' ? '#F1F5F9' : 'rgba(255, 255, 255, 0.12)'),
-                    color: isActive ? '#FFFFFF' : (adminTheme === 'glass-light' ? '#475569' : '#CBD5E1'),
-                    padding: '2px 8px',
-                    borderRadius: '999px',
-                    fontWeight: 800
-                  }}>
-                    {tab.count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
         </div>
-      </div>
 
       {/* ========================================================================= */}
       {/* TAB 1: MANAGE USERS (Screen 12 - Manage User Section)                    */}
@@ -1460,7 +1431,7 @@ export const AdminDashboard: React.FC<Props> = ({ onRedirectToUser, onAdminSignO
           </div>
         </div>
       )}
-      </div>
+      </main>
     </>
   );
 };

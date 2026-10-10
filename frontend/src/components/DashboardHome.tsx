@@ -215,105 +215,97 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
         </div>
       </section>
 
-      {/* Interactive Transport Progress Track (Movable from left to right, lines removed between them) */}
+      {/* Interactive Transport Progress Track - All icons moving left-to-right continuously */}
       <section 
-        className="route-tracker-container movable-track" 
+        className="route-tracker-container" 
         aria-label="Route waypoints track"
-        onMouseDown={handleTrackMouseDown}
-        onMouseMove={handleTrackMouseMove}
-        onMouseUp={handleTrackMouseUp}
-        onMouseLeave={handleTrackMouseUp}
-        style={{ cursor: isDraggingTrack ? 'grabbing' : 'grab' }}
       >
-        <div 
-          className={`route-icons-row movable-row ${isDraggingTrack ? 'is-dragging' : ''}`}
-          style={{
-            transform: isDraggingTrack ? `translateX(${trackOffset}px)` : undefined
-          }}
-        >
-          <div
-            className="route-node plane"
-            tabIndex={0}
-            title="Flight Departure: Delhi → Udaipur"
-            onClick={() => setSelectedWaypoint(waypointData.plane)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
-            </svg>
-            <span className="tooltip">Flight 6E-204 to Udaipur</span>
-          </div>
+        <div className="route-marquee-track">
+          <div className="route-icons-row single-set">
+            <div
+              className="route-node boat"
+              tabIndex={0}
+              title="Lake Pichola Sunset Cruise"
+              onClick={() => setSelectedWaypoint(waypointData.boat)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M22 18H2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3Z" />
+                <path d="M10 2v16" />
+                <path d="M10 4l9 9H10Z" />
+              </svg>
+              <span className="tooltip">Lake Pichola Sunset Cruise</span>
+            </div>
 
-          <div
-            className="route-node car"
-            tabIndex={0}
-            title="Heritage Highway Road Transit (NH58)"
-            onClick={() => setSelectedWaypoint(waypointData.car)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-              <circle cx="7" cy="17" r="2" />
-              <path d="M9 17h6" />
-              <circle cx="17" cy="17" r="2" />
-            </svg>
-            <span className="tooltip">Heritage Highway Drive</span>
-          </div>
+            <div
+              className="route-node plane"
+              tabIndex={0}
+              title="Flight Departure: Delhi → Udaipur"
+              onClick={() => setSelectedWaypoint(waypointData.plane)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
+              </svg>
+              <span className="tooltip">Flight 6E-204 to Udaipur</span>
+            </div>
 
-          <div
-            className="route-node hat"
-            tabIndex={0}
-            title="Thar Desert Safari Expedition"
-            onClick={() => setSelectedWaypoint(waypointData.hat)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1c0-4-3-6-6-6H8c-3 0-6 2-6 6Z" />
-              <path d="M8 12V7c0-1.7 1.3-3 3-3h2c1.7 0 3 1.3 3 3v5" />
-            </svg>
-            <span className="tooltip">Thar Desert Safari</span>
-          </div>
+            <div
+              className="route-node car"
+              tabIndex={0}
+              title="Heritage Highway Road Transit (NH58)"
+              onClick={() => setSelectedWaypoint(waypointData.car)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+                <circle cx="7" cy="17" r="2" />
+                <path d="M9 17h6" />
+                <circle cx="17" cy="17" r="2" />
+              </svg>
+              <span className="tooltip">Heritage Highway Drive</span>
+            </div>
 
-          <div
-            className="route-node bike"
-            tabIndex={0}
-            title="Old City Lakes Cycling Tour"
-            onClick={() => setSelectedWaypoint(waypointData.bike)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <circle cx="5.5" cy="17.5" r="3.5" />
-              <circle cx="18.5" cy="17.5" r="3.5" />
-              <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5L9 11l3-3 3 3-3 6.5z" />
-              <path d="m12 8 3-4h3" />
-            </svg>
-            <span className="tooltip">Udaipur Lakes Cycling</span>
-          </div>
+            <div
+              className="route-node hat"
+              tabIndex={0}
+              title="Thar Desert Safari Expedition"
+              onClick={() => setSelectedWaypoint(waypointData.hat)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1c0-4-3-6-6-6H8c-3 0-6 2-6 6Z" />
+                <path d="M8 12V7c0-1.7 1.3-3 3-3h2c1.7 0 3 1.3 3 3v5" />
+              </svg>
+              <span className="tooltip">Thar Desert Safari</span>
+            </div>
 
-          <div
-            className="route-node binoculars"
-            tabIndex={0}
-            title="Mehrangarh Fort Sightseeing"
-            onClick={() => setSelectedWaypoint(waypointData.binoculars)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M10 10h4" />
-              <path d="M19 7V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3" />
-              <path d="M9 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3" />
-              <rect width="6" height="12" x="4" y="7" rx="2" />
-              <rect width="6" height="12" x="14" y="7" rx="2" />
-            </svg>
-            <span className="tooltip">Mehrangarh Fort Viewpoint</span>
-          </div>
+            <div
+              className="route-node bike"
+              tabIndex={0}
+              title="Old City Lakes Cycling Tour"
+              onClick={() => setSelectedWaypoint(waypointData.bike)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <circle cx="5.5" cy="17.5" r="3.5" />
+                <circle cx="18.5" cy="17.5" r="3.5" />
+                <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5L9 11l3-3 3 3-3 6.5z" />
+                <path d="m12 8 3-4h3" />
+              </svg>
+              <span className="tooltip">Udaipur Lakes Cycling</span>
+            </div>
 
-          <div
-            className="route-node boat"
-            tabIndex={0}
-            title="Lake Pichola Sunset Cruise"
-            onClick={() => setSelectedWaypoint(waypointData.boat)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path d="M22 18H2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3Z" />
-              <path d="M10 2v16" />
-              <path d="M10 4l9 9H10Z" />
-            </svg>
-            <span className="tooltip">Lake Pichola Sunset Cruise</span>
+            <div
+              className="route-node binoculars"
+              tabIndex={0}
+              title="Mehrangarh Fort Sightseeing"
+              onClick={() => setSelectedWaypoint(waypointData.binoculars)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M10 10h4" />
+                <path d="M19 7V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3" />
+                <path d="M9 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3" />
+                <rect width="6" height="12" x="4" y="7" rx="2" />
+                <rect width="6" height="12" x="14" y="7" rx="2" />
+              </svg>
+              <span className="tooltip">Mehrangarh Fort Viewpoint</span>
+            </div>
           </div>
         </div>
       </section>

@@ -73,7 +73,7 @@ export const Navbar: React.FC<Props> = ({
           </div>
 
           {/* Navigation Pill Links - Clean, Spacious, Never Cut Off */}
-          <nav aria-label="Main Navigation" style={{ minWidth: 0 }}>
+          <nav className="dash-nav-links-wrapper" aria-label="Main Navigation">
             <ul className="nav-menu">
               <li>
                 <button

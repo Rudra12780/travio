@@ -128,12 +128,11 @@ export const App: React.FC = () => {
         /* Case 2: Restricted Admin Portal (/admin) */
         adminUser ? (
           <div className="dash-wrapper" style={{ minHeight: '100vh', position: 'relative', zIndex: 10 }}>
-            <div className="dash-container" style={{ paddingTop: '20px', paddingBottom: '60px' }}>
-              <AdminDashboard
-                onRedirectToUser={handleAdminRedirectToUser}
-                onAdminSignOut={handleAdminSignOut}
-              />
-            </div>
+            <AdminDashboard
+              adminUser={adminUser}
+              onRedirectToUser={handleAdminRedirectToUser}
+              onAdminSignOut={handleAdminSignOut}
+            />
           </div>
         ) : (
           <AdminSignIn

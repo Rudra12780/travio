@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Props {
   placeholder?: string;
@@ -34,9 +34,27 @@ export const GlobalSearchBar: React.FC<Props> = ({
   const [showGroupMenu, setShowGroupMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(e.target as Node)) {
+        setShowGroupMenu(false);
+        setShowFilterMenu(false);
+        setShowSortMenu(false);
+      }
+    };
+    if (showGroupMenu || showFilterMenu || showSortMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showGroupMenu, showFilterMenu, showSortMenu]);
 
   return (
     <div 
+      ref={searchBarRef}
       className="global-search-bar-wrap" 
       style={{
         display: 'flex',
@@ -45,7 +63,7 @@ export const GlobalSearchBar: React.FC<Props> = ({
         margin: '18px 0',
         flexWrap: 'wrap',
         position: 'relative',
-        zIndex: 10,
+        zIndex: 100,
         ...style
       }}
     >
@@ -124,11 +142,11 @@ export const GlobalSearchBar: React.FC<Props> = ({
             left: 0,
             minWidth: '160px',
             background: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1.5px solid #CBD5E1',
             borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
             padding: '6px',
-            zIndex: 100
+            zIndex: 9999
           }}>
             {groupByOptions.map(opt => (
               <div
@@ -182,11 +200,11 @@ export const GlobalSearchBar: React.FC<Props> = ({
             left: 0,
             minWidth: '160px',
             background: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1.5px solid #CBD5E1',
             borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
             padding: '6px',
-            zIndex: 100
+            zIndex: 9999
           }}>
             {filterOptions.map(opt => (
               <div
@@ -240,11 +258,11 @@ export const GlobalSearchBar: React.FC<Props> = ({
             right: 0,
             minWidth: '190px',
             background: '#FFFFFF',
-            border: '1px solid #E2E8F0',
+            border: '1.5px solid #CBD5E1',
             borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
             padding: '6px',
-            zIndex: 100
+            zIndex: 9999
           }}>
             {sortByOptions.map(opt => (
               <div
