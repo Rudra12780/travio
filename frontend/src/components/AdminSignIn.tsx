@@ -4,19 +4,20 @@ import { UserProfile } from '../types';
 
 interface Props {
   onAdminLoginSuccess: (adminUser: UserProfile) => void;
-  onBackToUserPortal: () => void;
+  onBackToUserPortal?: () => void;
 }
 
-export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess, onBackToUserPortal }) => {
+export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
   const [email, setEmail] = useState('admin@trovio.com');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('admin@1234');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showKey, setShowKey] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password) {
-      setError('Please provide administrator email and security key.');
+      setError('Please provide administrator email/ID and master security key.');
       return;
     }
 
@@ -33,106 +34,194 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess, onBackToUser
     }
   };
 
+  const handleFillDemoCreds = (userType: 'standard' | 'pass123') => {
+    setEmail('admin@trovio.com');
+    setPassword(userType === 'standard' ? 'admin@1234' : 'admin123');
+    setError('');
+  };
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px',
-      position: 'relative',
-      zIndex: 10
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '500px',
-        background: '#0F172A',
-        borderRadius: '28px',
-        border: '1.5px solid #1E293B',
-        boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(13, 148, 136, 0.15)',
-        padding: '48px 44px',
-        color: '#FFFFFF'
-      }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        position: 'relative',
+        zIndex: 10,
+        background: 'radial-gradient(circle at 50% 20%, rgba(13, 148, 136, 0.08) 0%, #F8FAFC 75%)',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '520px',
+          background: '#FFFFFF',
+          borderRadius: '28px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 25px 60px -15px rgba(15, 23, 42, 0.08), 0 0 20px rgba(13, 148, 136, 0.05)',
+          padding: '44px 40px',
+          color: '#0F172A',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Glow Accent Top Bar */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '15%',
+            right: '15%',
+            height: '3px',
+            background: 'linear-gradient(90deg, transparent, #0D9488, #D97706, transparent)',
+            borderRadius: '9999px',
+          }}
+        />
+
         {/* Shield Icon & Badge */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <div style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '18px',
-            background: 'linear-gradient(135deg, #0D9488 0%, #064E3B 100%)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 25px rgba(13, 148, 136, 0.4)',
-            marginBottom: '16px'
-          }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <div style={{ textAlign: 'center', marginBottom: '26px' }}>
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 60%, #115E59 100%)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 25px rgba(13, 148, 136, 0.3), inset 0 1px 1px rgba(255,255,255,0.4)',
+              marginBottom: '16px',
+              position: 'relative',
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
+            {/* Small Google Maps pin badge in corner */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-4px',
+                right: '-4px',
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
+                background: '#EA4335',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              }}
+              title="Google Maps Radar Pin"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
+              </svg>
+            </div>
           </div>
 
-          <div style={{ display: 'inline-block', background: 'rgba(45, 212, 191, 0.12)', border: '1px solid rgba(45, 212, 191, 0.3)', color: '#2DD4BF', fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '9999px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px' }}>
-            RESTRICTED ACCESS PORTAL
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: '#CCFBF1',
+              border: '1px solid rgba(13, 148, 136, 0.3)',
+              color: '#0F766E',
+              fontSize: '11px',
+              fontWeight: 800,
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              marginBottom: '10px',
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#0D9488', animation: 'pulse 1.5s infinite' }} />
+            RESTRICTED ADMIN GATE : localhost:3000/admin@1234
           </div>
 
-          <h1 style={{ fontSize: '26px', fontWeight: 900, letterSpacing: '-0.5px' }}>
-            Mission Control & Dispatch
+          <h1 style={{ fontSize: '27px', fontWeight: 900, letterSpacing: '-0.5px', color: '#0F172A' }}>
+            Mission Control Sign-In
           </h1>
-          <p style={{ fontSize: '13.5px', color: '#94A3B8', marginTop: '6px' }}>
-            Authorized administrator operations, user dispatch, and flight network telemetry
+          <p style={{ fontSize: '13.5px', color: '#64748B', marginTop: '6px' }}>
+            Direct access is restricted. Authenticate as an authorized administrator to access platform telemetry and dispatch.
           </p>
         </div>
 
         {error && (
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid #EF4444',
-            color: '#FCA5A5',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            fontSize: '13px',
-            fontWeight: 600,
-            marginBottom: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <span>🔒</span>
+          <div
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              color: '#FCA5A5',
+              padding: '12px 16px',
+              borderRadius: '14px',
+              fontSize: '13px',
+              fontWeight: 600,
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 4px 14px rgba(239, 68, 68, 0.15)',
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>🔒</span>
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div className="form-group">
-            <label style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: '#CBD5E1', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>
-              ADMINISTRATOR ID / EMAIL
+            <label
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                color: '#475569',
+                textTransform: 'uppercase',
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>ADMINISTRATOR ID / EMAIL</span>
+              <span style={{ color: '#0D9488', fontWeight: 600, fontSize: '11px' }}>admin@trovio.com</span>
             </label>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: '#1E293B',
-              border: '1.5px solid #334155',
-              borderRadius: '14px',
-              height: '52px',
-              padding: '0 16px'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: '#F8FAFC',
+                border: '1.5px solid #CBD5E1',
+                borderRadius: '14px',
+                height: '52px',
+                padding: '0 16px',
+                transition: 'border-color 0.2s ease',
+              }}
+            >
               <span style={{ color: '#0D9488', marginRight: '12px' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
               </span>
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@trovio.com"
+                placeholder="admin@trovio.com or admin"
                 style={{
                   width: '100%',
                   background: 'transparent',
                   border: 'none',
-                  color: '#FFFFFF',
+                  color: '#0F172A',
                   fontSize: '14.5px',
-                  fontWeight: 500,
-                  outline: 'none'
+                  fontWeight: 600,
+                  outline: 'none',
                 }}
                 required
               />
@@ -140,23 +229,40 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess, onBackToUser
           </div>
 
           <div className="form-group">
-            <label style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: '#CBD5E1', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>
-              SECURITY MASTER KEY
+            <label
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                color: '#475569',
+                textTransform: 'uppercase',
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>SECURITY MASTER KEY</span>
+              <span style={{ color: '#E11D48', fontWeight: 600, fontSize: '11px' }}>admin@1234</span>
             </label>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: '#1E293B',
-              border: '1.5px solid #334155',
-              borderRadius: '14px',
-              height: '52px',
-              padding: '0 16px'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: '#F8FAFC',
+                border: '1.5px solid #CBD5E1',
+                borderRadius: '14px',
+                height: '52px',
+                padding: '0 16px',
+              }}
+            >
               <span style={{ color: '#0D9488', marginRight: '12px' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
               </span>
               <input
-                type="password"
+                type={showKey ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
@@ -164,70 +270,120 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess, onBackToUser
                   width: '100%',
                   background: 'transparent',
                   border: 'none',
-                  color: '#FFFFFF',
+                  color: '#0F172A',
                   fontSize: '14.5px',
-                  fontWeight: 500,
-                  outline: 'none'
+                  fontWeight: 600,
+                  outline: 'none',
                 }}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowKey(!showKey)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#64748B',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  padding: '4px',
+                }}
+                title={showKey ? 'Hide key' : 'Show key'}
+              >
+                {showKey ? '🙈' : '👁️'}
+              </button>
             </div>
           </div>
 
-          <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '12px 14px', fontSize: '12px', color: '#94A3B8' }}>
-            Default test key: <code style={{ color: '#2DD4BF', background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>admin@trovio.com</code> / <code style={{ color: '#2DD4BF', background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>admin123</code>
+          {/* Quick Credential Preset Badges */}
+          <div
+            style={{
+              background: '#F8FAFC',
+              border: '1px solid #E2E8F0',
+              borderRadius: '14px',
+              padding: '12px 14px',
+              fontSize: '12px',
+              color: '#64748B',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, color: '#0F172A' }}>Verified Admin Credentials:</span>
+              <span style={{ fontSize: '11px', color: '#0D9488', fontWeight: 600 }}>Click to apply</span>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => handleFillDemoCreds('standard')}
+                style={{
+                  background: '#CCFBF1',
+                  border: '1px solid rgba(13, 148, 136, 0.3)',
+                  color: '#0F766E',
+                  borderRadius: '8px',
+                  padding: '4px 10px',
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                admin@trovio.com / admin@1234
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFillDemoCreds('pass123')}
+                style={{
+                  background: '#F1F5F9',
+                  border: '1px solid #E2E8F0',
+                  color: '#475569',
+                  borderRadius: '8px',
+                  padding: '4px 10px',
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                admin@trovio.com / admin123
+              </button>
+            </div>
           </div>
 
+          {/* Authorize Button */}
           <button
             type="submit"
             disabled={loading}
             style={{
               width: '100%',
               height: '54px',
-              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #064E3B 100%)',
               color: '#FFFFFF',
               border: 'none',
               borderRadius: '14px',
               fontSize: '15px',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 8px 24px -4px rgba(13, 148, 136, 0.5)',
+              boxShadow: '0 8px 25px -4px rgba(13, 148, 136, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              marginTop: '8px',
-              transition: 'all 0.2s ease'
+              marginTop: '6px',
+              transition: 'all 0.2s ease',
             }}
           >
             {!loading ? (
-              <span>Authorize & Enter Mission Control</span>
+              <>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Authorize & Enter Admin Mission Control</span>
+              </>
             ) : (
               <div className="spinner" />
             )}
-          </button>
-
-          <button
-            type="button"
-            onClick={onBackToUserPortal}
-            style={{
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              color: '#CBD5E1',
-              borderRadius: '12px',
-              padding: '12px',
-              fontSize: '13.5px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease',
-              marginTop: '4px'
-            }}
-          >
-            <span>← Switch to Traveler Sign-In Portal</span>
           </button>
         </form>
       </div>

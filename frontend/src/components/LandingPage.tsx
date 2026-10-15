@@ -5,6 +5,7 @@ import { CountryDossierModal } from './CountryDossierModal';
 import { SignIn } from './SignIn';
 import { RegisterModal } from './RegisterModal';
 import { TravelDreamscape } from './TravelDreamscape';
+import { AnimatedLogo } from './AnimatedLogo';
 
 interface Props {
   onSignInSuccess: (user: UserProfile) => void;
@@ -104,16 +105,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
         <div className="landing-nav-container">
           {/* Brand Logo */}
           <div className="landing-brand-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="brand-logo-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-              </svg>
-            </div>
-            <div className="brand-logo-text">
-              <span className="logo-title">Trovio</span>
-              <span className="logo-badge">GlobalTrotters</span>
-            </div>
+            <AnimatedLogo size="md" title="Trovio" badge="GlobalTrotters" />
           </div>
 
           {/* Desktop Nav Links */}
@@ -264,6 +256,35 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
               </svg>
             </button>
           </form>
+
+          {/* 3D Immersive Gyroscope Voyager Orb Showcase */}
+          <div className="spatial-3d-hero-orbit-stage" aria-label="3D Immersive Voyager Radar">
+            <div className="spatial-gyro-ring gyro-ring-outer" />
+            <div className="spatial-gyro-ring gyro-ring-inner" />
+            
+            {/* Left 3D Floating Waypoint Card */}
+            <div className="spatial-floating-card card-left">
+              <span style={{ fontSize: '18px' }}>🗾</span>
+              <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                <span style={{ fontSize: '10px', color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.8px' }}>3D WAYPOINT</span>
+                <div style={{ fontWeight: 800 }}>Tokyo • Kyoto Corridor</div>
+              </div>
+            </div>
+
+            {/* Central 3D Pulsing Gyro Core */}
+            <div className="gyro-core-sphere" title="Spatial Voyager Core (Click anywhere to trigger 3D Telemetry)">
+              <span>🧭</span>
+            </div>
+
+            {/* Right 3D Floating Waypoint Card */}
+            <div className="spatial-floating-card card-right">
+              <span style={{ fontSize: '18px' }}>🏔️</span>
+              <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                <span style={{ fontSize: '10px', color: '#FF385C', textTransform: 'uppercase', letterSpacing: '0.8px' }}>3D SATELLITE</span>
+                <div style={{ fontWeight: 800 }}>Swiss Alpine Ridge</div>
+              </div>
+            </div>
+          </div>
 
           {/* Social Proof & Hero Highlights */}
           <div className="hero-trust-bar">
@@ -1257,15 +1278,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
       <footer className="landing-footer">
         <div className="footer-top-container">
           <div className="footer-brand-col">
-            <div className="footer-logo">
-              <div className="footer-logo-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
-                  <circle cx="12" cy="12" r="10" />
-                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                </svg>
-              </div>
-              <span className="footer-logo-title">Trovio GlobalTrotters</span>
-            </div>
+            <AnimatedLogo size="md" title="Trovio" badge="GlobalTrotters" className="footer-animated-logo" />
             <p className="footer-brand-desc">
               The modern intelligent operating system for global voyagers. 
               Designed for effortless multi-city itinerary building, live telemetry monitoring, 

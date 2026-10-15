@@ -189,27 +189,30 @@ export const BackgroundAnimation: React.FC = () => {
         ctx.save();
         ctx.translate(x + 22, y - 18);
 
-        // Tag capsule pill
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.72)';
-        ctx.strokeStyle = `${color}60`;
+        // Tag capsule pill - Clean luxury white glass
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.9)';
         ctx.lineWidth = 1;
+        ctx.shadowColor = 'rgba(15, 23, 42, 0.08)';
+        ctx.shadowBlur = 8;
         ctx.beginPath();
-        ctx.roundRect(0, 0, 118, 22, 6);
+        ctx.roundRect(0, 0, 122, 22, 7);
         ctx.fill();
         ctx.stroke();
 
         // Pulsing radar blip
+        ctx.shadowBlur = 0;
         ctx.fillStyle = accentColor;
         ctx.beginPath();
         ctx.arc(9, 11, 2.8, 0, Math.PI * 2);
         ctx.fill();
 
         // Text
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = '600 9.5px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#0F172A';
+        ctx.font = '600 9.5px "Plus Jakarta Sans", Inter, system-ui, sans-serif';
         ctx.fillText(callsign, 17, 10);
-        ctx.fillStyle = '#94A3B8';
-        ctx.font = '500 8px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#64748B';
+        ctx.font = '500 8px "Plus Jakarta Sans", Inter, system-ui, sans-serif';
         ctx.fillText(alt, 17, 18);
 
         ctx.restore();
@@ -238,7 +241,7 @@ export const BackgroundAnimation: React.FC = () => {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.7})`;
+        ctx.fillStyle = `rgba(13, 148, 136, ${p.alpha * 0.35})`;
         ctx.fill();
       }
 

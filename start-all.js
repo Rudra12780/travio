@@ -10,7 +10,7 @@ console.log('\x1b[32m%s\x1b[0m', ' 🚀 Starting Trovio / GlobeTrotter Full Stac
 console.log('\x1b[32m%s\x1b[0m', '==================================================');
 console.log('📍 Frontend:    http://localhost:3000');
 console.log('📍 Backend API: http://localhost:5000');
-console.log('📍 Admin Gate:  http://localhost:3000/admin');
+console.log('📍 Admin Gate:  http://localhost:3000/admin@1234');
 console.log('--------------------------------------------------\n');
 
 // Start Backend

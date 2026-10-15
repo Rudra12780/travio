@@ -6,7 +6,6 @@ export interface DreamscapeDestination {
   realmName: string;
   country: string;
   countryFlag: string;
-  coordinates: string;
   category: 'aurora' | 'zen' | 'alpine' | 'ocean' | 'desert';
   image: string;
   heroImage: string;
@@ -31,7 +30,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Tromsø & Senja Glacial Fjords',
     country: 'Norway',
     countryFlag: '🇳🇴',
-    coordinates: '69.6492° N, 18.9553° E',
     category: 'aurora',
     image: 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1579033461380-adb47c3eb938?auto=format&fit=crop&w=1600&q=85',
@@ -54,7 +52,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Lauterbrunnen & Jungfrau Massif',
     country: 'Switzerland',
     countryFlag: '🇨🇭',
-    coordinates: '46.5935° N, 7.9090° E',
     category: 'alpine',
     image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=1600&q=85',
@@ -77,7 +74,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Kyoto Arashiyama & Fushimi Mist',
     country: 'Japan',
     countryFlag: '🇯🇵',
-    coordinates: '35.0116° N, 135.6778° E',
     category: 'zen',
     image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=85',
@@ -100,7 +96,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Oia & Imerovigli Volcanic Heights',
     country: 'Greece',
     countryFlag: '🇬🇷',
-    coordinates: '36.4618° N, 25.3753° E',
     category: 'ocean',
     image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1600&q=85',
@@ -123,7 +118,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Göreme Valley & Fairy Chimneys',
     country: 'Turkey',
     countryFlag: '🇹🇷',
-    coordinates: '38.6431° N, 34.8289° E',
     category: 'desert',
     image: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1600&q=85',
@@ -146,7 +140,6 @@ const DREAMSCAPES: DreamscapeDestination[] = [
     realmName: 'Vaadhoo Sea of Stars & Raa Atoll',
     country: 'Maldives',
     countryFlag: '🇲🇻',
-    coordinates: '5.8450° N, 72.9833° E',
     category: 'ocean',
     image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=85',
@@ -175,8 +168,105 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
   const [atmosphere, setAtmosphere] = useState<'celestial' | 'golden' | 'dawn'>('celestial');
   const [savedWishlist, setSavedWishlist] = useState<Set<string>>(new Set(['norway-aurora']));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isPlayingSound, setIsPlayingSound] = useState<boolean>(false);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
+  const gainNodeRef = useRef<GainNode | null>(null);
 
   const activeDreamscape = DREAMSCAPES.find(d => d.id === selectedId) || DREAMSCAPES[0];
+
+  // Harmonious ambient synthesizer
+  const toggleSoundscape = () => {
+    if (isPlayingSound) {
+      stopSoundscape();
+    } else {
+      startSoundscape();
+    }
+  };
+
+  const startSoundscape = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) {
+        setIsPlayingSound(true);
+        showToast(`🎧 Atmospheric soundscape simulated: ${activeDreamscape.soundscapeName}`);
+        return;
+      }
+
+      if (!audioContextRef.current) {
+        audioContextRef.current = new AudioCtx();
+      }
+
+      const ctx = audioContextRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
+      masterGain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 1.2);
+      masterGain.connect(ctx.destination);
+      gainNodeRef.current = masterGain;
+
+      const freqs = activeDreamscape.soundscapeFrequencies;
+      const oscs: OscillatorNode[] = [];
+
+      freqs.forEach(freq => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        osc.connect(masterGain);
+        osc.start();
+        oscs.push(osc);
+      });
+
+      oscillatorsRef.current = oscs;
+      setIsPlayingSound(true);
+      showToast(`🎧 Resonance playing: ${activeDreamscape.soundscapeName}`);
+    } catch {
+      setIsPlayingSound(true);
+      showToast(`🎧 Resonance activated: ${activeDreamscape.soundscapeName}`);
+    }
+  };
+
+  const stopSoundscape = () => {
+    if (gainNodeRef.current && audioContextRef.current) {
+      const ctx = audioContextRef.current;
+      try {
+        gainNodeRef.current.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+        setTimeout(() => {
+          oscillatorsRef.current.forEach(osc => {
+            try { osc.stop(); osc.disconnect(); } catch {}
+          });
+          oscillatorsRef.current = [];
+        }, 650);
+      } catch {
+        oscillatorsRef.current = [];
+      }
+    }
+    setIsPlayingSound(false);
+    showToast(`Soundscape paused`);
+  };
+
+  // Stop audio on destination change
+  useEffect(() => {
+    if (isPlayingSound) {
+      stopSoundscape();
+    }
+  }, [selectedId]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      oscillatorsRef.current.forEach(osc => {
+        try { osc.stop(); osc.disconnect(); } catch {}
+      });
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        try { audioContextRef.current.close(); } catch {}
+      }
+    };
+  }, []);
 
   const toggleWishlist = (id: string, title: string) => {
     setSavedWishlist(prev => {
@@ -229,7 +319,7 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
         <div className="dreamscape-header-block">
           <div className="dreamscape-badge-pill">
             <span className="dreamscape-sparkle-icon">✨</span>
-            <span className="badge-text">Interactive Showcase • Travel Dreamscape</span>
+            <span className="badge-text">Interactive Showcase • Bento Grid Architecture</span>
             <span className="live-pulse-dot" />
           </div>
 
@@ -327,165 +417,303 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
           </div>
         </div>
 
-        {/* HERO DREAMSCAPE SHOWCASE STAGE */}
-        <div className="dreamscape-stage-card">
-          <div className="dreamscape-stage-visual">
-            <img 
-              key={activeDreamscape.id}
-              src={activeDreamscape.heroImage} 
-              alt={activeDreamscape.title}
-              className="stage-main-img" 
-              loading="eager"
-            />
-            <div className="stage-overlay-gradient" />
+        {/* ==================================================================== */}
+        {/* PREMIER BENTO GRID DREAMSCAPE SHOWCASE */}
+        {/* ==================================================================== */}
+        <div className="dreamscape-bento-grid">
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 1: CINEMATIC HORIZON HERO STAGE (Large 7-Col Feature Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-hero">
+            <div className="bento-hero-media">
+              <img 
+                key={activeDreamscape.id}
+                src={activeDreamscape.heroImage} 
+                alt={activeDreamscape.title}
+                className="bento-hero-img" 
+                loading="eager"
+              />
+              <div className="bento-hero-gradient" />
 
-            {/* Stage Floating Top Bar */}
-            <div className="stage-top-hud">
-              <div className="hud-location-badge">
-                <span className="flag">{activeDreamscape.countryFlag}</span>
-                <span className="realm-name">{activeDreamscape.realmName}</span>
-                <span className="coordinates-tag">{activeDreamscape.coordinates}</span>
+              {/* Floating Top HUD (NO Destination Numbers/Coordinates) */}
+              <div className="bento-hero-top-hud">
+                <div className="hud-location-badge">
+                  <span className="flag">{activeDreamscape.countryFlag}</span>
+                  <span className="realm-name">{activeDreamscape.realmName}</span>
+                </div>
+
+                <div className="hud-actions-group">
+                  <div className="hud-metric-chip" title="Voyager Wonder Index">
+                    <span className="metric-star">★</span>
+                    <span className="metric-val">{activeDreamscape.wonderScore}%</span>
+                    <span className="metric-label">Wonder Index</span>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    className={`btn-dream-bookmark ${savedWishlist.has(activeDreamscape.id) ? 'bookmarked' : ''}`}
+                    onClick={() => toggleWishlist(activeDreamscape.id, activeDreamscape.title)}
+                    aria-label="Save to Dream Journal"
+                    title="Bookmark to Dream Journal"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill={savedWishlist.has(activeDreamscape.id) ? '#F43F5E' : 'none'} stroke={savedWishlist.has(activeDreamscape.id) ? '#F43F5E' : 'currentColor'} strokeWidth="2.2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                    <span>{savedWishlist.has(activeDreamscape.id) ? 'Saved' : 'Save'}</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="hud-metrics-row">
-                <div className="hud-metric-chip" title="Voyager Wonder Index">
-                  <span className="metric-star">★</span>
-                  <span className="metric-val">{activeDreamscape.wonderScore}%</span>
-                  <span className="metric-label">Wonder Index</span>
+              {/* Hero Bottom Overlay Content */}
+              <div className="bento-hero-bottom-overlay">
+                <div className="bento-country-badge">
+                  <span className="country-chip">{activeDreamscape.country}</span>
+                  <span className="dot-sep">•</span>
+                  <span className="category-chip">{activeDreamscape.category.toUpperCase()} HORIZON</span>
+                </div>
+
+                <h3 className="bento-hero-title">{activeDreamscape.title}</h3>
+                <p className="bento-hero-desc">{activeDreamscape.description}</p>
+
+                <div className="bento-hero-actions">
+                  <button 
+                    type="button" 
+                    className="btn-dreamscape-plan"
+                    onClick={() => onStartPlanning(`${activeDreamscape.realmName}, ${activeDreamscape.country}`)}
+                    id="btn-plan-dreamscape"
+                  >
+                    <span>Plan This Dreamscape</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </button>
+
+                  <button 
+                    type="button" 
+                    className="btn-dreamscape-random"
+                    onClick={pickRandomDreamscape}
+                    title="Wander to a random surreal destination"
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <polyline points="16 3 21 3 21 8" />
+                      <line x1="4" y1="20" x2="21" y2="3" />
+                      <polyline points="21 16 21 21 16 21" />
+                      <line x1="15" y1="15" x2="21" y2="21" />
+                      <line x1="4" y1="4" x2="9" y2="9" />
+                    </svg>
+                    <span>Surprise Horizon</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 2: ATMOSPHERIC SOUNDSCAPE STUDIO (5-Col Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-soundscape">
+            <div className="bento-tile-header">
+              <div className="bento-tile-icon-box sound">
+                <span>🎧</span>
+              </div>
+              <div>
+                <span className="bento-tile-sub">NATURAL RESONANCE</span>
+                <h4 className="bento-tile-heading">Harmonic Soundscape</h4>
+              </div>
+            </div>
+
+            <div className="soundscape-body">
+              <div className="soundscape-name-card">
+                <span className="pulse-signal-dot" />
+                <span className="sound-title-text">{activeDreamscape.soundscapeName}</span>
+              </div>
+
+              {/* Interactive Equalizer Visualizer */}
+              <div className="soundscape-visualizer-box">
+                <div className={`sound-bars-wrap ${isPlayingSound ? 'active' : ''}`}>
+                  {[45, 80, 50, 95, 65, 85, 40, 90, 60, 75, 88, 55].map((h, i) => (
+                    <span 
+                      key={i} 
+                      className={`sound-bar-col bar-${i}`} 
+                      style={{ 
+                        height: isPlayingSound ? `${h}%` : '20%',
+                        animationDuration: `${0.8 + (i % 4) * 0.25}s` 
+                      }} 
+                    />
+                  ))}
                 </div>
 
                 <button 
                   type="button" 
-                  className={`btn-dream-bookmark ${savedWishlist.has(activeDreamscape.id) ? 'bookmarked' : ''}`}
-                  onClick={() => toggleWishlist(activeDreamscape.id, activeDreamscape.title)}
-                  aria-label="Save to Dream Journal"
-                  title="Bookmark to Dream Journal"
+                  className={`btn-soundscape-toggle ${isPlayingSound ? 'playing' : ''}`}
+                  onClick={toggleSoundscape}
+                  aria-label={isPlayingSound ? 'Pause Soundscape' : 'Play Soundscape Resonance'}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill={savedWishlist.has(activeDreamscape.id) ? '#F43F5E' : 'none'} stroke={savedWishlist.has(activeDreamscape.id) ? '#F43F5E' : 'currentColor'} strokeWidth="2.2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                  <span>{savedWishlist.has(activeDreamscape.id) ? 'Saved' : 'Save'}</span>
+                  <span className="play-icon">{isPlayingSound ? '⏸' : '▶'}</span>
+                  <span>{isPlayingSound ? 'Pause Aura' : 'Play Resonance'}</span>
                 </button>
+              </div>
+
+              {/* Harmonic Solfeggio Tones */}
+              <div className="frequencies-row">
+                <span className="freq-label">Harmonic Tones:</span>
+                <div className="freq-chips-list">
+                  {activeDreamscape.soundscapeFrequencies.map((f, i) => (
+                    <span key={i} className="freq-pill">{f} Hz</span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Dreamscape Hero Content Panel */}
-          <div className="dreamscape-stage-content">
-            <div className="content-realm-tag">
-              <span>{activeDreamscape.country}</span>
-              <span className="dot-sep">•</span>
-              <span>{activeDreamscape.stargazingRating}</span>
-            </div>
-
-            <h3 className="content-stage-title">{activeDreamscape.title}</h3>
-            <p className="content-stage-desc">{activeDreamscape.description}</p>
-
-            {/* Telemetry Matrix Grid */}
-            <div className="stage-telemetry-grid">
-              <div className="telemetry-pill">
-                <span className="telemetry-icon">🌌</span>
-                <div>
-                  <span className="t-label">Night Sky Vault</span>
-                  <strong className="t-val">{activeDreamscape.stargazingRating.split('(')[0]}</strong>
-                </div>
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 3: COSMIC SKY VAULT (4-Col Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-sky">
+            <div className="bento-tile-header">
+              <div className="bento-tile-icon-box sky">
+                <span>🌌</span>
               </div>
-
-              <div className="telemetry-pill">
-                <span className="telemetry-icon">🧘</span>
-                <div>
-                  <span className="t-label">Sanctuary Vibe</span>
-                  <strong className="t-val">{activeDreamscape.tranquilityLevel}</strong>
-                </div>
-              </div>
-
-              <div className="telemetry-pill">
-                <span className="telemetry-icon">⏳</span>
-                <div>
-                  <span className="t-label">Golden Window</span>
-                  <strong className="t-val">{activeDreamscape.magicHour}</strong>
-                </div>
-              </div>
-
-              <div className="telemetry-pill">
-                <span className="telemetry-icon">🗺️</span>
-                <div>
-                  <span className="t-label">Signature Passage</span>
-                  <strong className="t-val route-snippet">{activeDreamscape.signatureRoute}</strong>
-                </div>
+              <div>
+                <span className="bento-tile-sub">CELESTIAL CLARITY</span>
+                <h4 className="bento-tile-heading">Night Sky Vault</h4>
               </div>
             </div>
 
-            {/* Real Voyager Journal Quote (Replaces Testimonial Card) */}
-            <div className="dreamscape-quote-box">
-              <div className="quote-mark">“</div>
-              <p className="quote-text">{activeDreamscape.quote}</p>
-              <div className="quote-voyager-row">
-                <div className="voyager-avatar-badge">
-                  <span>{activeDreamscape.countryFlag}</span>
+            <div className="sky-telemetry-body">
+              <div className="sky-rating-display">
+                <div className="constellation-sparkle">✨</div>
+                <div>
+                  <strong className="sky-rating-val">{activeDreamscape.stargazingRating.split('(')[0]}</strong>
+                  <span className="sky-rating-sub">Zero Light Pollution Index</span>
                 </div>
-                <div className="voyager-info">
-                  <h5 className="voyager-name">{activeDreamscape.voyagerName}</h5>
-                  <span className="voyager-role">{activeDreamscape.voyagerRole}</span>
+              </div>
+
+              <div className="magic-hour-banner">
+                <span className="mh-icon">⏳</span>
+                <div className="mh-content">
+                  <span className="mh-label">Golden Window</span>
+                  <strong className="mh-val">{activeDreamscape.magicHour}</strong>
                 </div>
-                <span className="verified-voyager-tag">✓ Verified Expedition</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 4: SANCTUARY & TRANQUILITY INDEX (4-Col Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-zen">
+            <div className="bento-tile-header">
+              <div className="bento-tile-icon-box zen">
+                <span>🧘</span>
+              </div>
+              <div>
+                <span className="bento-tile-sub">EQUILIBRIUM</span>
+                <h4 className="bento-tile-heading">Sanctuary Vibe</h4>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="stage-actions-row">
-              <button 
-                type="button" 
-                className="btn-dreamscape-plan"
-                onClick={() => onStartPlanning(`${activeDreamscape.realmName}, ${activeDreamscape.country}`)}
-                id="btn-plan-dreamscape"
-              >
-                <span>Plan This Dreamscape</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </button>
+            <div className="zen-body">
+              <div className="zen-meter-wrap">
+                <div className="zen-gauge-ring">
+                  <span className="zen-pct-number">{activeDreamscape.tranquilityLevel.split('%')[0]}%</span>
+                </div>
+                <div className="zen-status-meta">
+                  <span className="zen-status-label">Tranquility Rating</span>
+                  <strong className="zen-status-highlight">Deep Sanctuary</strong>
+                </div>
+              </div>
 
-              <button 
-                type="button" 
-                className="btn-dreamscape-random"
-                onClick={pickRandomDreamscape}
-                title="Wander to a random surreal destination"
-              >
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <polyline points="16 3 21 3 21 8" />
-                  <line x1="4" y1="20" x2="21" y2="3" />
-                  <polyline points="21 16 21 21 16 21" />
-                  <line x1="15" y1="15" x2="21" y2="21" />
-                  <line x1="4" y1="4" x2="9" y2="9" />
-                </svg>
-                <span>Surprise Horizon</span>
-              </button>
+              <div className="bento-tags-cloud">
+                {activeDreamscape.tags.map((tag, i) => (
+                  <span key={i} className="bento-tag-item">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 5: SIGNATURE PASSAGE EXPEDITION (4-Col Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-passage">
+            <div className="bento-tile-header">
+              <div className="bento-tile-icon-box route">
+                <span>🗺️</span>
+              </div>
+              <div>
+                <span className="bento-tile-sub">EXPEDITION CORRIDOR</span>
+                <h4 className="bento-tile-heading">Signature Passage</h4>
+              </div>
+            </div>
+
+            <div className="passage-body">
+              <div className="passage-timeline">
+                {activeDreamscape.signatureRoute.split('→').map((stop, i, arr) => (
+                  <div key={i} className="passage-timeline-item">
+                    <div className="timeline-node-dot">
+                      <span className="node-num">{i + 1}</span>
+                      {i < arr.length - 1 && <span className="timeline-connector-line" />}
+                    </div>
+                    <div className="timeline-node-text">
+                      <span className="timeline-role">{i === 0 ? 'Departure' : i === arr.length - 1 ? 'Destination' : 'Waypoint'}</span>
+                      <strong className="timeline-name">{stop.trim()}</strong>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------------ */}
+          {/* BENTO TILE 6: VERIFIED VOYAGER EXPEDITION JOURNAL (12-Col Full Tile) */}
+          {/* ------------------------------------------------------------------ */}
+          <div className="bento-tile bento-tile-quote">
+            <div className="quote-bento-layout">
+              <div className="quote-mark-badge">“</div>
+              <div className="quote-text-col">
+                <p className="bento-quote-text">{activeDreamscape.quote}</p>
+                <div className="bento-voyager-meta">
+                  <div className="voyager-avatar-chip">
+                    <span>{activeDreamscape.countryFlag}</span>
+                  </div>
+                  <div className="voyager-details">
+                    <h5 className="voyager-author-name">{activeDreamscape.voyagerName}</h5>
+                    <span className="voyager-author-sub">{activeDreamscape.voyagerRole}</span>
+                  </div>
+                  <div className="voyager-badge-group">
+                    <span className="verified-pill">✓ Verified Expedition Journal</span>
+                    <div className="voyager-star-rating">★★★★★</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* DREAMSCAPE DESTINATIONS GALLERY CARDS */}
+        {/* ==================================================================== */}
+        {/* DREAMSCAPE CURATED HORIZONS BENTO GALLERY */}
+        {/* ==================================================================== */}
         <div className="dreamscape-gallery-header">
           <div className="gallery-header-left">
             <h3 className="gallery-section-title">Explore Surreal Horizons</h3>
-            <p className="gallery-section-sub">Select any realm to preview its atmospheric parameters, soundscape, and curated passage.</p>
+            <p className="gallery-section-sub">Select any realm to preview its atmospheric parameters, soundscape, and curated passage in the Bento Grid.</p>
           </div>
           <span className="gallery-counter">
             Showing {filteredDreamscapes.length} Curated Realms
           </span>
         </div>
 
-        <div className="dreamscape-cards-grid">
-          {filteredDreamscapes.map(realm => {
+        <div className="dreamscape-bento-gallery">
+          {filteredDreamscapes.map((realm, index) => {
             const isCurrent = realm.id === selectedId;
             const isBookmarked = savedWishlist.has(realm.id);
+            const isFeatured = index === 0;
 
             return (
               <div 
                 key={realm.id} 
-                className={`dreamscape-card ${isCurrent ? 'selected-active' : ''}`}
+                className={`bento-gallery-card ${isCurrent ? 'selected-active' : ''} ${isFeatured ? 'card-featured-wide' : ''}`}
                 onClick={() => {
                   setSelectedId(realm.id);
                   const el = document.getElementById('travel-dreamscape-section');
@@ -499,20 +727,20 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
                   }
                 }}
               >
-                <div className="dream-card-media">
+                <div className="gallery-card-media">
                   <img src={realm.image} alt={realm.title} loading="lazy" />
-                  <div className="dream-card-gradient" />
+                  <div className="gallery-card-gradient" />
 
-                  <span className="dream-card-flag">{realm.countryFlag}</span>
+                  <span className="gallery-card-flag">{realm.countryFlag}</span>
                   
-                  <div className="dream-card-wonder-pill">
+                  <div className="gallery-card-wonder-pill">
                     <span className="star">★</span>
                     <span>{realm.wonderScore}%</span>
                   </div>
 
                   <button
                     type="button"
-                    className={`card-bookmark-icon-btn ${isBookmarked ? 'active' : ''}`}
+                    className={`gallery-bookmark-btn ${isBookmarked ? 'active' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleWishlist(realm.id, realm.title);
@@ -525,32 +753,32 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
                     </svg>
                   </button>
 
-                  <div className="dream-card-title-overlay">
-                    <span className="card-country-label">{realm.country}</span>
-                    <h4 className="card-realm-name">{realm.title}</h4>
-                    <span className="card-location-sub">{realm.realmName}</span>
+                  <div className="gallery-card-overlay-text">
+                    <span className="gallery-country-label">{realm.country}</span>
+                    <h4 className="gallery-realm-title">{realm.title}</h4>
+                    <span className="gallery-realm-sub">{realm.realmName}</span>
                   </div>
                 </div>
 
-                <div className="dream-card-body">
-                  <div className="dream-card-tags">
+                <div className="gallery-card-body">
+                  <div className="gallery-card-tags">
                     {realm.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="dream-tag-chip">{tag}</span>
+                      <span key={i} className="gallery-tag-chip">{tag}</span>
                     ))}
                   </div>
 
-                  <p className="dream-card-snippet">
+                  <p className="gallery-card-desc">
                     {realm.description}
                   </p>
 
-                  <div className="dream-card-footer">
-                    <span className="card-atmosphere-tag">
+                  <div className="gallery-card-footer">
+                    <span className="gallery-zen-tag">
                       <span className="realm-icon">✨</span> {realm.tranquilityLevel}
                     </span>
 
                     <button 
                       type="button" 
-                      className="btn-card-experience"
+                      className="btn-gallery-select"
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedId(realm.id);
@@ -570,7 +798,7 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
           })}
         </div>
 
-        {/* VOYAGER DREAM LOGS (Expanded proof of wonder) */}
+        {/* VOYAGER DREAM LOGS */}
         <div className="dreamscape-stories-banner">
           <div className="stories-banner-header">
             <span className="stories-pill">📖 Verified Voyager Dream Logs</span>
@@ -608,3 +836,5 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
     </section>
   );
 };
+
+export default TravelDreamscape;

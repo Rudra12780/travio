@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserProfile } from '../types';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { RegisterModal } from './RegisterModal';
+import { AnimatedLogo } from './AnimatedLogo';
 
 interface Props {
   onSignInSuccess: (user: UserProfile) => void;
@@ -294,15 +295,8 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
           )}
 
           {/* Integrated Brand Header Inside Card */}
-          <div className="modal-brand-header">
-            <div className="brand-icon-wrapper">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-              </svg>
-            </div>
-            <span className="brand-name">Trovio</span>
-            <span className="brand-badge">GlobalTrotters</span>
+          <div className="modal-brand-header" style={{ justifyContent: 'center', marginBottom: '8px' }}>
+            <AnimatedLogo size="sm" title="Trovio" badge="GlobalTrotters" />
           </div>
 
           <header className="auth-header modal-header-compact">
@@ -344,14 +338,7 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
     <div className="auth-wrapper">
       {/* Brand Header */}
       <div className="brand-header" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-        <div className="brand-icon-wrapper">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-          </svg>
-        </div>
-        <span className="brand-name">Trovio</span>
-        <span className="brand-badge">GlobalTrotters</span>
+        <AnimatedLogo size="md" title="Trovio" badge="GlobalTrotters" />
       </div>
 
       <section className="auth-card" aria-label="Sign In Container">

@@ -9,6 +9,7 @@
     "start": "node start-all.js",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend start",
+    "dev:all4": "node start-all.js",
     "build": "npm --prefix frontend run build"
   }
 }
