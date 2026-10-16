@@ -7821,8 +7821,30 @@ body::before {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35), 0 4px 10px rgba(255, 56, 92, 0.2);
 }
 
+/* ==========================================================================
+   Saved Places & Wanderlust Collection Styles
+   ========================================================================== */
+.saved-place-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
 
+.saved-place-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 4px 16px -2px rgba(225, 29, 72, 0.12) !important;
+  border-color: #FECDD3 !important;
+}
 
+.saved-place-card:hover img {
+  transform: scale(1.06) !important;
+}
 
-
-
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

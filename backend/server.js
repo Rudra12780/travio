@@ -276,90 +276,130 @@ app.get('/api/activities', (req, res) => {
 // Trips CRUD & Management Routes
 // --------------------------------------------------------------------------
 app.get('/api/trips', (req, res) => {
-  const userId = req.query.userId || 1;
+  try {
+    const userId = Number(req.query.userId) || 1;
 
-  const trips = db.prepare(`
-    SELECT t.*, 
-      COUNT(DISTINCT s.id) as stops_count,
-      COALESCE(SUM(s.stay_cost), 0) + COALESCE((
-        SELECT SUM(cost) FROM stop_activities sa 
-        JOIN stops st ON sa.stop_id = st.id 
-        WHERE st.trip_id = t.id
-      ), 0) as estimated_cost
-    FROM trips t
-    LEFT JOIN stops s ON t.id = s.trip_id
-    WHERE t.user_id = ?
-    GROUP BY t.id
-    ORDER BY t.created_at DESC
-  `).all(userId);
+    let trips = db.prepare(`
+      SELECT t.*, 
+        COUNT(DISTINCT s.id) as stops_count,
+        COALESCE(SUM(s.stay_cost), 0) + COALESCE((
+          SELECT SUM(cost) FROM stop_activities sa 
+          JOIN stops st ON sa.stop_id = st.id 
+          WHERE st.trip_id = t.id
+        ), 0) as estimated_cost
+      FROM trips t
+      LEFT JOIN stops s ON t.id = s.trip_id
+      WHERE t.user_id = ?
+      GROUP BY t.id
+      ORDER BY t.created_at DESC
+    `).all(userId);
 
-  res.json({ trips });
+    // If user has no personalized trips yet, fallback to sample/catalog voyages
+    if (!trips || trips.length === 0) {
+      trips = db.prepare(`
+        SELECT t.*, 
+          COUNT(DISTINCT s.id) as stops_count,
+          COALESCE(SUM(s.stay_cost), 0) + COALESCE((
+            SELECT SUM(cost) FROM stop_activities sa 
+            JOIN stops st ON sa.stop_id = st.id 
+            WHERE st.trip_id = t.id
+          ), 0) as estimated_cost
+        FROM trips t
+        LEFT JOIN stops s ON t.id = s.trip_id
+        GROUP BY t.id
+        ORDER BY t.created_at DESC
+      `).all();
+    }
+
+    res.json({ trips });
+  } catch (err) {
+    console.error('Error fetching trips:', err);
+    res.status(500).json({ error: 'Failed to fetch trips' });
+  }
 });
 
 app.get('/api/trips/:id', (req, res) => {
-  const trip = db.prepare('SELECT * FROM trips WHERE id = ?').get(req.params.id);
-  if (!trip) return res.status(404).json({ error: 'Trip not found' });
+  try {
+    const trip = db.prepare('SELECT * FROM trips WHERE id = ?').get(req.params.id);
+    if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
-  // Get Stops ordered with city details
-  const stops = db.prepare(`
-    SELECT s.*, c.name as city_name, c.country as city_country, c.region as city_region, 
-           c.image_url as city_image, c.avg_cost_per_day, c.climate
-    FROM stops s
-    JOIN cities c ON s.city_id = c.id
-    WHERE s.trip_id = ?
-    ORDER BY s.order_index ASC
-  `).all(req.params.id);
+    // Get Stops ordered with city details
+    const stops = db.prepare(`
+      SELECT s.*, c.name as city_name, c.country as city_country, c.region as city_region, 
+             c.image_url as city_image, c.avg_cost_per_day, c.climate
+      FROM stops s
+      JOIN cities c ON s.city_id = c.id
+      WHERE s.trip_id = ?
+      ORDER BY s.order_index ASC
+    `).all(req.params.id);
 
-  // Get Stop Activities
-  for (const stop of stops) {
-    stop.activities = db.prepare(`
-      SELECT sa.*, a.name as original_name, a.category, a.duration_hours, a.rating, a.image_url
-      FROM stop_activities sa
-      LEFT JOIN activities a ON sa.activity_id = a.id
-      WHERE sa.stop_id = ?
-      ORDER BY sa.scheduled_date ASC, sa.scheduled_time ASC
-    `).all(stop.id);
-  }
-
-  // Get Expenses
-  const expenses = db.prepare('SELECT * FROM expenses WHERE trip_id = ? ORDER BY date DESC').all(req.params.id);
-
-  // Get Cost Summary
-  const expenseTotal = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
-  const stayTotal = stops.reduce((sum, s) => sum + Number(s.stay_cost || 0), 0);
-  const activityTotal = stops.reduce((sum, s) => {
-    return sum + s.activities.reduce((actSum, a) => actSum + Number(a.cost || 0), 0);
-  }, 0);
-
-  res.json({
-    trip: {
-      ...trip,
-      stops,
-      expenses,
-      summary: {
-        totalExpenseLogged: expenseTotal,
-        estimatedStay: stayTotal,
-        estimatedActivities: activityTotal,
-        totalEstimated: stayTotal + activityTotal
-      }
+    // Get Stop Activities
+    for (const stop of stops) {
+      stop.activities = db.prepare(`
+        SELECT sa.*, a.name as original_name, a.category, a.duration_hours, a.rating, a.image_url
+        FROM stop_activities sa
+        LEFT JOIN activities a ON sa.activity_id = a.id
+        WHERE sa.stop_id = ?
+        ORDER BY sa.scheduled_date ASC, sa.scheduled_time ASC
+      `).all(stop.id);
     }
-  });
+
+    // Get Expenses
+    const expenses = db.prepare('SELECT * FROM expenses WHERE trip_id = ? ORDER BY date DESC').all(req.params.id);
+
+    // Get Cost Summary
+    const expenseTotal = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+    const stayTotal = stops.reduce((sum, s) => sum + Number(s.stay_cost || 0), 0);
+    const activityTotal = stops.reduce((sum, s) => {
+      return sum + s.activities.reduce((actSum, a) => actSum + Number(a.cost || 0), 0);
+    }, 0);
+
+    res.json({
+      trip: {
+        ...trip,
+        stops,
+        expenses,
+        summary: {
+          totalExpenseLogged: expenseTotal,
+          estimatedStay: stayTotal,
+          estimatedActivities: activityTotal,
+          totalEstimated: stayTotal + activityTotal
+        }
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching trip details:', err);
+    res.status(500).json({ error: 'Failed to fetch trip details' });
+  }
 });
 
 app.post('/api/trips', (req, res) => {
-  const { user_id, title, description, start_date, end_date, total_budget, cover_image } = req.body;
-  if (!title || !start_date || !end_date) {
-    return res.status(400).json({ error: 'Title, start date, and end date are required' });
+  try {
+    let { user_id, title, description, start_date, end_date, total_budget, cover_image } = req.body;
+    if (!title || !start_date || !end_date) {
+      return res.status(400).json({ error: 'Title, start date, and end date are required' });
+    }
+
+    // Ensure user_id maps to a valid existing record in users table
+    let validUserId = Number(user_id) || 1;
+    const userRow = db.prepare('SELECT id FROM users WHERE id = ?').get(validUserId);
+    if (!userRow) {
+      const fallbackUser = db.prepare('SELECT id FROM users ORDER BY id ASC LIMIT 1').get();
+      validUserId = fallbackUser ? Number(fallbackUser.id) : 1;
+    }
+
+    const defaultCover = cover_image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80';
+    const result = db.prepare(`
+      INSERT INTO trips (user_id, title, description, start_date, end_date, total_budget, cover_image, is_public, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'Planning')
+    `).run(validUserId, title, description || '', start_date, end_date, total_budget || 2000, defaultCover);
+
+    const newTrip = db.prepare('SELECT * FROM trips WHERE id = ?').get(Number(result.lastInsertRowid));
+    res.status(201).json({ trip: newTrip });
+  } catch (err) {
+    console.error('Failed to create trip in database:', err);
+    res.status(500).json({ error: err.message || 'Database error creating trip' });
   }
-
-  const defaultCover = cover_image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80';
-  const result = db.prepare(`
-    INSERT INTO trips (user_id, title, description, start_date, end_date, total_budget, cover_image, is_public, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'Planning')
-  `).run(user_id || 1, title, description || '', start_date, end_date, total_budget || 2000, defaultCover);
-
-  const newTrip = db.prepare('SELECT * FROM trips WHERE id = ?').get(Number(result.lastInsertRowid));
-  res.status(201).json({ trip: newTrip });
 });
 
 app.put('/api/trips/:id', (req, res) => {
@@ -388,24 +428,32 @@ app.delete('/api/trips/:id', (req, res) => {
 });
 
 app.post('/api/trips/:id/copy', (req, res) => {
-  const original = db.prepare('SELECT * FROM trips WHERE id = ?').get(req.params.id);
-  if (!original) return res.status(404).json({ error: 'Trip not found' });
+  try {
+    const original = db.prepare('SELECT * FROM trips WHERE id = ?').get(req.params.id);
+    if (!original) return res.status(404).json({ error: 'Trip not found' });
 
-  const userId = req.body.userId || 1;
-  const copyResult = db.prepare(`
-    INSERT INTO trips (user_id, title, description, start_date, end_date, total_budget, cover_image, is_public, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'Planning')
-  `).run(
-    userId,
-    `Copy of ${original.title}`,
-    original.description,
-    original.start_date,
-    original.end_date,
-    original.total_budget,
-    original.cover_image
-  );
+    let userId = Number(req.body.userId) || 1;
+    const userRow = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+    if (!userRow) {
+      const fallbackUser = db.prepare('SELECT id FROM users ORDER BY id ASC LIMIT 1').get();
+      userId = fallbackUser ? Number(fallbackUser.id) : 1;
+    }
 
-  const newTripId = Number(copyResult.lastInsertRowid);
+    const copyResult = db.prepare(`
+      INSERT INTO trips (user_id, title, description, start_date, end_date, total_budget, cover_image, is_public, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'Planning')
+    `).run(
+      userId,
+      `Copy of ${original.title}`,
+      original.description,
+      original.start_date,
+      original.end_date,
+      original.total_budget,
+      original.cover_image
+    );
+
+    const newTripId = Number(copyResult.lastInsertRowid);
+
 
   // Copy stops
   const stops = db.prepare('SELECT * FROM stops WHERE trip_id = ?').all(original.id);
@@ -427,7 +475,12 @@ app.post('/api/trips/:id/copy', (req, res) => {
 
   const copiedTrip = db.prepare('SELECT * FROM trips WHERE id = ?').get(newTripId);
   res.status(201).json({ trip: copiedTrip });
+} catch (err) {
+  console.error('Error copying trip:', err);
+  res.status(500).json({ error: 'Failed to copy trip' });
+}
 });
+
 
 // --------------------------------------------------------------------------
 // Stops & Itinerary Builder Routes

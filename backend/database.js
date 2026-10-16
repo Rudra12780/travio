@@ -117,9 +117,18 @@ try {
 } catch (e) {}
 
 try {
-  db.exec(`ALTER TABLE trips ADD COLUMN is_published INTEGER DEFAULT 1;`);
-} catch (e) {}
+  const user1 = db.prepare('SELECT id FROM users WHERE id = 1').get();
+  if (!user1) {
+    db.prepare(`
+      INSERT OR IGNORE INTO users (id, name, email, password, role, bio, home_country, currency_pref)
+      VALUES (1, 'Panther Explorer', 'panther.explorer@trovio.com', 'password123', 'Traveler', 'Solo voyager & culture enthusiast wandering across royal frontiers and ancient heritage corridors.', 'India', 'USD')
+    `).run();
+  }
+} catch (e) {
+  console.warn('User 1 seed check note:', e.message);
+}
 
 console.log('✅ SQLite Database schema verified and initialized at:', dbPath);
 
 module.exports = db;
+

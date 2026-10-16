@@ -53,6 +53,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
     try {
       await api.removeFromWishlist(cityId, user.id || 1);
       setWishlist(prev => prev.filter(c => c.id !== cityId));
+      window.dispatchEvent(new CustomEvent('wishlist-updated'));
     } catch (err: any) {
       console.error(err);
     }
@@ -295,14 +296,24 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
             <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>Saved Wishlist Destinations</h3>
             <p style={{ fontSize: '13px', color: '#64748B' }}>Places you intend to visit on future journeys</p>
           </div>
-          <button
-            type="button"
-            className="nav-link"
-            style={{ color: '#0D9488', fontWeight: 700 }}
-            onClick={() => onNavigate('cities')}
-          >
-            + Explore More Cities
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              type="button"
+              className="nav-link"
+              style={{ color: '#E11D48', fontWeight: 700, background: '#FFF1F2', border: '1px solid #FECDD3' }}
+              onClick={() => onNavigate('saved-places')}
+            >
+              ❤️ Go to Saved Places Page
+            </button>
+            <button
+              type="button"
+              className="nav-link"
+              style={{ color: '#0D9488', fontWeight: 700 }}
+              onClick={() => onNavigate('cities')}
+            >
+              + Explore More Cities
+            </button>
+          </div>
         </div>
 
         {wishlist.length === 0 ? (

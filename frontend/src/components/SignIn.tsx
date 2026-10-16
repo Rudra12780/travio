@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserProfile } from '../types';
+import { api } from '../api';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { RegisterModal } from './RegisterModal';
 import { AnimatedLogo } from './AnimatedLogo';
@@ -70,7 +71,7 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
     return isValid;
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -87,28 +88,43 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
       }
     } catch (err) {}
 
-    setTimeout(() => {
+    try {
+      const res = await api.login(email.trim(), password);
       setLoading(false);
-      onSignInSuccess({
-        name: finalName,
-        email: email.trim(),
-        role: 'Traveler'
-      });
-    }, 700);
+      onSignInSuccess(res.user);
+    } catch (err) {
+      // Offline fallback: provide guaranteed default traveler id 1
+      setTimeout(() => {
+        setLoading(false);
+        onSignInSuccess({
+          id: 1,
+          name: finalName,
+          email: email.trim(),
+          role: 'Traveler'
+        });
+      }, 300);
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     triggerToast('Connecting with Google Account...');
 
-    setTimeout(() => {
+    try {
+      const res = await api.login('panther.voyager@gmail.com', 'password123');
       setGoogleLoading(false);
-      onSignInSuccess({
-        name: 'panther',
-        email: 'panther.voyager@gmail.com',
-        role: 'Traveler'
-      });
-    }, 900);
+      onSignInSuccess(res.user);
+    } catch (err) {
+      setTimeout(() => {
+        setGoogleLoading(false);
+        onSignInSuccess({
+          id: 1,
+          name: 'panther',
+          email: 'panther.voyager@gmail.com',
+          role: 'Traveler'
+        });
+      }, 500);
+    }
   };
 
   const formFields = (

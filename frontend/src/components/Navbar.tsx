@@ -19,6 +19,16 @@ export const Navbar: React.FC<Props> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [savedCount, setSavedCount] = useState<number>(0);
+
+  // Fetch real-time count of saved favorite places
+  const loadSavedCount = () => {
+    api.getWishlist(user.id || 1)
+      .then(res => {
+        setSavedCount(res.wishlist?.length || 0);
+      })
+      .catch(() => {});
+  };
 
   // Fetch real notifications sent by Admin or system
   const loadNotifications = () => {
@@ -40,8 +50,14 @@ export const Navbar: React.FC<Props> = ({
 
   useEffect(() => {
     loadNotifications();
+    loadSavedCount();
     const interval = setInterval(loadNotifications, 8000); // Polling for live admin messages
-    return () => clearInterval(interval);
+    const handleWishlistUpdated = () => loadSavedCount();
+    window.addEventListener('wishlist-updated', handleWishlistUpdated);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('wishlist-updated', handleWishlistUpdated);
+    };
   }, [user.id]);
 
   const dismissNotification = async (id: number) => {
@@ -73,21 +89,6 @@ export const Navbar: React.FC<Props> = ({
           {/* Navigation Pill Links - Clean, Spacious, Never Cut Off */}
           <nav className="dash-nav-links-wrapper" aria-label="Main Navigation">
             <ul className="nav-menu">
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
-                  onClick={() => onTabChange('dashboard')}
-                  title="Dashboard Overview"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                  </svg>
-                  <span>Dashboard</span>
-                </button>
-              </li>
-
               <li>
                 <button
                   type="button"
@@ -132,7 +133,6 @@ export const Navbar: React.FC<Props> = ({
                     <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
                   </svg>
                   <span>Live Trip</span>
-                  <span className="live-badge">LIVE</span>
                 </button>
               </li>
 
@@ -163,6 +163,20 @@ export const Navbar: React.FC<Props> = ({
                     <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
                   </svg>
                   <span>Activities</span>
+                </button>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  className={`nav-link ${activeTab === 'saved-places' ? 'active' : ''}`}
+                  onClick={() => onTabChange('saved-places')}
+                  title="Saved Places"
+                >
+                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span>Saved Places</span>
                 </button>
               </li>
 

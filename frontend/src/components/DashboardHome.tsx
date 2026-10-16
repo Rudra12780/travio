@@ -549,11 +549,11 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
           </svg>
         </div>
 
-        {/* Wishlist Button */}
+        {/* Saved Places / Wishlist Button */}
         <div
           className="quick-action-tile fav"
-          title="View Wishlist destinations & bookmarks"
-          onClick={() => setShowWishlist(true)}
+          title="View Saved Places & Favourites"
+          onClick={() => onNavigate('saved-places')}
           style={{ cursor: 'pointer' }}
         >
           <svg className="tile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

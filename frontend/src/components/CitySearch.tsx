@@ -33,24 +33,92 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
         setLoading(false);
       });
 
-    api.getTrips(userId).then(res => {
-      setTrips(res.trips);
-      if (res.trips.length > 0) setSelectedTripId(res.trips[0].id);
-    });
+    const loadTripsAndWishlist = () => {
+      api.getTrips(userId).then(res => {
+        let list = res.trips || [];
+        if (list.length === 0) {
+          api.getTrips(3).then(fRes => {
+            if (fRes.trips && fRes.trips.length > 0) {
+              setTrips(fRes.trips);
+              setSelectedTripId(fRes.trips[0].id);
+            }
+          }).catch(() => {});
+        } else {
+          setTrips(list);
+          if (list.length > 0) setSelectedTripId(list[0].id);
+        }
+      }).catch(() => {});
 
-    api.getWishlist(userId).then(res => {
-      setWishlistCityIds(res.wishlist.map(c => c.id));
-    });
+      api.getWishlist(userId).then(res => {
+        if (res.wishlist) {
+          setWishlistCityIds(res.wishlist.map(c => c.id));
+        }
+      }).catch(() => {});
+    };
+
+    loadTripsAndWishlist();
+    window.addEventListener('wishlist-updated', loadTripsAndWishlist);
+    return () => window.removeEventListener('wishlist-updated', loadTripsAndWishlist);
   }, [searchTerm, regionFilter, userId]);
 
-  const toggleWishlist = async (cityId: number) => {
-    if (wishlistCityIds.includes(cityId)) {
-      await api.removeFromWishlist(cityId, userId);
+  const toggleWishlist = async (cityId: number, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const isCurrentlyWishlisted = wishlistCityIds.includes(cityId);
+
+    // Instant optimistic update
+    if (isCurrentlyWishlisted) {
       setWishlistCityIds(prev => prev.filter(id => id !== cityId));
     } else {
-      await api.addToWishlist(cityId, userId);
       setWishlistCityIds(prev => [...prev, cityId]);
     }
+    window.dispatchEvent(new CustomEvent('wishlist-updated'));
+
+    try {
+      if (isCurrentlyWishlisted) {
+        await api.removeFromWishlist(cityId, userId);
+      } else {
+        await api.addToWishlist(cityId, userId);
+      }
+    } catch (err) {
+      console.error('Error toggling wishlist:', err);
+      // Revert if error
+      if (isCurrentlyWishlisted) {
+        setWishlistCityIds(prev => [...prev, cityId]);
+      } else {
+        setWishlistCityIds(prev => prev.filter(id => id !== cityId));
+      }
+      window.dispatchEvent(new CustomEvent('wishlist-updated'));
+    }
+  };
+
+  const openAddTripModal = (city: City) => {
+    setTargetCityForTrip(city);
+    const today = new Date();
+    const plus3 = new Date(today);
+    plus3.setDate(today.getDate() + 3);
+    setArrivalDate(today.toISOString().split('T')[0]);
+    setDepartureDate(plus3.toISOString().split('T')[0]);
+
+    // Ensure trips are fresh
+    api.getTrips(userId).then(res => {
+      let list = res.trips || [];
+      if (list.length === 0) {
+        api.getTrips(3).then(fRes => {
+          if (fRes.trips && fRes.trips.length > 0) {
+            setTrips(fRes.trips);
+            setSelectedTripId(fRes.trips[0].id);
+          }
+        }).catch(() => {});
+      } else {
+        setTrips(list);
+        if (!selectedTripId || !list.some(t => t.id === selectedTripId)) {
+          setSelectedTripId(list[0].id);
+        }
+      }
+    }).catch(() => {});
   };
 
   const handleAddCityToTrip = async (e: React.FormEvent) => {
@@ -146,26 +214,28 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
 
                   <button
                     type="button"
-                    onClick={() => toggleWishlist(city.id)}
+                    onClick={(e) => toggleWishlist(city.id, e)}
                     title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
                     style={{
                       position: 'absolute',
                       top: '12px',
                       right: '12px',
-                      width: '36px',
-                      height: '36px',
+                      width: '38px',
+                      height: '38px',
                       borderRadius: '50%',
-                      background: '#FFFFFF',
-                      border: 'none',
+                      background: isWishlisted ? '#FFF1F2' : '#FFFFFF',
+                      border: isWishlisted ? '1.5px solid #FECDD3' : '1px solid #E2E8F0',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      color: isWishlisted ? '#E11D48' : '#94A3B8'
+                      color: isWishlisted ? '#E11D48' : '#94A3B8',
+                      transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                      transform: isWishlisted ? 'scale(1.08)' : 'scale(1)'
                     }}
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? '#E11D48' : 'none'} stroke={isWishlisted ? '#E11D48' : '#94A3B8'} strokeWidth="2.2">
                       <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                     </svg>
                   </button>
@@ -233,7 +303,7 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
 
                     <button
                       type="button"
-                      onClick={() => setTargetCityForTrip(city)}
+                      onClick={() => openAddTripModal(city)}
                       style={{
                         background: '#0D9488',
                         color: '#FFFFFF',
@@ -261,75 +331,165 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
       {/* Add City to Trip Modal */}
       {targetCityForTrip && (
         <div className="modal-overlay" onClick={() => setTargetCityForTrip(null)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-card" style={{ maxWidth: '480px', padding: '28px' }} onClick={(e) => e.stopPropagation()}>
             <button type="button" className="modal-close-btn" onClick={() => setTargetCityForTrip(null)}>✕</button>
-            <h2 className="modal-title">Add {targetCityForTrip.name} to Trip</h2>
-            <p className="modal-desc">
+            <h2 className="modal-title" style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '0 0 4px 0' }}>
+              Add {targetCityForTrip.name} to Trip
+            </h2>
+            <p className="modal-desc" style={{ fontSize: '13px', color: '#64748B', margin: '0 0 18px 0' }}>
               Append this destination to your multi-city voyage schedule.
             </p>
 
             <form onSubmit={handleAddCityToTrip} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div className="form-group">
-                <label className="form-label">CHOOSE TRIP</label>
-                <div className="input-container">
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  CHOOSE TRIP
+                </label>
+                {trips.length === 0 ? (
+                  <div style={{ padding: '12px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #CBD5E1', fontSize: '13px', color: '#64748B' }}>
+                    <p style={{ margin: '0 0 8px 0' }}>No trips found for this profile.</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTargetCityForTrip(null);
+                        onNavigate('my-trips');
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        background: '#0D9488',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + Create a Trip in My Trips
+                    </button>
+                  </div>
+                ) : (
                   <select
-                    className="form-input"
                     value={selectedTripId}
                     onChange={(e) => setSelectedTripId(Number(e.target.value))}
                     required
+                    style={{
+                      width: '100%',
+                      height: '46px',
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      border: '1.5px solid #CBD5E1',
+                      fontSize: '13.5px',
+                      fontWeight: 600,
+                      color: '#0F172A',
+                      background: '#FFFFFF',
+                      cursor: 'pointer',
+                      outline: 'none',
+                      display: 'block'
+                    }}
                   >
                     {trips.map(t => (
-                      <option key={t.id} value={t.id}>{t.title}</option>
+                      <option key={t.id} value={t.id} style={{ color: '#0F172A' }}>
+                        {t.title} ({t.start_date || 'Upcoming'})
+                      </option>
                     ))}
                   </select>
-                </div>
+                )}
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div className="form-group">
-                  <label className="form-label">ARRIVAL</label>
-                  <div className="input-container">
-                    <input
-                      type="date"
-                      className="form-input"
-                      value={arrivalDate}
-                      onChange={(e) => setArrivalDate(e.target.value)}
-                      required
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                    ARRIVAL
+                  </label>
+                  <input
+                    type="date"
+                    value={arrivalDate}
+                    onChange={(e) => setArrivalDate(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      height: '44px',
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      border: '1.5px solid #CBD5E1',
+                      fontSize: '13px',
+                      color: '#0F172A',
+                      outline: 'none',
+                      background: '#FFFFFF'
+                    }}
+                  />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">DEPARTURE</label>
-                  <div className="input-container">
-                    <input
-                      type="date"
-                      className="form-input"
-                      value={departureDate}
-                      onChange={(e) => setDepartureDate(e.target.value)}
-                      required
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                    DEPARTURE
+                  </label>
+                  <input
+                    type="date"
+                    value={departureDate}
+                    onChange={(e) => setDepartureDate(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      height: '44px',
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      border: '1.5px solid #CBD5E1',
+                      fontSize: '13px',
+                      color: '#0F172A',
+                      outline: 'none',
+                      background: '#FFFFFF'
+                    }}
+                  />
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">TRANSIT TO {targetCityForTrip.name.toUpperCase()}</label>
-                <div className="input-container">
-                  <select
-                    className="form-input"
-                    value={transitMode}
-                    onChange={(e) => setTransitMode(e.target.value)}
-                  >
-                    <option value="Flight">✈️ Flight</option>
-                    <option value="Car">🚗 Chauffeured Sedan</option>
-                    <option value="Train">🚆 Scenic Train</option>
-                    <option value="Bus">🚌 Luxury Coach</option>
-                    <option value="Boat">⛵ Ferry / Cruise</option>
-                  </select>
-                </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  TRANSIT TO {targetCityForTrip.name.toUpperCase()}
+                </label>
+                <select
+                  value={transitMode}
+                  onChange={(e) => setTransitMode(e.target.value)}
+                  style={{
+                    width: '100%',
+                    height: '46px',
+                    padding: '8px 12px',
+                    borderRadius: '10px',
+                    border: '1.5px solid #CBD5E1',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    color: '#0F172A',
+                    background: '#FFFFFF',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    display: 'block'
+                  }}
+                >
+                  <option value="Flight">✈️ Flight</option>
+                  <option value="Car">🚗 Chauffeured Sedan</option>
+                  <option value="Train">🚆 Scenic Train</option>
+                  <option value="Bus">🚌 Luxury Coach</option>
+                  <option value="Boat">⛵ Ferry / Cruise</option>
+                </select>
               </div>
 
-              <button type="submit" className="btn-submit" style={{ marginTop: '8px' }}>
+              <button
+                type="submit"
+                disabled={trips.length === 0}
+                style={{
+                  marginTop: '8px',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  fontSize: '14px',
+                  fontWeight: 800,
+                  cursor: trips.length === 0 ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)'
+                }}
+              >
                 <span>Append Stop to Itinerary</span>
               </button>
             </form>

@@ -48,7 +48,7 @@ export const CreateTripModal: React.FC<Props> = ({ isOpen, userId = 1, onClose, 
 
     try {
       const res = await api.createTrip({
-        user_id: userId,
+        user_id: Number(userId) || 1,
         title: title.trim(),
         description: `Voyage to ${selectedPlace}. Includes curated stops and personalized activities.`,
         start_date: startDate,
@@ -56,6 +56,28 @@ export const CreateTripModal: React.FC<Props> = ({ isOpen, userId = 1, onClose, 
         total_budget: Number(totalBudget) || 2000,
         cover_image: coverImage
       });
+
+      // Pre-seed the first city stop if a recognized destination city is matched
+      try {
+        const rawPlace = selectedPlace.split(',')[0].trim().toLowerCase();
+        const citiesRes = await api.getCities();
+        const matchedCity = citiesRes.cities.find(c => 
+          c.name.toLowerCase() === rawPlace ||
+          rawPlace.includes(c.name.toLowerCase()) ||
+          c.name.toLowerCase().includes(rawPlace)
+        );
+        if (matchedCity && res.trip && res.trip.id) {
+          await api.addStop(res.trip.id, {
+            city_id: matchedCity.id,
+            start_date: startDate,
+            end_date: endDate,
+            transit_mode: 'Flight',
+            stay_cost: Math.round((Number(totalBudget) || 2000) * 0.25)
+          });
+        }
+      } catch (stopErr) {
+        console.warn('Auto stop attachment notice:', stopErr);
+      }
 
       setLoading(false);
       onTripCreated(res.trip);

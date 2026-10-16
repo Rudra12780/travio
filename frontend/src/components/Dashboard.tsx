@@ -14,6 +14,7 @@ import { CommunityTab } from './CommunityTab';
 import { AdminDashboard } from './AdminDashboard';
 import { CreateTripModal } from './CreateTripModal';
 import { SharedTripModal } from './SharedTripModal';
+import { SavedPlaces } from './SavedPlaces';
 
 interface Props {
   user: UserProfile;
@@ -164,6 +165,14 @@ export const Dashboard: React.FC<Props> = ({
           <ActivitySearch
             userId={user.id || 1}
             onNavigate={handleNavigate}
+          />
+        )}
+
+        {activeTab === 'saved-places' && (
+          <SavedPlaces
+            userId={user.id || 1}
+            onNavigate={handleNavigate}
+            onPlanTripClick={() => setShowCreateModal(true)}
           />
         )}
 

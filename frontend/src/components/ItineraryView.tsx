@@ -17,44 +17,172 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
   const [selectedGroup, setSelectedGroup] = useState('Default');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedSort, setSelectedSort] = useState('Default');
+  const [allUserTrips, setAllUserTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (tripId) {
-      api.getTrip(tripId).then(res => {
-        setTrip(res.trip);
-        setLoading(false);
-      }).catch(console.error);
-    } else {
-      api.getTrips(userId).then(res => {
-        if (res.trips.length > 0) {
-          api.getTrip(res.trips[0].id).then(tRes => {
-            setTrip(tRes.trip);
-            setLoading(false);
-          });
+    let isMounted = true;
+    setLoading(true);
+
+    const loadData = async () => {
+      try {
+        if (tripId) {
+          const res = await api.getTrip(tripId);
+          if (isMounted && res.trip) {
+            setTrip(res.trip);
+          }
+          const userTripsRes = await api.getTrips(userId);
+          if (isMounted) setAllUserTrips(userTripsRes.trips || []);
+        } else {
+          // If no specific tripId (e.g. clicked Live Trip in navbar)
+          let res = await api.getTrips(userId).catch(() => ({ trips: [] }));
+          let list = res.trips || [];
+
+          // If current user has no trips yet, fall back to available trips in database
+          if (list.length === 0) {
+            const fallbackRes = await api.getTrips(3).catch(() => ({ trips: [] }));
+            list = fallbackRes.trips || [];
+          }
+
+          if (isMounted) setAllUserTrips(list);
+
+          if (list.length > 0) {
+            const target = list.find((t: Trip) => t.status === 'Active') || list[0];
+            const detailRes = await api.getTrip(target.id);
+            if (isMounted && detailRes.trip) {
+              setTrip(detailRes.trip);
+            }
+          }
         }
-      });
-    }
+      } catch (err) {
+        console.error('Failed to load itinerary:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadData();
+    return () => { isMounted = false; };
   }, [tripId, userId]);
 
-  if (loading || !trip) {
+  if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '60px 0' }}>
+      <div style={{ textAlign: 'center', padding: '80px 0' }}>
         <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#0D9488' }} />
-        <p>Loading full voyage itinerary...</p>
+        <p style={{ color: '#64748B', fontSize: '14px', fontWeight: 600 }}>Loading voyage telemetry & itinerary...</p>
+      </div>
+    );
+  }
+
+  if (!trip) {
+    return (
+      <div style={{
+        marginTop: '28px',
+        background: '#FFFFFF',
+        borderRadius: '24px',
+        border: '1px solid #E2E8F0',
+        padding: '54px 32px',
+        textAlign: 'center',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+      }}>
+        <div style={{
+          width: '64px',
+          height: '64px',
+          borderRadius: '20px',
+          background: '#F0FDFA',
+          color: '#0D9488',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '28px',
+          marginBottom: '18px'
+        }}>
+          🛰️
+        </div>
+        <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A', margin: '0 0 8px 0' }}>
+          No Active Voyage Found
+        </h2>
+        <p style={{ fontSize: '14px', color: '#64748B', maxWidth: '460px', margin: '0 auto 24px', lineHeight: 1.6 }}>
+          You don't currently have an expedition scheduled. Plan a new voyage or pick a destination to initiate live satellite telemetry tracking.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <button
+            type="button"
+            onClick={() => onNavigate('my-trips')}
+            style={{
+              padding: '12px 24px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+              color: '#FFFFFF',
+              border: 'none',
+              fontSize: '13.5px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)'
+            }}
+          >
+            ✈️ Go to My Trips
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('cities')}
+            style={{
+              padding: '12px 20px',
+              borderRadius: '12px',
+              background: '#F8FAFC',
+              color: '#334155',
+              border: '1px solid #CBD5E1',
+              fontSize: '13.5px',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            Explore Destinations
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div style={{ marginTop: '20px' }}>
-      {/* Screen 9 Wireframe Header & Search */}
-      <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', marginBottom: '4px' }}>
-        Itenary View Screenn with budget section (Screen 9)
-      </h2>
-      <p style={{ fontSize: '13.5px', color: '#64748B', margin: '0 0 14px 0' }}>
-        Itinerary for a selected place with flow from physical activities to expenses
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
+        <div>
+          <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', marginBottom: '4px' }}>
+            Live Voyage Telemetry & Itinerary
+          </h2>
+          <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
+            Real-time itinerary tracking, waypoint schedules, and expense telemetries
+          </p>
+        </div>
+
+        {allUserTrips.length > 1 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#64748B' }}>Select Voyage:</span>
+            <select
+              value={trip.id}
+              onChange={(e) => {
+                const targetId = Number(e.target.value);
+                api.getTrip(targetId).then(r => { if (r.trip) setTrip(r.trip); });
+              }}
+              style={{
+                padding: '7px 12px',
+                borderRadius: '10px',
+                border: '1.5px solid #CBD5E1',
+                fontSize: '13px',
+                fontWeight: 700,
+                color: '#0F172A',
+                background: '#FFFFFF',
+                cursor: 'pointer'
+              }}
+            >
+              {allUserTrips.map(t => (
+                <option key={t.id} value={t.id}>{t.title} ({t.status})</option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
 
       <GlobalSearchBar
         placeholder="Search bar ....."

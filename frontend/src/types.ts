@@ -16,6 +16,7 @@ export type ActiveTab =
   | 'itinerary-view' 
   | 'cities' 
   | 'activities' 
+  | 'saved-places'
   | 'expenses' 
   | 'calendar' 
   | 'live-trip' 
@@ -34,6 +35,7 @@ export interface City {
   climate: string;
   description: string;
   image_url: string;
+  wishlist_id?: number;
 }
 
 export interface Activity {

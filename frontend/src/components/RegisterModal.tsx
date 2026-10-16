@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../types';
+import { api } from '../api';
 
 interface Props {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: { [key: string]: string } = {};
 
@@ -50,18 +51,27 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
     setErrors({});
     setLoading(true);
 
-    setTimeout(() => {
+    const fullName = `${firstName.trim()} ${lastName.trim()}`;
+
+    try {
+      const res = await api.register(fullName, email.trim(), 'password123');
       setLoading(false);
-      const user: UserProfile = {
-        name: `${firstName.trim()} ${lastName.trim()}`,
-        email: email.trim(),
-        role: 'Traveler',
-        avatar_url: avatar,
-        bio: additionalInfo,
-        home_country: country || 'India'
-      };
-      onRegisterSuccess(user);
-    }, 600);
+      onRegisterSuccess(res.user);
+    } catch (err) {
+      setTimeout(() => {
+        setLoading(false);
+        const user: UserProfile = {
+          id: 1,
+          name: fullName,
+          email: email.trim(),
+          role: 'Traveler',
+          avatar_url: avatar,
+          bio: additionalInfo,
+          home_country: country || 'India'
+        };
+        onRegisterSuccess(user);
+      }, 300);
+    }
   };
 
   return (

@@ -256,58 +256,6 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
               </svg>
             </button>
           </form>
-
-          {/* 3D Immersive Gyroscope Voyager Orb Showcase */}
-          <div className="spatial-3d-hero-orbit-stage" aria-label="3D Immersive Voyager Radar">
-            <div className="spatial-gyro-ring gyro-ring-outer" />
-            <div className="spatial-gyro-ring gyro-ring-inner" />
-            
-            {/* Left 3D Floating Waypoint Card */}
-            <div className="spatial-floating-card card-left">
-              <span style={{ fontSize: '18px' }}>🗾</span>
-              <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <span style={{ fontSize: '10px', color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.8px' }}>3D WAYPOINT</span>
-                <div style={{ fontWeight: 800 }}>Tokyo • Kyoto Corridor</div>
-              </div>
-            </div>
-
-            {/* Central 3D Pulsing Gyro Core */}
-            <div className="gyro-core-sphere" title="Spatial Voyager Core (Click anywhere to trigger 3D Telemetry)">
-              <span>🧭</span>
-            </div>
-
-            {/* Right 3D Floating Waypoint Card */}
-            <div className="spatial-floating-card card-right">
-              <span style={{ fontSize: '18px' }}>🏔️</span>
-              <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <span style={{ fontSize: '10px', color: '#FF385C', textTransform: 'uppercase', letterSpacing: '0.8px' }}>3D SATELLITE</span>
-                <div style={{ fontWeight: 800 }}>Swiss Alpine Ridge</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Social Proof & Hero Highlights */}
-          <div className="hero-trust-bar">
-            <div className="trust-item">
-              <div className="star-row">★★★★★</div>
-              <span className="trust-label"><strong>4.96 / 5.0</strong> from 34,000+ Voyagers</span>
-            </div>
-            <div className="trust-item-divider" />
-            <div className="trust-item">
-              <span className="trust-icon-badge">🌍</span>
-              <span className="trust-label"><strong>120+ Countries</strong> Mapped & Verified</span>
-            </div>
-            <div className="trust-item-divider" />
-            <div className="trust-item">
-              <span className="trust-icon-badge">🛰️</span>
-              <span className="trust-label"><strong>Live Telemetry Radar</strong> Flight & Road Channels</span>
-            </div>
-            <div className="trust-item-divider" />
-            <div className="trust-item">
-              <span className="trust-icon-badge">🛡️</span>
-              <span className="trust-label"><strong>Zero Admin Overhead</strong> 100% Traveler Focused</span>
-            </div>
-          </div>
         </div>
       </section>
 
