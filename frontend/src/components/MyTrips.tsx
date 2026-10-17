@@ -78,17 +78,18 @@ export const MyTrips: React.FC<Props> = ({
       key={trip.id}
       style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         overflow: 'hidden',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+        boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+        transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+        backdropFilter: 'blur(12px)'
       }}
     >
       {/* Cover Image & Status Badge */}
-      <div style={{ position: 'relative', height: '160px' }}>
+      <div style={{ position: 'relative', height: '170px' }}>
         <img
           src={trip.cover_image}
           alt={trip.title}
@@ -98,9 +99,9 @@ export const MyTrips: React.FC<Props> = ({
           position: 'absolute',
           top: '12px',
           left: '12px',
-          background: 'rgba(17, 24, 39, 0.75)',
-          backdropFilter: 'blur(4px)',
-          color: '#FFFFFF',
+          background: 'rgba(32, 63, 112, 0.85)',
+          backdropFilter: 'blur(6px)',
+          color: '#FAF9FC',
           fontSize: '11px',
           fontWeight: 700,
           padding: '4px 10px',
@@ -113,49 +114,50 @@ export const MyTrips: React.FC<Props> = ({
           position: 'absolute',
           top: '12px',
           right: '12px',
-          background: trip.status === 'Active' ? '#EC4899' : trip.status === 'Planning' ? '#0D9488' : '#64748B',
+          background: trip.status === 'Active' ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : trip.status === 'Planning' ? 'linear-gradient(135deg, #A678BD 0%, #F3AFCF 100%)' : '#203F70',
           color: '#FFFFFF',
           fontSize: '10.5px',
           fontWeight: 800,
-          padding: '4px 10px',
+          padding: '4px 12px',
           borderRadius: '9999px',
-          textTransform: 'uppercase'
+          textTransform: 'uppercase',
+          boxShadow: '0 2px 8px rgba(32, 63, 112, 0.15)'
         }}>
           {trip.status}
         </span>
       </div>
 
-      {/* Content: Short Overview of the Trip (Screen 6) */}
-      <div style={{ padding: '18px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#111827', marginBottom: '6px' }}>
+      {/* Content: Short Overview of the Trip */}
+      <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', marginBottom: '6px' }}>
           {trip.title}
         </h3>
         <p style={{
-          fontSize: '12.5px',
-          color: '#64748B',
-          lineHeight: '1.45',
+          fontSize: '13px',
+          color: '#777584',
+          lineHeight: '1.48',
           marginBottom: '14px',
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden'
         }}>
-          {trip.description || 'Short Overview of the Trip - Multi-city scheduled route, verified hotel stays, and activity schedule.'}
+          {trip.description || 'Multi-city scheduled route, verified lodging stays, and custom activity experiences.'}
         </p>
 
         {/* Date and Budget Row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#475569', marginBottom: '14px', background: '#F8FAFC', padding: '10px 12px', borderRadius: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#777584', marginBottom: '14px', background: '#FAF9FC', border: '1px solid #E8E2F0', padding: '10px 14px', borderRadius: '12px' }}>
           <span>📅 {trip.start_date} → {trip.end_date}</span>
-          <span style={{ fontWeight: 700, color: '#0F172A' }}>Budget: ${trip.total_budget}</span>
+          <span style={{ fontWeight: 800, color: '#292833' }}>Budget: ${trip.total_budget}</span>
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', borderTop: '1px solid #F1F5F9', paddingTop: '12px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', borderTop: '1px solid #E8E2F0', paddingTop: '14px' }}>
           <button
             type="button"
             className="btn-plan-budget"
             onClick={() => onNavigate('itinerary-builder', trip.id)}
-            style={{ flex: 1, padding: '8px 12px', fontSize: '12.5px', justifyContent: 'center' }}
+            style={{ flex: 1, padding: '9px 14px', fontSize: '12.5px', justifyContent: 'center', background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 50%, #F3AFCF 100%)', color: '#FFFFFF', fontWeight: 800, border: 'none', borderRadius: '12px', boxShadow: '0 4px 14px rgba(129, 120, 232, 0.35)' }}
           >
             <span>Edit Itinerary</span>
           </button>
@@ -164,9 +166,9 @@ export const MyTrips: React.FC<Props> = ({
             type="button"
             className="btn-explore-packages"
             onClick={() => onNavigate('itinerary-view', trip.id)}
-            style={{ padding: '8px 12px', fontSize: '12.5px' }}
+            style={{ padding: '9px 14px', fontSize: '12.5px', background: '#FAF9FC', color: '#203F70', border: '1.5px solid #E8E2F0', borderRadius: '12px', fontWeight: 700 }}
           >
-            <span>View Timeline</span>
+            <span>Timeline</span>
           </button>
 
           <button
@@ -176,7 +178,7 @@ export const MyTrips: React.FC<Props> = ({
             style={{
               padding: '8px 12px',
               borderRadius: '999px',
-              border: '1px solid #CBD5E1',
+              border: '1.5px solid #E8E2F0',
               background: '#FFFFFF',
               cursor: 'pointer'
             }}
@@ -191,7 +193,7 @@ export const MyTrips: React.FC<Props> = ({
             style={{
               padding: '8px 12px',
               borderRadius: '999px',
-              border: '1px solid #FECACA',
+              border: '1px solid #FEE2E2',
               background: '#FEF2F2',
               color: '#EF4444',
               cursor: 'pointer'
@@ -209,11 +211,11 @@ export const MyTrips: React.FC<Props> = ({
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
         <div>
-          <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px' }}>
-            User Trip Listing (Screen 6)
+          <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px' }}>
+            My Trips & Expeditions
           </h2>
-          <p style={{ fontSize: '13.5px', color: '#64748B' }}>
-            Ongoing, up-coming, and completed expeditions overview
+          <p style={{ fontSize: '13.5px', color: '#777584' }}>
+            Ongoing, upcoming, and completed journeys tailored to your wanderlust
           </p>
         </div>
 

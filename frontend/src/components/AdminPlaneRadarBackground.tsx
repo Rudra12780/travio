@@ -40,11 +40,11 @@ export const AdminPlaneRadarBackground: React.FC<Props> = ({ theme = 'glass-ligh
     window.addEventListener('resize', handleResize);
 
     const isLight = theme === 'glass-light';
-    const primaryColor = isLight ? '#0D9488' : '#2DD4BF';
-    const secondaryColor = isLight ? '#2563EB' : '#60A5FA';
-    const accentColor = isLight ? '#E11D48' : '#F43F5E';
-    const emeraldColor = isLight ? '#059669' : '#34D399';
-    const gridLineColor = isLight ? 'rgba(13, 148, 136, 0.05)' : 'rgba(45, 212, 191, 0.06)';
+    const primaryColor = isLight ? '#8178E8' : '#C39AD9';
+    const secondaryColor = isLight ? '#A678BD' : '#8178E8';
+    const accentColor = isLight ? '#F7BFD5' : '#F3AFCF';
+    const emeraldColor = isLight ? '#203F70' : '#8178E8';
+    const gridLineColor = isLight ? 'rgba(129, 120, 232, 0.05)' : 'rgba(195, 154, 217, 0.06)';
 
     // Passenger engine contrail particle buffer (smooth white vapor trails)
     const contrailParticles: ContrailParticle[] = [];
@@ -54,7 +54,7 @@ export const AdminPlaneRadarBackground: React.FC<Props> = ({ theme = 'glass-ligh
     const flightRoutes = [
       {
         id: 'GT-101',
-        callsign: 'Trovio 101 Heavy',
+        callsign: 'GlobalTrotter 101 Heavy',
         aircraft: 'Boeing 787-9 Dreamliner',
         origin: 'JFK (New York)',
         dest: 'LHR (London)',

@@ -79,7 +79,7 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
       <div className="modal-card" style={{ maxWidth: '580px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
         <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close modal">✕</button>
 
-        {/* Screen 2 Top Photo Circle */}
+        {/* Top Photo Circle */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
           <label style={{ cursor: 'pointer', position: 'relative' }}>
             <div style={{
@@ -87,12 +87,12 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               height: '80px',
               borderRadius: '50%',
               overflow: 'hidden',
-              border: '3px solid #0D9488',
-              boxShadow: '0 4px 12px rgba(13,148,136,0.25)',
+              border: '3px solid #8178E8',
+              boxShadow: '0 4px 14px rgba(129, 120, 232, 0.25)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: '#F1F5F9'
+              background: '#FAF9FC'
             }}>
               <img src={avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
@@ -100,7 +100,7 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               position: 'absolute',
               bottom: 0,
               right: 0,
-              background: '#0D9488',
+              background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
               color: '#FFFFFF',
               borderRadius: '50%',
               width: '24px',
@@ -108,20 +108,21 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '12px'
+              fontSize: '12px',
+              boxShadow: '0 2px 6px rgba(129, 120, 232, 0.3)'
             }}>
               📷
             </div>
             <input type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display: 'none' }} />
           </label>
-          <span style={{ fontSize: '11px', color: '#64748B', marginTop: '6px', fontWeight: 600 }}>Click to Upload Photo</span>
+          <span style={{ fontSize: '11px', color: '#777584', marginTop: '6px', fontWeight: 700 }}>Click to Upload Photo</span>
         </div>
 
-        <h2 className="modal-title" id="reg-title" style={{ textAlign: 'center', margin: '0 0 6px 0' }}>
-          Registration Screen (Screen 2)
+        <h2 className="modal-title" id="reg-title" style={{ textAlign: 'center', margin: '0 0 6px 0', color: '#292833', fontSize: '22px', fontWeight: 900 }}>
+          Create Voyager Account
         </h2>
-        <p className="modal-desc" style={{ textAlign: 'center', margin: '0 0 20px 0' }}>
-          Create your personalized traveler profile to design, schedule, and experience global voyages.
+        <p className="modal-desc" style={{ textAlign: 'center', margin: '0 0 20px 0', color: '#777584', fontSize: '13.5px' }}>
+          Join GlobalTrotter to craft luxury itineraries, track real-time telemetry, and discover world destinations.
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -160,7 +161,7 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               <input
                 type="email"
                 className="form-input"
-                placeholder="panther@trovio.com"
+                placeholder="panther@globaltrotter.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -205,7 +206,7 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
 
           {/* Additional Information textarea */}
           <div className="form-group">
-            <label className="form-label">ADDITIONAL INFORMATION ....</label>
+            <label className="form-label">TRAVEL PREFERENCES</label>
             <textarea
               className="form-input"
               rows={3}
@@ -220,9 +221,9 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
             type="submit"
             className="btn-plan-budget"
             disabled={loading}
-            style={{ width: '100%', marginTop: '8px', padding: '13px', fontSize: '15px' }}
+            style={{ width: '100%', marginTop: '8px', padding: '13px', fontSize: '15px', justifyContent: 'center' }}
           >
-            {loading ? 'Creating Voyager Account...' : 'Register Users'}
+            {loading ? 'Creating Voyager Account...' : 'Register Voyager Account'}
           </button>
         </form>
       </div>

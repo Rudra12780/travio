@@ -15,11 +15,14 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
   // Navigation & Modal State
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<CountryDossier | null>(null);
 
   // Search & Filter State
   const [countryFilter, setCountryFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchDate, setSearchDate] = useState('');
+  const [searchTravelers, setSearchTravelers] = useState('2 Travelers');
   const [selectedCurrency, setSelectedCurrency] = useState<'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR'>('USD');
 
   // Interactive Trip Cost Calculator State
@@ -32,7 +35,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // Active Feature Tab in Preview Section
-  const [activeFeatureTab, setActiveFeatureTab] = useState<'itinerary' | 'telemetry' | 'budget' | 'discovery' | 'community'>('itinerary');
+  const [activeFeatureTab, setActiveFeatureTab] = useState<'itinerary' | 'telemetry' | 'budget' | 'discovery'>('itinerary');
 
   // Filtered countries
   const filteredCountries = useMemo(() => {
@@ -105,25 +108,25 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
         <div className="landing-nav-container">
           {/* Brand Logo */}
           <div className="landing-brand-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <AnimatedLogo size="md" title="Trovio" badge="GlobalTrotters" />
+            <AnimatedLogo size="md" title="GlobalTrotter" badge="Pastel Dreamscape" />
           </div>
 
           {/* Desktop Nav Links */}
           <nav className="landing-desktop-nav" aria-label="Landing Navigation">
             <a href="#best-countries-section" className="nav-anchor-link">
-              <span className="nav-link-icon">🌍</span> Best Countries
-            </a>
-            <a href="#platform-features-section" className="nav-anchor-link">
-              <span className="nav-link-icon">⚡</span> Site Features
+              <span className="nav-link-icon">🌍</span> Destinations
             </a>
             <a href="#trip-calculator-section" className="nav-anchor-link">
-              <span className="nav-link-icon">🧮</span> Cost Calculator
+              <span className="nav-link-icon">✨</span> Plan Trip
+            </a>
+            <a href="#platform-features-section" className="nav-anchor-link">
+              <span className="nav-link-icon">🌐</span> Community & Hubs
             </a>
             <a href="#travel-dreamscape-section" className="nav-anchor-link">
-              <span className="nav-link-icon">✨</span> Dreamscape
+              <span className="nav-link-icon">🌸</span> Dreamscape
             </a>
             <a href="#faq-section" className="nav-anchor-link">
-              <span className="nav-link-icon">❓</span> FAQ
+              <span className="nav-link-icon">ℹ️</span> About & FAQ
             </a>
           </nav>
 
@@ -176,86 +179,178 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
       </header>
 
       {/* -------------------------------------------------------------------- */}
-      {/* 2. HERO SECTION */}
+      {/* 2. HERO SECTION - PASTEL DREAMSCAPE LUXURY TRAVEL UI */}
       {/* -------------------------------------------------------------------- */}
       <section className="landing-hero-section">
-        <div className="hero-content-wrapper">
-          {/* Trust Pill */}
-          <div className="hero-announcement-pill">
-            <span className="pulsing-live-dot" />
-            <span className="pill-text">AI Voyage Intelligence & Real-Time Satellite Telemetry</span>
-            <span className="pill-chip">v2.4 Live</span>
+        <div className="hero-two-col-container">
+          {/* Left Column: Intro Copy, Actions, Location/Date/Traveler Search */}
+          <div className="hero-left-col">
+            {/* Trust Pill */}
+            <div className="hero-announcement-pill">
+              <span className="pulsing-live-dot" />
+              <span className="pill-text">Luxury Travel Planning & Tailored Dreamscapes</span>
+              <span className="pill-chip">Pastel Dreamscape</span>
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="hero-main-title">
+              Discover Your <span className="gradient-text">Next Destination.</span>
+            </h1>
+
+            {/* Introductory Text */}
+            <p className="hero-subtext">
+              Immerse yourself in bespoke luxury itineraries, curated country dossiers, real-time voyager telemetry, 
+              and dynamic expense budgeting across ethereal turquoise lagoons, alpine heights, and cultural wonders.
+            </p>
+
+            {/* Action Buttons: Explore Today, Start Planning, Watch Video */}
+            <div className="hero-actions-row">
+              <button
+                type="button"
+                className="btn-hero-primary"
+                onClick={() => setShowRegisterModal(true)}
+                id="hero-explore-today-btn"
+              >
+                <span>Explore Today</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                className="btn-hero-secondary"
+                onClick={() => {
+                  const element = document.getElementById('trip-calculator-section');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                id="hero-start-planning-btn"
+              >
+                <span>Start Planning</span>
+                <span style={{ fontSize: '16px' }}>✨</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-hero-video"
+                onClick={() => setShowVideoModal(true)}
+                id="hero-watch-video-btn"
+              >
+                <span className="video-play-icon">▶</span>
+                <span>Watch Story</span>
+              </button>
+            </div>
+
+            {/* Interactive Location, Date, and Traveler Search Bar */}
+            <form className="hero-search-glass-card" onSubmit={handleHeroSearch}>
+              <div className="search-field-group">
+                <span className="field-icon">📍</span>
+                <div className="field-inputs">
+                  <label>LOCATION</label>
+                  <input
+                    type="text"
+                    placeholder="Where to? (e.g. Bora Bora, Japan, Swiss Alps...)"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="search-divider-vertical" />
+
+              <div className="search-field-group">
+                <span className="field-icon">📅</span>
+                <div className="field-inputs">
+                  <label>TRAVEL DATE</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Nov 2026 / Spring Bloom"
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="search-divider-vertical" />
+
+              <div className="search-field-group">
+                <span className="field-icon">👥</span>
+                <div className="field-inputs">
+                  <label>TRAVELERS</label>
+                  <select 
+                    value={searchTravelers} 
+                    onChange={(e) => {
+                      setSearchTravelers(e.target.value);
+                      if (e.target.value.includes('1')) setCalcTravelers(1);
+                      else if (e.target.value.includes('2')) setCalcTravelers(2);
+                      else if (e.target.value.includes('4')) setCalcTravelers(4);
+                    }}
+                  >
+                    <option value="1 Solo Explorer">1 Solo Explorer</option>
+                    <option value="2 Travelers">2 Travelers (Couple)</option>
+                    <option value="3-4 Group / Family">3-4 Group / Family</option>
+                    <option value="5+ Expedition Squad">5+ Expedition Squad</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="hero-search-submit-btn">
+                <span>Explore</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
+            </form>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="hero-main-title">
-            Explore the World’s <span className="gradient-text">Pinnacle Destinations</span> with Intelligent Planning
-          </h1>
+          {/* Right Column: Large Luxury Travel Destination Image */}
+          <div className="hero-right-col">
+            <div className="hero-3d-island-wrapper">
+              {/* Pastel Dreamscape Ambient Glow */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  inset: '-20px',
+                  background: 'radial-gradient(circle, rgba(247, 191, 213, 0.4) 0%, rgba(195, 154, 217, 0.25) 50%, transparent 70%)',
+                  filter: 'blur(30px)',
+                  borderRadius: '40px',
+                  zIndex: 0,
+                  pointerEvents: 'none'
+                }}
+              />
 
-          {/* Subtitle */}
-          <p className="hero-subtext">
-            Immerse yourself in in-depth country dossiers, craft multi-city itineraries with drag-and-drop ease, 
-            track live flight and road telemetry, and budget seamlessly with over 25,000+ fearless voyagers worldwide.
-          </p>
+              {/* Luxury Travel Hero Destination Image */}
+              <img
+                src="/pastel_dreamscape_hero.jpg"
+                alt="GlobalTrotter Pastel Dreamscape Luxury Travel"
+                className="floating-3d-island-img"
+                style={{ position: 'relative', zIndex: 1 }}
+              />
 
-          {/* Interactive Search Bar Box */}
-          <form className="hero-search-glass-card" onSubmit={handleHeroSearch}>
-            <div className="search-field-group">
-              <span className="field-icon">📍</span>
-              <div className="field-inputs">
-                <label>DESTINATION OR COUNTRY</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Japan, Switzerland, Italy, Bali..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+              {/* Floating Decorative Elements & Badges */}
+              <div className="floating-badge floating-cloud-badge">
+                <span>✈️</span>
+                <span>AI Voyage Telemetry</span>
+              </div>
+
+              <div className="floating-badge floating-airplane-badge">
+                <span>🌸</span>
+                <span>Pastel Dreamscape</span>
+              </div>
+
+              <div className="floating-badge floating-rating-badge">
+                <span>⭐ 4.98/5</span>
+                <span>35k+ Voyagers</span>
+              </div>
+
+              <div className="floating-badge floating-ocean-badge">
+                <span className="badge-dot-turquoise" style={{ background: '#F3AFCF', boxShadow: '0 0 10px #F3AFCF' }} />
+                <span>Luxury Travel UI</span>
               </div>
             </div>
-
-            <div className="search-divider-vertical" />
-
-            <div className="search-field-group">
-              <span className="field-icon">🌸</span>
-              <div className="field-inputs">
-                <label>SEASON / TIMING</label>
-                <select onChange={(e) => setSearchQuery(e.target.value)}>
-                  <option value="">Any Travel Season</option>
-                  <option value="Cherry Blossom">Spring Cherry Blossoms (Hanami)</option>
-                  <option value="Summer">Summer Sun & Alpine Trails</option>
-                  <option value="Autumn">Autumn Foliage (Koyo & Wine)</option>
-                  <option value="Northern Lights">Winter Snow & Northern Lights</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="search-divider-vertical" />
-
-            <div className="search-field-group">
-              <span className="field-icon">🎒</span>
-              <div className="field-inputs">
-                <label>VOYAGE STYLE</label>
-                <select onChange={(e) => {
-                  if (e.target.value) setCountryFilter(e.target.value);
-                }}>
-                  <option value="All">All Travel Styles</option>
-                  <option value="Europe">European Grand Culture</option>
-                  <option value="Asia">Asian Metropolises & Shrines</option>
-                  <option value="Islands">Tropical Island Escapes</option>
-                  <option value="Nordic">Nordic & Glacial Wilderness</option>
-                  <option value="Adventure">Outdoor Adrenaline & Trekking</option>
-                </select>
-              </div>
-            </div>
-
-            <button type="submit" className="hero-search-submit-btn">
-              <span>Explore Guides</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </button>
-          </form>
+          </div>
         </div>
       </section>
 
@@ -478,14 +573,6 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
             >
               <span className="feat-tab-icon">🏙️</span>
               <span>Destination Catalog</span>
-            </button>
-            <button
-              type="button"
-              className={`feat-tab-btn ${activeFeatureTab === 'community' ? 'active' : ''}`}
-              onClick={() => setActiveFeatureTab('community')}
-            >
-              <span className="feat-tab-icon">🤝</span>
-              <span>Voyager Community</span>
             </button>
           </div>
 
@@ -760,58 +847,6 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
                 </div>
               </div>
             )}
-
-            {/* 5. VOYAGER COMMUNITY */}
-            {activeFeatureTab === 'community' && (
-              <div className="feature-pane-layout">
-                <div className="feature-text-side">
-                  <span className="pane-badge">VOYAGER SOCIAL FEED</span>
-                  <h3>Connect, Share Journals, and Clone Proven Itineraries</h3>
-                  <p>
-                    Join an authentic community of global explorers. Browse public trip journals, view verified 
-                    traveler photographs, and clone complete multi-day itineraries into your own dashboard with 1-click.
-                  </p>
-                  <ul className="feature-bullets">
-                    <li><strong>Community Itinerary Cloning:</strong> Duplicate vetted travel plans directly into your planner.</li>
-                    <li><strong>Insider Recommendations:</strong> Real tips from travelers who just returned from the route.</li>
-                    <li><strong>Photo Journals & Reviews:</strong> High-resolution voyager albums with zero sponsored noise.</li>
-                  </ul>
-                  <button type="button" className="btn-feature-cta" onClick={() => setShowSignInModal(true)}>
-                    <span>Join Voyager Community</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-                  </button>
-                </div>
-
-                <div className="feature-visual-side">
-                  <div className="visual-mockup-card community-mockup">
-                    <div className="community-post-preview">
-                      <div className="post-author-row">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Elena" className="author-avatar" />
-                        <div>
-                          <strong>Elena Rostova</strong>
-                          <span>Completed 12-day Swiss Alpine Circuit • 3 hours ago</span>
-                        </div>
-                        <span className="badge-verified">Verified Voyager</span>
-                      </div>
-                      <p className="post-text">
-                        "The Glacier Express from St. Moritz to Zermatt was completely magical! 
-                        Following Trovio's recommendation to reserve seats in the panorama car on the left side made all the difference."
-                      </p>
-                      <div className="post-tags-row">
-                        <span>🏔️ Zermatt</span>
-                        <span>🫕 Fondue in Bern</span>
-                        <span>🚂 Swiss Travel Pass</span>
-                      </div>
-                      <div className="post-stats-row">
-                        <span>❤️ 412 Likes</span>
-                        <span>💬 64 Comments</span>
-                        <span className="clone-btn-inline">📋 128 Voyagers Cloned This Trip</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>
@@ -894,7 +929,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
                     onChange={(e) => setCalcDays(Number(e.target.value))}
                     className="calc-range-slider"
                     style={{
-                      background: `linear-gradient(to right, #0D9488 0%, #0D9488 ${((calcDays - 3) / 25) * 100}%, #E2E8F0 ${((calcDays - 3) / 25) * 100}%, #E2E8F0 100%)`
+                      background: `linear-gradient(to right, #8178E8 0%, #A678BD ${((calcDays - 3) / 25) * 100}%, #E8E2F0 ${((calcDays - 3) / 25) * 100}%, #E8E2F0 100%)`
                     }}
                     aria-label="Expedition Duration in Days"
                   />
@@ -1226,7 +1261,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
       <footer className="landing-footer">
         <div className="footer-top-container">
           <div className="footer-brand-col">
-            <AnimatedLogo size="md" title="Trovio" badge="GlobalTrotters" className="footer-animated-logo" />
+            <AnimatedLogo size="md" title="GlobalTrotter" badge="Island Explorer" className="footer-animated-logo" />
             <p className="footer-brand-desc">
               The modern intelligent operating system for global voyagers. 
               Designed for effortless multi-city itinerary building, live telemetry monitoring, 
@@ -1259,7 +1294,6 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
               <li><a href="#platform-features-section" onClick={() => setActiveFeatureTab('telemetry')}>Live Telemetry Radar</a></li>
               <li><a href="#platform-features-section" onClick={() => setActiveFeatureTab('budget')}>Smart Budget Crafter</a></li>
               <li><a href="#platform-features-section" onClick={() => setActiveFeatureTab('discovery')}>Destinations & Cities</a></li>
-              <li><a href="#platform-features-section" onClick={() => setActiveFeatureTab('community')}>Voyager Community Feed</a></li>
               <li><a href="#trip-calculator-section">Trip Cost Calculator</a></li>
             </ul>
           </div>
@@ -1268,7 +1302,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
             <h4>VOYAGER RESOURCES</h4>
             <ul>
               <li><button type="button" onClick={() => setShowSignInModal(true)} className="footer-link-btn">Sign In to Dashboard</button></li>
-              <li><button type="button" onClick={() => setShowRegisterModal(true)} className="footer-link-btn">Join GlobalTrotters</button></li>
+              <li><button type="button" onClick={() => setShowRegisterModal(true)} className="footer-link-btn">Join GlobalTrotter</button></li>
               <li><a href="#faq-section">Traveler Help & FAQ</a></li>
               <li><a href="#travel-dreamscape-section">Travel Dreamscape</a></li>
               <li><a href="#best-countries-section">Best Season Guides</a></li>
@@ -1280,7 +1314,7 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
         <div className="footer-bottom-bar">
           <div className="footer-bottom-inner">
             <span className="copyright-text">
-              © {new Date().getFullYear()} Trovio GlobalTrotters Inc. Built for fearless explorers worldwide.
+              © {new Date().getFullYear()} GlobalTrotter Inc. Built for fearless explorers worldwide.
             </span>
             <div className="footer-legal-links">
               <span>Privacy Policy</span>
@@ -1331,6 +1365,57 @@ export const LandingPage: React.FC<Props> = ({ onSignInSuccess }) => {
           onSignInSuccess(newUser);
         }}
       />
+
+      {/* -------------------------------------------------------------------- */}
+      {/* 14. 3D ISLAND EXPEDITION VIDEO TOUR MODAL */}
+      {/* -------------------------------------------------------------------- */}
+      {showVideoModal && (
+        <div className="sunset-video-modal-overlay" onClick={() => setShowVideoModal(false)}>
+          <div className="sunset-video-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="video-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '22px' }}>🌅</span>
+                <h3>GlobalTrotter 3D Island & AI Voyage Experience</h3>
+              </div>
+              <button 
+                type="button"
+                className="video-modal-close-btn" 
+                onClick={() => setShowVideoModal(false)}
+                aria-label="Close video modal"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="video-modal-body">
+              <div className="video-preview-hero-frame">
+                <img src="/lavender_travel_hero.jpg" alt="Voyage Tour Lavender Glassmorphism Preview" />
+                <div className="video-preview-overlay-info">
+                  <h4 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '6px' }}>Lavender Glassmorphism Explorer</h4>
+                  <p style={{ fontSize: '15px', opacity: 0.95, lineHeight: 1.5 }}>
+                    Personalized multi-city route visualization, live flight & road telemetry radar, dynamic budget crafter, and verified destination travel communities.
+                  </p>
+                </div>
+              </div>
+              <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center', gap: '16px' }}>
+                <button 
+                  type="button"
+                  className="btn-hero-primary"
+                  onClick={() => { setShowVideoModal(false); setShowRegisterModal(true); }}
+                >
+                  Join Free & Explore Destinations 🌴
+                </button>
+                <button 
+                  type="button"
+                  className="btn-hero-secondary"
+                  onClick={() => setShowVideoModal(false)}
+                >
+                  Close Tour
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

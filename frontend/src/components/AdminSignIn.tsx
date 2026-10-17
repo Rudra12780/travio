@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../api';
 import { UserProfile } from '../types';
+import { AnimatedLogo } from './AnimatedLogo';
 
 interface Props {
   onAdminLoginSuccess: (adminUser: UserProfile) => void;
@@ -51,21 +52,22 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
         padding: '24px',
         position: 'relative',
         zIndex: 10,
-        background: 'radial-gradient(circle at 50% 20%, rgba(13, 148, 136, 0.08) 0%, #F8FAFC 75%)',
+        background: 'radial-gradient(circle at 50% 20%, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.2) 50%, #FAF9FC 100%)',
       }}
     >
       <div
         style={{
           width: '100%',
           maxWidth: '520px',
-          background: '#FFFFFF',
+          background: 'rgba(255, 255, 255, 0.96)',
           borderRadius: '28px',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 25px 60px -15px rgba(15, 23, 42, 0.08), 0 0 20px rgba(13, 148, 136, 0.05)',
+          border: '1.5px solid #E8E2F0',
+          boxShadow: '0 25px 60px -15px rgba(32, 63, 112, 0.1), 0 0 24px rgba(129, 120, 232, 0.12)',
           padding: '44px 40px',
-          color: '#0F172A',
+          color: '#292833',
           position: 'relative',
           overflow: 'hidden',
+          backdropFilter: 'blur(20px)'
         }}
       >
         {/* Glow Accent Top Bar */}
@@ -76,51 +78,15 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
             left: '15%',
             right: '15%',
             height: '3px',
-            background: 'linear-gradient(90deg, transparent, #0D9488, #D97706, transparent)',
+            background: 'linear-gradient(90deg, transparent, #8178E8, #F7BFD5, transparent)',
             borderRadius: '9999px',
           }}
         />
 
-        {/* Shield Icon & Badge */}
         <div style={{ textAlign: 'center', marginBottom: '26px' }}>
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '20px',
-              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 60%, #115E59 100%)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 8px 25px rgba(13, 148, 136, 0.3), inset 0 1px 1px rgba(255,255,255,0.4)',
-              marginBottom: '16px',
-              position: 'relative',
-            }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            {/* Small Google Maps pin badge in corner */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '-4px',
-                right: '-4px',
-                width: '22px',
-                height: '22px',
-                borderRadius: '50%',
-                background: '#EA4335',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-              }}
-              title="Google Maps Radar Pin"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
-              </svg>
-            </div>
+          {/* User GlobalTrotter Logo */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <AnimatedLogo size="lg" title="GlobalTrotter" badge="ADMIN" />
           </div>
 
           <div
@@ -128,26 +94,26 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              background: '#CCFBF1',
-              border: '1px solid rgba(13, 148, 136, 0.3)',
-              color: '#0F766E',
+              background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+              border: '1px solid #E8E2F0',
+              color: '#203F70',
               fontSize: '11px',
               fontWeight: 800,
-              padding: '4px 12px',
+              padding: '4px 14px',
               borderRadius: '9999px',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               marginBottom: '10px',
             }}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#0D9488', animation: 'pulse 1.5s infinite' }} />
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#8178E8', animation: 'pulse 1.5s infinite' }} />
             RESTRICTED ADMIN GATE : localhost:3000/admin@1234
           </div>
 
-          <h1 style={{ fontSize: '27px', fontWeight: 900, letterSpacing: '-0.5px', color: '#0F172A' }}>
+          <h1 style={{ fontSize: '27px', fontWeight: 900, letterSpacing: '-0.5px', color: '#292833' }}>
             Mission Control Sign-In
           </h1>
-          <p style={{ fontSize: '13.5px', color: '#64748B', marginTop: '6px' }}>
+          <p style={{ fontSize: '13.5px', color: '#777584', marginTop: '6px' }}>
             Direct access is restricted. Authenticate as an authorized administrator to access platform telemetry and dispatch.
           </p>
         </div>
@@ -358,19 +324,19 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
             style={{
               width: '100%',
               height: '54px',
-              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #064E3B 100%)',
+              background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
               color: '#FFFFFF',
               border: 'none',
-              borderRadius: '14px',
+              borderRadius: '9999px',
               fontSize: '15px',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 8px 25px -4px rgba(13, 148, 136, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 8px 25px -4px rgba(129, 120, 232, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              marginTop: '6px',
+              marginTop: '10px',
               transition: 'all 0.2s ease',
             }}
           >
@@ -382,7 +348,7 @@ export const AdminSignIn: React.FC<Props> = ({ onAdminLoginSuccess }) => {
                 <span>Authorize & Enter Admin Mission Control</span>
               </>
             ) : (
-              <div className="spinner" />
+              <div className="spinner" style={{ borderTopColor: '#FFFFFF' }} />
             )}
           </button>
         </form>

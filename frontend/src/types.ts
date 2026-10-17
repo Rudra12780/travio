@@ -117,6 +117,7 @@ export interface Trip {
   created_at?: string;
   stops_count?: number;
   estimated_cost?: number;
+  destinations?: string;
   stops?: Stop[];
   expenses?: Expense[];
   summary?: TripSummary;
@@ -142,4 +143,52 @@ export interface AdminStats {
     end_date: string;
     total_budget: number;
   }>;
+}
+
+export interface CommunityMember {
+  id: number;
+  name: string;
+  avatar_url?: string;
+  role: 'Creator' | 'Member';
+  joined_at?: string;
+}
+
+export interface Community {
+  id: number;
+  name: string;
+  destination: string;
+  start_date?: string;
+  end_date?: string;
+  description?: string;
+  creator_id: number;
+  creator_name?: string;
+  creator_avatar?: string;
+  max_members: number;
+  current_members: number;
+  available_slots?: number;
+  cover_image?: string;
+  invite_token: string;
+  is_invite_active: boolean | number;
+  created_at?: string;
+  is_member?: boolean;
+  is_creator?: boolean;
+  members_preview?: CommunityMember[];
+}
+
+export interface CommunityInviteDetails {
+  community: Community & {
+    available_slots: number;
+    creator?: {
+      id: number;
+      name: string;
+      avatar_url?: string;
+    };
+    members_preview?: CommunityMember[];
+  };
+  status?: {
+    isMember: boolean;
+    isCreator: boolean;
+    isFull: boolean;
+    canJoin: boolean;
+  };
 }

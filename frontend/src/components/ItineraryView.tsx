@@ -68,8 +68,8 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '80px 0' }}>
-        <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#0D9488' }} />
-        <p style={{ color: '#64748B', fontSize: '14px', fontWeight: 600 }}>Loading voyage telemetry & itinerary...</p>
+        <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#8178E8' }} />
+        <p style={{ color: '#777584', fontSize: '14px', fontWeight: 600 }}>Loading voyage telemetry & itinerary...</p>
       </div>
     );
   }
@@ -80,17 +80,17 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
         marginTop: '28px',
         background: '#FFFFFF',
         borderRadius: '24px',
-        border: '1px solid #E2E8F0',
+        border: '1.5px solid #E8E2F0',
         padding: '54px 32px',
         textAlign: 'center',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)'
       }}>
         <div style={{
           width: '64px',
           height: '64px',
           borderRadius: '20px',
-          background: '#F0FDFA',
-          color: '#0D9488',
+          background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+          color: '#8178E8',
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -99,10 +99,10 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
         }}>
           🛰️
         </div>
-        <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A', margin: '0 0 8px 0' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#292833', margin: '0 0 8px 0' }}>
           No Active Voyage Found
         </h2>
-        <p style={{ fontSize: '14px', color: '#64748B', maxWidth: '460px', margin: '0 auto 24px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '14px', color: '#777584', maxWidth: '460px', margin: '0 auto 24px', lineHeight: 1.6 }}>
           You don't currently have an expedition scheduled. Plan a new voyage or pick a destination to initiate live satellite telemetry tracking.
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
@@ -111,14 +111,14 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
             onClick={() => onNavigate('my-trips')}
             style={{
               padding: '12px 24px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+              borderRadius: '9999px',
+              background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
               color: '#FFFFFF',
               border: 'none',
               fontSize: '13.5px',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)'
+              boxShadow: '0 4px 14px rgba(129, 120, 232, 0.3)'
             }}
           >
             ✈️ Go to My Trips
@@ -225,21 +225,22 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <span style={{
-                background: '#0D9488',
+                background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                 color: '#FFFFFF',
                 fontSize: '11px',
                 fontWeight: 800,
-                padding: '4px 10px',
-                borderRadius: '6px',
+                padding: '5px 12px',
+                borderRadius: '8px',
                 letterSpacing: '0.08em',
-                textTransform: 'uppercase'
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 12px rgba(129, 120, 232, 0.3)'
               }}>
                 VOYAGE ITINERARY
               </span>
               <h1 style={{ fontSize: '32px', fontWeight: 900, color: '#FFFFFF', marginTop: '8px', letterSpacing: '-0.5px' }}>
                 {trip.title}
               </h1>
-              <p style={{ fontSize: '14.5px', color: '#CBD5E1', marginTop: '4px' }}>
+              <p style={{ fontSize: '14.5px', color: '#FAF9FC', marginTop: '4px' }}>
                 📅 {trip.start_date} → {trip.end_date} • {trip.stops?.length || 0} Destinations • Total Budget: ${trip.total_budget}
               </p>
             </div>
@@ -250,8 +251,8 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
                 onClick={() => onShareClick(trip)}
                 style={{
                   background: '#FFFFFF',
-                  color: '#111827',
-                  border: 'none',
+                  color: '#292833',
+                  border: '1.5px solid #E8E2F0',
                   borderRadius: '9999px',
                   padding: '10px 20px',
                   fontSize: '13.5px',
@@ -259,7 +260,8 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  boxShadow: '0 4px 12px rgba(32, 63, 112, 0.08)'
                 }}
               >
                 <span>Share Trip</span>
@@ -270,7 +272,7 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
                 type="button"
                 onClick={() => window.print()}
                 style={{
-                  background: 'rgba(255,255,255,0.15)',
+                  background: 'rgba(255,255,255,0.18)',
                   backdropFilter: 'blur(8px)',
                   color: '#FFFFFF',
                   border: '1px solid rgba(255,255,255,0.3)',
@@ -303,27 +305,28 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
         alignItems: 'center',
         marginBottom: '24px',
         background: '#FFFFFF',
-        padding: '12px 20px',
-        borderRadius: '16px',
-        border: '1px solid #E2E8F0'
+        padding: '14px 22px',
+        borderRadius: '20px',
+        border: '1.5px solid #E8E2F0',
+        boxShadow: '0 4px 18px rgba(32, 63, 112, 0.04)'
       }}>
-        <div style={{ fontSize: '14px', fontWeight: 600, color: '#334155' }}>
-          Estimated Investment: <strong style={{ color: '#0D9488' }}>${trip.summary?.totalEstimated || 0}</strong> of ${trip.total_budget} budget
+        <div style={{ fontSize: '14px', fontWeight: 600, color: '#292833' }}>
+          Estimated Investment: <strong style={{ color: '#8178E8' }}>${trip.summary?.totalEstimated || 0}</strong> of ${trip.total_budget} budget
         </div>
 
-        <div style={{ display: 'flex', background: '#F1F5F9', borderRadius: '10px', padding: '3px' }}>
+        <div style={{ display: 'flex', background: '#FAF9FC', borderRadius: '12px', padding: '4px', border: '1px solid #E8E2F0' }}>
           <button
             type="button"
             onClick={() => setViewMode('timeline')}
             style={{
               background: viewMode === 'timeline' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'timeline' ? '#0D9488' : '#64748B',
-              boxShadow: viewMode === 'timeline' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+              color: viewMode === 'timeline' ? '#8178E8' : '#777584',
+              boxShadow: viewMode === 'timeline' ? '0 2px 8px rgba(32, 63, 112, 0.08)' : 'none',
               border: 'none',
-              borderRadius: '8px',
-              padding: '6px 14px',
+              borderRadius: '9px',
+              padding: '6px 16px',
               fontSize: '13px',
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer'
             }}
           >
@@ -334,13 +337,13 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
             onClick={() => setViewMode('cities')}
             style={{
               background: viewMode === 'cities' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'cities' ? '#0D9488' : '#64748B',
-              boxShadow: viewMode === 'cities' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+              color: viewMode === 'cities' ? '#8178E8' : '#777584',
+              boxShadow: viewMode === 'cities' ? '0 2px 8px rgba(32, 63, 112, 0.08)' : 'none',
               border: 'none',
-              borderRadius: '8px',
-              padding: '6px 14px',
+              borderRadius: '9px',
+              padding: '6px 16px',
               fontSize: '13px',
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer'
             }}
           >
@@ -356,16 +359,16 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
             key={stop.id}
             style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1px solid #E2E8F0',
+              borderRadius: '24px',
+              border: '1.5px solid #E8E2F0',
               overflow: 'hidden',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+              boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
             }}
           >
             {/* City Stop Header */}
             <div style={{
-              background: 'linear-gradient(90deg, #F8FAFC 0%, #FFFFFF 100%)',
-              borderBottom: '1px solid #E2E8F0',
+              background: 'linear-gradient(90deg, #FAF9FC 0%, #FFFFFF 100%)',
+              borderBottom: '1.5px solid #E8E2F0',
               padding: '20px 24px',
               display: 'flex',
               justifyContent: 'space-between',
@@ -375,24 +378,25 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '10px',
-                  background: '#0D9488',
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                   color: '#FFFFFF',
                   fontWeight: 900,
                   fontSize: '16px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
                 }}>
                   {sIdx + 1}
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>
+                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#292833' }}>
                     {stop.city_name}, {stop.city_country}
                   </h3>
-                  <p style={{ fontSize: '13px', color: '#64748B' }}>
+                  <p style={{ fontSize: '13px', color: '#777584' }}>
                     📅 {stop.start_date} → {stop.end_date} • Transit: {stop.transit_mode} • Stay: ${stop.stay_cost}
                   </p>
                 </div>
@@ -400,12 +404,13 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
 
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <span style={{
-                  background: '#E6FFFA',
-                  color: '#0D9488',
+                  background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.2) 0%, rgba(195, 154, 217, 0.2) 100%)',
+                  color: '#203F70',
                   fontSize: '12px',
                   fontWeight: 700,
-                  padding: '4px 10px',
-                  borderRadius: '9999px'
+                  padding: '5px 12px',
+                  borderRadius: '9999px',
+                  border: '1px solid #E8E2F0'
                 }}>
                   {stop.climate || 'Sunny & Pleasant'}
                 </span>
@@ -414,12 +419,12 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
 
             {/* Activities Timeline */}
             <div style={{ padding: '24px' }}>
-              <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+              <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#203F70', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
                 Day Schedule & Experiences
               </h4>
 
               {(!stop.activities || stop.activities.length === 0) ? (
-                <p style={{ fontSize: '13.5px', color: '#94A3B8', fontStyle: 'italic' }}>
+                <p style={{ fontSize: '13.5px', color: '#777584', fontStyle: 'italic' }}>
                   Open exploration day. No scheduled activities booked yet.
                 </p>
               ) : (
@@ -432,20 +437,20 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '14px 20px',
-                        background: '#F8FAFC',
-                        borderRadius: '14px',
-                        border: '1.5px solid #E2E8F0',
+                        background: '#FAF9FC',
+                        borderRadius: '16px',
+                        border: '1.5px solid #E8E2F0',
                         gap: '16px',
                         flexWrap: 'wrap'
                       }}
                     >
                       {/* Day Pill */}
                       <div style={{
-                        background: '#0F172A',
-                        color: '#2DD4BF',
+                        background: 'linear-gradient(135deg, #203F70 0%, #192B4D 100%)',
+                        color: '#F7BFD5',
                         fontWeight: 800,
                         fontSize: '12px',
-                        padding: '6px 12px',
+                        padding: '6px 14px',
                         borderRadius: '8px',
                         minWidth: '60px',
                         textAlign: 'center'
@@ -453,32 +458,33 @@ export const ItineraryView: React.FC<Props> = ({ tripId, userId = 1, onNavigate,
                         Day {aIdx + 1}
                       </div>
 
-                      {/* Physical Activity Card (Screen 9) */}
+                      {/* Physical Activity Card */}
                       <div style={{ flex: 1, minWidth: '200px' }}>
-                        <p style={{ fontSize: '15px', fontWeight: 800, color: '#111827', margin: 0 }}>
+                        <p style={{ fontSize: '15px', fontWeight: 800, color: '#292833', margin: 0 }}>
                           {act.custom_title}
                         </p>
-                        <p style={{ fontSize: '12px', color: '#64748B', margin: '4px 0 0 0' }}>
+                        <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 0 0' }}>
                           Physical Activity • {act.scheduled_time || '10:00'} • {act.category || 'Sightseeing'}
                         </p>
                       </div>
 
-                      {/* Flow Arrow (Screen 9) */}
-                      <div style={{ color: '#0D9488', fontSize: '20px', fontWeight: 900 }}>
+                      {/* Flow Arrow */}
+                      <div style={{ color: '#8178E8', fontSize: '20px', fontWeight: 900 }}>
                         ──→
                       </div>
 
-                      {/* Expense (Screen 9) */}
+                      {/* Expense */}
                       <div style={{
                         background: '#FFFFFF',
-                        border: '1.5px solid #CBD5E1',
-                        borderRadius: '10px',
+                        border: '1.5px solid #E8E2F0',
+                        borderRadius: '12px',
                         padding: '8px 16px',
                         textAlign: 'right',
-                        minWidth: '100px'
+                        minWidth: '100px',
+                        boxShadow: '0 2px 8px rgba(32, 63, 112, 0.04)'
                       }}>
-                        <span style={{ fontSize: '11px', color: '#64748B', display: 'block', textTransform: 'uppercase', fontWeight: 600 }}>Expense</span>
-                        <span style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>${act.cost}</span>
+                        <span style={{ fontSize: '11px', color: '#777584', display: 'block', textTransform: 'uppercase', fontWeight: 600 }}>Expense</span>
+                        <span style={{ fontSize: '16px', fontWeight: 800, color: '#203F70' }}>${act.cost}</span>
                       </div>
                     </div>
                   ))}

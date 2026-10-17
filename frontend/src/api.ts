@@ -293,6 +293,19 @@ export const api = {
     return res.json();
   },
 
+  async broadcastAdminMessage(data: { title: string; message: string; icon?: string; sender?: string }): Promise<{ success: boolean; count: number }> {
+    const res = await fetch(`${API_BASE}/admin/broadcast`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to broadcast message');
+    }
+    return res.json();
+  },
+
   async getNotifications(userId: number): Promise<{ notifications: any[] }> {
     const res = await fetch(`${API_BASE}/notifications/${userId}`);
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -305,6 +318,12 @@ export const api = {
     return res.json();
   },
 
+  async clearAllNotifications(userId: number): Promise<{ success: boolean }> {
+    const res = await fetch(`${API_BASE}/notifications/user/${userId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to clear all notifications');
+    return res.json();
+  },
+
   async scheduleAdminTrip(tripData: any): Promise<{ success: boolean; trip: Trip }> {
     const res = await fetch(`${API_BASE}/admin/trips/schedule`, {
       method: 'POST',
@@ -314,6 +333,85 @@ export const api = {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Failed to schedule trip');
+    }
+    return res.json();
+  },
+
+  // Community & Unique QR Invite
+  async getCommunities(userId?: number): Promise<{ communities: any[] }> {
+    const query = userId ? `?userId=${userId}` : '';
+    const res = await fetch(`${API_BASE}/communities${query}`);
+    if (!res.ok) throw new Error('Failed to fetch communities');
+    return res.json();
+  },
+
+  async createCommunity(data: {
+    name: string;
+    destination: string;
+    start_date?: string;
+    end_date?: string;
+    description?: string;
+    creator_id: number;
+    max_members?: number;
+    cover_image?: string;
+  }): Promise<{ community: any }> {
+    const res = await fetch(`${API_BASE}/communities`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to create community');
+    }
+    return res.json();
+  },
+
+  async getCommunityInvite(token: string, userId?: number): Promise<any> {
+    const query = userId ? `?userId=${userId}` : '';
+    const res = await fetch(`${API_BASE}/communities/invite/${token}${query}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to load community invitation');
+    }
+    return res.json();
+  },
+
+  async joinCommunity(token: string, userId: number): Promise<{ success: boolean; message: string; communityId: number }> {
+    const res = await fetch(`${API_BASE}/communities/join/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to join community');
+    }
+    return res.json();
+  },
+
+  async regenerateCommunityInvite(communityId: number, userId: number): Promise<{ success: boolean; invite_token: string; message: string }> {
+    const res = await fetch(`${API_BASE}/communities/${communityId}/regenerate-invite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to regenerate QR invite');
+    }
+    return res.json();
+  },
+
+  async toggleCommunityInvite(communityId: number, userId: number, active: boolean): Promise<{ success: boolean; is_invite_active: boolean; message: string }> {
+    const res = await fetch(`${API_BASE}/communities/${communityId}/toggle-invite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, active })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update invitation status');
     }
     return res.json();
   }

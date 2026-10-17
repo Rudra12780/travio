@@ -81,29 +81,29 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
     return !searchTerm || t.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  // Assign distinct colors to trips
+  // Assign distinct pastel luxury colors to trips
   const tripColors = [
-    { bg: '#0D9488', text: '#FFFFFF', name: 'Teal' },
-    { bg: '#E11D48', text: '#FFFFFF', name: 'Rose' },
-    { bg: '#6366F1', text: '#FFFFFF', name: 'Indigo' },
-    { bg: '#D97706', text: '#FFFFFF', name: 'Amber' }
+    { bg: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)', text: '#FFFFFF', name: 'Periwinkle' },
+    { bg: 'linear-gradient(135deg, #C39AD9 0%, #F7BFD5 100%)', text: '#203F70', name: 'Lavender' },
+    { bg: 'linear-gradient(135deg, #203F70 0%, #192B4D 100%)', text: '#FAF9FC', name: 'Deep Navy' },
+    { bg: 'linear-gradient(135deg, #F3AFCF 0%, #F7BFD5 100%)', text: '#292833', name: 'Blush' }
   ];
 
   return (
     <div style={{ marginTop: '20px' }}>
       {/* Title & Screen Indicator */}
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
-          Calendar View Screen / Screen 11
+        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
+          Expedition Calendar & Schedules
         </h2>
-        <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
-          Monthly expedition schedule, multi-day itinerary spans, and scheduled route departures
+        <p style={{ fontSize: '13.5px', color: '#777584', margin: 0 }}>
+          Monthly luxury journey schedules, multi-day itinerary spans, and departure timelines
         </p>
       </div>
 
-      {/* Global Search Bar (Screen 11 Wireframe) */}
+      {/* Global Search Bar */}
       <GlobalSearchBar
-        placeholder="Search bar ....."
+        placeholder="Search scheduled trips..."
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         groupByOptions={['Default', 'By Region', 'By Status']}
@@ -117,30 +117,30 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
         onSortChange={setSelectedSort}
       />
 
-      {/* Calendar Card (Screen 11 Wireframe Layout) */}
+      {/* Calendar Card */}
       <div style={{
         background: '#FFFFFF',
         borderRadius: '24px',
-        border: '1.5px solid #CBD5E1',
+        border: '1.5px solid #E8E2F0',
         padding: '28px',
-        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
         marginTop: '16px'
       }}>
-        {/* Month Switcher Header: ← January 2024 → */}
+        {/* Month Switcher Header */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '24px',
           paddingBottom: '16px',
-          borderBottom: '1.5px solid #F1F5F9'
+          borderBottom: '1.5px solid #E8E2F0'
         }}>
           <button
             type="button"
             onClick={prevMonth}
             style={{
-              background: '#F1F5F9',
-              border: '1px solid #CBD5E1',
+              background: '#FAF9FC',
+              border: '1px solid #E8E2F0',
               borderRadius: '50%',
               width: '40px',
               height: '40px',
@@ -149,13 +149,14 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
               justifyContent: 'center',
               fontSize: '18px',
               cursor: 'pointer',
-              fontWeight: 800
+              fontWeight: 800,
+              color: '#292833'
             }}
           >
             ←
           </button>
 
-          <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A', margin: 0 }}>
+          <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#292833', margin: 0 }}>
             {monthNames[currentMonthIndex]} {currentYear}
           </h3>
 
@@ -163,8 +164,8 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
             type="button"
             onClick={nextMonth}
             style={{
-              background: '#F1F5F9',
-              border: '1px solid #CBD5E1',
+              background: '#FAF9FC',
+              border: '1px solid #E8E2F0',
               borderRadius: '50%',
               width: '40px',
               height: '40px',
@@ -173,7 +174,8 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
               justifyContent: 'center',
               fontSize: '18px',
               cursor: 'pointer',
-              fontWeight: 800
+              fontWeight: 800,
+              color: '#292833'
             }}
           >
             →
@@ -221,21 +223,21 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
                 key={idx}
                 style={{
                   minHeight: '90px',
-                  background: cell.isCurrentMonth ? '#FFFFFF' : '#F8FAFC',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: '12px',
+                  background: cell.isCurrentMonth ? '#FFFFFF' : '#FAF9FC',
+                  border: '1px solid #E8E2F0',
+                  borderRadius: '14px',
                   padding: '8px',
                   display: 'flex',
                   flexDirection: 'column',
-                  opacity: cell.isCurrentMonth ? 1 : 0.4,
-                  boxShadow: matchingTrips.length > 0 ? '0 2px 8px rgba(13, 148, 136, 0.08)' : 'none',
+                  opacity: cell.isCurrentMonth ? 1 : 0.45,
+                  boxShadow: matchingTrips.length > 0 ? '0 4px 12px rgba(129, 120, 232, 0.12)' : 'none',
                   transition: 'background 0.15s ease'
                 }}
               >
                 <div style={{
                   fontSize: '13px',
                   fontWeight: 800,
-                  color: cell.isCurrentMonth ? '#1E293B' : '#94A3B8',
+                  color: cell.isCurrentMonth ? '#292833' : '#777584',
                   marginBottom: '6px'
                 }}>
                   {cell.dayNum}
@@ -255,15 +257,15 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
                           color: color.text,
                           fontSize: '11px',
                           fontWeight: 800,
-                          padding: '4px 6px',
-                          borderRadius: '6px',
+                          padding: '5px 8px',
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           textTransform: 'uppercase',
                           letterSpacing: '0.02em',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          boxShadow: '0 2px 6px rgba(32, 63, 112, 0.12)'
                         }}
                       >
                         {trip.title}
@@ -280,33 +282,34 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
       {/* Selected Trip Details Drawer / Modal */}
       {selectedTripDetail && (
         <div className="modal-overlay" onClick={() => setSelectedTripDetail(null)}>
-          <div className="modal-card" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-card" style={{ maxWidth: '520px', borderRadius: '24px', border: '1.5px solid #E8E2F0' }} onClick={(e) => e.stopPropagation()}>
             <button type="button" className="modal-close-btn" onClick={() => setSelectedTripDetail(null)}>✕</button>
             <img
               src={selectedTripDetail.cover_image}
               alt={selectedTripDetail.title}
-              style={{ width: '100%', height: '160px', borderRadius: '14px', objectFit: 'cover', marginBottom: '16px' }}
+              style={{ width: '100%', height: '170px', borderRadius: '16px', objectFit: 'cover', marginBottom: '16px', border: '1px solid #E8E2F0' }}
             />
             <span style={{
-              background: '#0D9488',
+              background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
               color: '#FFFFFF',
               fontSize: '11px',
               fontWeight: 800,
-              padding: '4px 10px',
+              padding: '4px 12px',
               borderRadius: '999px',
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              boxShadow: '0 2px 8px rgba(129, 120, 232, 0.25)'
             }}>
               {selectedTripDetail.status}
             </span>
-            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A', margin: '8px 0' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#292833', margin: '10px 0' }}>
               {selectedTripDetail.title}
             </h2>
-            <p style={{ fontSize: '13.5px', color: '#64748B', lineHeight: '1.5' }}>
+            <p style={{ fontSize: '13.5px', color: '#777584', lineHeight: '1.5' }}>
               {selectedTripDetail.description}
             </p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: '#F8FAFC', borderRadius: '12px', margin: '16px 0', fontSize: '13px' }}>
-              <span>📅 {selectedTripDetail.start_date} → {selectedTripDetail.end_date}</span>
-              <span style={{ fontWeight: 800, color: '#0D9488' }}>Budget: ${selectedTripDetail.total_budget}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px', background: '#FAF9FC', borderRadius: '14px', margin: '16px 0', fontSize: '13px', border: '1px solid #E8E2F0' }}>
+              <span style={{ color: '#292833', fontWeight: 600 }}>📅 {selectedTripDetail.start_date} → {selectedTripDetail.end_date}</span>
+              <span style={{ fontWeight: 800, color: '#8178E8' }}>Budget: ${selectedTripDetail.total_budget}</span>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
@@ -316,7 +319,7 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
                   setSelectedTripDetail(null);
                   onNavigate('itinerary-view', selectedTripDetail.id);
                 }}
-                style={{ flex: 1, padding: '10px' }}
+                style={{ flex: 1, padding: '12px' }}
               >
                 View Timeline Itinerary
               </button>
@@ -327,7 +330,7 @@ export const TripCalendar: React.FC<Props> = ({ tripId, userId = 1, onNavigate }
                   setSelectedTripDetail(null);
                   onNavigate('itinerary-builder', selectedTripDetail.id);
                 }}
-                style={{ flex: 1, padding: '10px' }}
+                style={{ flex: 1, padding: '12px' }}
               >
                 Edit in Builder
               </button>

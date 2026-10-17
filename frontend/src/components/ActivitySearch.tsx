@@ -78,19 +78,19 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
 
   return (
     <div style={{ marginTop: '24px' }}>
-      {/* Title (Screen 8 Wireframe) */}
+      {/* Title */}
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
-          Activity Search Page (Screen 8)
+        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
+          Curated Activities & Experiences
         </h2>
-        <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
+        <p style={{ fontSize: '13.5px', color: '#777584', margin: 0 }}>
           Discover curated activities, desert safaris, food walks, and heritage monuments
         </p>
       </div>
 
-      {/* Global Search Bar (Screen 8) */}
+      {/* Global Search Bar */}
       <GlobalSearchBar
-        placeholder="Search bar ....."
+        placeholder="Search experiences, tours, or safaris..."
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         groupByOptions={['Default', 'By Category', 'By Duration']}
@@ -104,19 +104,19 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
         onSortChange={setSelectedSort}
       />
 
-      <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A', margin: '20px 0 12px 0' }}>
-        Results (Option and its details)
+      <div style={{ fontSize: '16px', fontWeight: 800, color: '#292833', margin: '20px 0 12px 0' }}>
+        Recommended Experiences
       </div>
 
       {/* Activities Grid */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#0D9488' }} />
-          <p>Loading activities catalog...</p>
+          <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#8178E8' }} />
+          <p style={{ color: '#777584' }}>Loading experiences catalog...</p>
         </div>
       ) : activities.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#FFFFFF', borderRadius: '20px' }}>
-          <p>No experiences found matching this filter.</p>
+        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#FFFFFF', borderRadius: '24px', border: '1.5px solid #E8E2F0' }}>
+          <p style={{ color: '#777584' }}>No experiences found matching this filter.</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
@@ -125,15 +125,15 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
               key={act.id}
               style={{
                 background: '#FFFFFF',
-                borderRadius: '20px',
-                border: '1px solid #E2E8F0',
+                borderRadius: '24px',
+                border: '1.5px solid #E8E2F0',
                 overflow: 'hidden',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
                 display: 'flex',
                 flexDirection: 'column'
               }}
             >
-              <div style={{ position: 'relative', height: '170px' }}>
+              <div style={{ position: 'relative', height: '180px' }}>
                 <img
                   src={act.image_url}
                   alt={act.name}
@@ -143,13 +143,13 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   position: 'absolute',
                   top: '12px',
                   left: '12px',
-                  background: 'rgba(17, 24, 39, 0.75)',
-                  backdropFilter: 'blur(4px)',
+                  background: 'rgba(25, 43, 77, 0.75)',
+                  backdropFilter: 'blur(8px)',
                   color: '#FFFFFF',
                   fontSize: '11px',
                   fontWeight: 700,
-                  padding: '3px 8px',
-                  borderRadius: '6px'
+                  padding: '4px 10px',
+                  borderRadius: '9999px'
                 }}>
                   {act.category}
                 </span>
@@ -159,7 +159,7 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   top: '12px',
                   right: '12px',
                   background: '#FFFFFF',
-                  color: '#D97706',
+                  color: '#A678BD',
                   fontSize: '11.5px',
                   fontWeight: 800,
                   padding: '3px 8px',
@@ -173,22 +173,23 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   position: 'absolute',
                   bottom: '12px',
                   left: '12px',
-                  background: '#0D9488',
-                  color: '#FFFFFF',
+                  background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.9) 0%, rgba(195, 154, 217, 0.9) 100%)',
+                  color: '#203F70',
                   fontSize: '11px',
-                  fontWeight: 700,
-                  padding: '3px 8px',
-                  borderRadius: '6px'
+                  fontWeight: 800,
+                  padding: '4px 10px',
+                  borderRadius: '9999px',
+                  border: '1px solid #E8E2F0'
                 }}>
                   📍 {act.city_name}, {act.city_country}
                 </span>
               </div>
 
               <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#111827', marginBottom: '8px' }}>
+                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#292833', marginBottom: '8px' }}>
                   {act.name}
                 </h3>
-                <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.45', marginBottom: '16px' }}>
+                <p style={{ fontSize: '13px', color: '#777584', lineHeight: '1.45', marginBottom: '16px' }}>
                   {act.description}
                 </p>
 
@@ -197,28 +198,29 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   paddingTop: '12px',
-                  borderTop: '1px solid #F1F5F9',
+                  borderTop: '1px solid #E8E2F0',
                   marginTop: 'auto'
                 }}>
                   <div>
-                    <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>
+                    <span style={{ fontSize: '11px', color: '#777584', display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>
                       ⏱️ {act.duration_hours} Hours
                     </span>
-                    <span style={{ fontSize: '17px', fontWeight: 800, color: '#111827' }}>${act.cost}</span>
+                    <span style={{ fontSize: '17px', fontWeight: 800, color: '#203F70' }}>${act.cost}</span>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setTargetActivity(act)}
                     style={{
-                      background: '#0D9488',
+                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                       color: '#FFFFFF',
                       border: 'none',
-                      borderRadius: '10px',
-                      padding: '8px 16px',
+                      borderRadius: '9999px',
+                      padding: '8px 18px',
                       fontSize: '13px',
-                      fontWeight: 700,
-                      cursor: 'pointer'
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
                     }}
                   >
                     + Add to Stop

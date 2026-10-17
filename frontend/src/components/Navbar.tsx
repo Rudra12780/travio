@@ -30,22 +30,51 @@ export const Navbar: React.FC<Props> = ({
       .catch(() => {});
   };
 
+  const getDismissedIds = (userId: number): number[] => {
+    try {
+      const raw = localStorage.getItem(`travio_dismissed_notifications_${userId}`);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const isClearedAll = (userId: number): boolean => {
+    return localStorage.getItem(`travio_cleared_notifications_${userId}`) === 'true';
+  };
+
   // Fetch real notifications sent by Admin or system
   const loadNotifications = () => {
-    api.getNotifications(user.id || 1)
+    const userId = user.id || 1;
+    const dismissedIds = getDismissedIds(userId);
+    const cleared = isClearedAll(userId);
+
+    api.getNotifications(userId)
       .then(res => {
-        if (res.notifications && res.notifications.length > 0) {
-          setNotifications(res.notifications);
-        } else {
-          // Default initial travel notifications if none in db
-          setNotifications([
+        const activeNotifs = (res.notifications || []).filter(n => !dismissedIds.includes(n.id));
+        if (activeNotifs.length > 0) {
+          setNotifications(activeNotifs);
+        } else if (!cleared) {
+          // Default initial travel notifications ONLY if user has never cleared them
+          const defaultNotifs = [
             { id: 991, icon: '✈️', title: 'Flight 6E-204 Confirmed', message: 'Delhi to Udaipur boarding at 08:30 AM', sender: 'Aviation Dispatch' },
             { id: 992, icon: '🏨', title: 'Lake Palace Upgrade', message: 'Heritage suite upgrade unlocked for Udaipur stay', sender: 'Concierge' },
             { id: 993, icon: '🧭', title: 'Weather Advisory', message: '31°C Clear skies expected for desert safari', sender: 'Meteorology' }
-          ]);
+          ].filter(n => !dismissedIds.includes(n.id));
+
+          if (defaultNotifs.length === 0) {
+            localStorage.setItem(`travio_cleared_notifications_${userId}`, 'true');
+          }
+          setNotifications(defaultNotifs);
+        } else {
+          setNotifications([]);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (cleared) {
+          setNotifications([]);
+        }
+      });
   };
 
   useEffect(() => {
@@ -61,13 +90,44 @@ export const Navbar: React.FC<Props> = ({
   }, [user.id]);
 
   const dismissNotification = async (id: number) => {
+    const userId = user.id || 1;
+    const dismissedIds = getDismissedIds(userId);
+    if (!dismissedIds.includes(id)) {
+      dismissedIds.push(id);
+      localStorage.setItem(`travio_dismissed_notifications_${userId}`, JSON.stringify(dismissedIds));
+    }
+
+    setNotifications(prev => {
+      const remaining = prev.filter(n => n.id !== id);
+      if (remaining.length === 0) {
+        localStorage.setItem(`travio_cleared_notifications_${userId}`, 'true');
+      }
+      return remaining;
+    });
+
     try {
       if (id < 900) {
         await api.deleteNotification(id);
       }
-      setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (e) {
-      setNotifications(prev => prev.filter(n => n.id !== id));
+      // Ignored
+    }
+  };
+
+  const clearAllNotifications = async () => {
+    const userId = user.id || 1;
+    localStorage.setItem(`travio_cleared_notifications_${userId}`, 'true');
+    const dismissedIds = getDismissedIds(userId);
+    notifications.forEach(n => {
+      if (!dismissedIds.includes(n.id)) dismissedIds.push(n.id);
+    });
+    localStorage.setItem(`travio_dismissed_notifications_${userId}`, JSON.stringify(dismissedIds));
+    setNotifications([]);
+
+    try {
+      await api.clearAllNotifications(userId);
+    } catch (e) {
+      // Ignored
     }
   };
 
@@ -218,7 +278,7 @@ export const Navbar: React.FC<Props> = ({
                   type="button"
                   className={`nav-link ${activeTab === 'community' ? 'active' : ''}`}
                   onClick={() => onTabChange('community')}
-                  title="Community Voyager Feed"
+                  title="Travel Communities"
                 >
                   <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -285,9 +345,33 @@ export const Navbar: React.FC<Props> = ({
                   <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#111827', margin: 0 }}>
                     Voyage & Admin Alerts
                   </h4>
-                  <span style={{ fontSize: '10.5px', background: '#EC4899', color: '#fff', padding: '2px 7px', borderRadius: '9999px', fontWeight: 800 }}>
-                    {notifications.length} NEW
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {notifications.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={clearAllNotifications}
+                        style={{
+                          background: '#F1F5F9',
+                          border: 'none',
+                          color: '#64748B',
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = '#FEE2E2'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = '#64748B'; e.currentTarget.style.background = '#F1F5F9'; }}
+                        title="Clear all alerts"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                    <span style={{ fontSize: '10.5px', background: notifications.length > 0 ? '#EC4899' : '#94A3B8', color: '#fff', padding: '2px 7px', borderRadius: '9999px', fontWeight: 800 }}>
+                      {notifications.length} NEW
+                    </span>
+                  </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12.5px', color: '#475569', maxHeight: '340px', overflowY: 'auto' }}>
                   {notifications.map(n => (

@@ -1,9 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
+require('dotenv').config();
 const db = require('./database');
+const { connectToMongo, models, isConnected } = require('./mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB Atlas
+connectToMongo();
 
 app.use(cors());
 app.use(express.json());
@@ -96,12 +102,42 @@ app.post('/api/admin/messages', (req, res) => {
   }
 });
 
+// Admin broadcasts message / notification to all active users
+app.post('/api/admin/broadcast', (req, res) => {
+  const { title, message, icon, sender } = req.body;
+  if (!title || !message) {
+    return res.status(400).json({ error: 'Title and message are required' });
+  }
+
+  try {
+    const allUsers = db.prepare('SELECT id FROM users').all();
+    const stmt = db.prepare('INSERT INTO notifications (user_id, title, message, icon, sender) VALUES (?, ?, ?, ?, ?)');
+    for (const u of allUsers) {
+      stmt.run(u.id, title, message, icon || '📢', sender || 'GlobalTrotter Mission Control');
+    }
+    res.status(201).json({ success: true, count: allUsers.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get notifications for a particular user
 app.get('/api/notifications/:userId', (req, res) => {
   const userId = Number(req.params.userId);
   try {
     const notifications = db.prepare('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20').all(userId);
     res.json({ notifications });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Clear all notifications for a user
+app.delete('/api/notifications/user/:userId', (req, res) => {
+  const userId = Number(req.params.userId);
+  try {
+    db.prepare('DELETE FROM notifications WHERE user_id = ?').run(userId);
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -179,7 +215,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 app.put('/api/auth/profile', (req, res) => {
-  const { id, name, bio, home_country, currency_pref, avatar_url } = req.body;
+  const { id, name, bio, home_country, currency_pref, avatar_url, password } = req.body;
   if (!id) return res.status(400).json({ error: 'User ID is required' });
 
   db.prepare(`
@@ -188,9 +224,10 @@ app.put('/api/auth/profile', (req, res) => {
         bio = COALESCE(?, bio), 
         home_country = COALESCE(?, home_country),
         currency_pref = COALESCE(?, currency_pref),
-        avatar_url = COALESCE(?, avatar_url)
+        avatar_url = COALESCE(?, avatar_url),
+        password = COALESCE(?, password)
     WHERE id = ?
-  `).run(name, bio, home_country, currency_pref, avatar_url, id);
+  `).run(name, bio, home_country, currency_pref, avatar_url, password || null, id);
 
   const updated = db.prepare('SELECT id, name, email, role, avatar_url, bio, home_country, currency_pref FROM users WHERE id = ?').get(id);
   res.json({ user: updated });
@@ -282,6 +319,7 @@ app.get('/api/trips', (req, res) => {
     let trips = db.prepare(`
       SELECT t.*, 
         COUNT(DISTINCT s.id) as stops_count,
+        GROUP_CONCAT(DISTINCT c.name) as destinations,
         COALESCE(SUM(s.stay_cost), 0) + COALESCE((
           SELECT SUM(cost) FROM stop_activities sa 
           JOIN stops st ON sa.stop_id = st.id 
@@ -289,6 +327,7 @@ app.get('/api/trips', (req, res) => {
         ), 0) as estimated_cost
       FROM trips t
       LEFT JOIN stops s ON t.id = s.trip_id
+      LEFT JOIN cities c ON s.city_id = c.id
       WHERE t.user_id = ?
       GROUP BY t.id
       ORDER BY t.created_at DESC
@@ -299,6 +338,7 @@ app.get('/api/trips', (req, res) => {
       trips = db.prepare(`
         SELECT t.*, 
           COUNT(DISTINCT s.id) as stops_count,
+          GROUP_CONCAT(DISTINCT c.name) as destinations,
           COALESCE(SUM(s.stay_cost), 0) + COALESCE((
             SELECT SUM(cost) FROM stop_activities sa 
             JOIN stops st ON sa.stop_id = st.id 
@@ -306,6 +346,7 @@ app.get('/api/trips', (req, res) => {
           ), 0) as estimated_cost
         FROM trips t
         LEFT JOIN stops s ON t.id = s.trip_id
+        LEFT JOIN cities c ON s.city_id = c.id
         GROUP BY t.id
         ORDER BY t.created_at DESC
       `).all();
@@ -678,6 +719,293 @@ app.get('/api/admin/stats', (req, res) => {
     popularCities,
     recentTrips
   });
+});
+
+// --------------------------------------------------------------------------
+// Community & Unique QR Code Invitation System
+// --------------------------------------------------------------------------
+
+// List all communities
+app.get('/api/communities', (req, res) => {
+  try {
+    const userId = req.query.userId ? Number(req.query.userId) : null;
+    const communities = db.prepare(`
+      SELECT c.*, u.name as creator_name, u.avatar_url as creator_avatar,
+        EXISTS(SELECT 1 FROM community_members cm WHERE cm.community_id = c.id AND cm.user_id = ?) as is_member
+      FROM communities c
+      JOIN users u ON c.creator_id = u.id
+      ORDER BY c.created_at DESC
+    `).all(userId || 0);
+
+    const formatted = communities.map(c => ({
+      ...c,
+      is_member: Boolean(c.is_member),
+      is_creator: userId ? c.creator_id === userId : false
+    }));
+
+    res.json({ communities: formatted });
+  } catch (err) {
+    console.error('Error fetching communities:', err);
+    res.status(500).json({ error: 'Failed to load communities' });
+  }
+});
+
+// Create a new community (with auto-generated unique secure QR token)
+app.post('/api/communities', (req, res) => {
+  try {
+    const { name, destination, start_date, end_date, description, creator_id, max_members, cover_image } = req.body;
+    if (!name || !destination) {
+      return res.status(400).json({ error: 'Community name and destination are required' });
+    }
+
+    const creatorId = Number(creator_id) || 1;
+    // Generate secure unpredictable 32-character hexadecimal token for QR code
+    const token = crypto.randomBytes(16).toString('hex');
+    const cover = cover_image || 'https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=1200&q=80';
+
+    const result = db.prepare(`
+      INSERT INTO communities (name, destination, start_date, end_date, description, creator_id, max_members, current_members, cover_image, invite_token, is_invite_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 1)
+    `).run(name.trim(), destination.trim(), start_date || '', end_date || '', description || '', creatorId, Number(max_members) || 20, cover, token);
+
+    const newId = Number(result.lastInsertRowid);
+
+    // Register creator as first member
+    db.prepare(`
+      INSERT INTO community_members (community_id, user_id, role)
+      VALUES (?, ?, 'Creator')
+    `).run(newId, creatorId);
+
+    const community = db.prepare(`
+      SELECT c.*, u.name as creator_name, u.avatar_url as creator_avatar
+      FROM communities c
+      JOIN users u ON c.creator_id = u.id
+      WHERE c.id = ?
+    `).get(newId);
+
+    res.status(201).json({
+      community: {
+        ...community,
+        is_member: true,
+        is_creator: true
+      }
+    });
+  } catch (err) {
+    console.error('Error creating community:', err);
+    res.status(500).json({ error: 'Failed to create community' });
+  }
+});
+
+// Inspect / Validate Community by QR Invitation Token
+app.get('/api/communities/invite/:token', (req, res) => {
+  try {
+    const { token } = req.params;
+    const userId = req.query.userId ? Number(req.query.userId) : null;
+
+    const community = db.prepare(`
+      SELECT c.*, u.name as creator_name, u.avatar_url as creator_avatar, u.email as creator_email
+      FROM communities c
+      JOIN users u ON c.creator_id = u.id
+      WHERE c.invite_token = ?
+    `).get(token);
+
+    if (!community) {
+      return res.status(404).json({ error: 'Invalid or revoked invitation code' });
+    }
+
+    if (!community.is_invite_active) {
+      return res.status(403).json({ error: 'This invitation has been paused or revoked by the community creator' });
+    }
+
+    // Get members list
+    const members = db.prepare(`
+      SELECT cm.role, cm.joined_at, u.id, u.name, u.avatar_url
+      FROM community_members cm
+      JOIN users u ON cm.user_id = u.id
+      WHERE cm.community_id = ?
+      ORDER BY cm.joined_at ASC
+    `).all(community.id);
+
+    const isMember = userId ? members.some(m => m.id === userId) : false;
+    const isCreator = userId ? community.creator_id === userId : false;
+    const isFull = community.current_members >= community.max_members;
+
+    res.json({
+      community: {
+        id: community.id,
+        name: community.name,
+        destination: community.destination,
+        start_date: community.start_date,
+        end_date: community.end_date,
+        description: community.description,
+        cover_image: community.cover_image,
+        max_members: community.max_members,
+        current_members: community.current_members,
+        available_slots: Math.max(0, community.max_members - community.current_members),
+        is_invite_active: Boolean(community.is_invite_active),
+        invite_token: community.invite_token,
+        creator: {
+          id: community.creator_id,
+          name: community.creator_name,
+          avatar_url: community.creator_avatar
+        },
+        members_preview: members.slice(0, 6)
+      },
+      status: {
+        isMember,
+        isCreator,
+        isFull,
+        canJoin: !isMember && !isFull && Boolean(community.is_invite_active)
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching invitation:', err);
+    res.status(500).json({ error: 'Failed to validate invitation' });
+  }
+});
+
+// Join Community via QR Token (Requires authentication)
+app.post('/api/communities/join/:token', (req, res) => {
+  try {
+    const { token } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required. Please log in or create an account.' });
+    }
+
+    const community = db.prepare('SELECT * FROM communities WHERE invite_token = ?').get(token);
+    if (!community) {
+      return res.status(404).json({ error: 'Invalid or revoked invitation code' });
+    }
+
+    if (!community.is_invite_active) {
+      return res.status(403).json({ error: 'This invitation has been paused or revoked by the organizer' });
+    }
+
+    // Verify user exists
+    const user = db.prepare('SELECT id, name FROM users WHERE id = ?').get(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User account not found' });
+    }
+
+    // Prevent duplicate membership
+    const existing = db.prepare('SELECT id FROM community_members WHERE community_id = ? AND user_id = ?').get(community.id, userId);
+    if (existing) {
+      return res.status(400).json({ error: 'You are already a member of this community' });
+    }
+
+    // Capacity verification
+    if (community.current_members >= community.max_members) {
+      return res.status(400).json({ error: 'This community group has reached maximum member capacity' });
+    }
+
+    // Add user as member
+    db.prepare(`
+      INSERT INTO community_members (community_id, user_id, role)
+      VALUES (?, ?, 'Member')
+    `).run(community.id, userId);
+
+    db.prepare('UPDATE communities SET current_members = current_members + 1 WHERE id = ?').run(community.id);
+
+    // Send notification to creator
+    try {
+      db.prepare(`
+        INSERT INTO notifications (user_id, title, message, sender, icon)
+        VALUES (?, 'New Traveler Joined via QR Invite!', ?, 'Community Dispatch', '👥')
+      `).run(community.creator_id, `${user.name} scanned your QR code and joined "${community.name}"!`);
+    } catch (e) {}
+
+    res.json({
+      success: true,
+      message: `Congratulations! You have joined "${community.name}".`,
+      communityId: community.id
+    });
+  } catch (err) {
+    console.error('Error joining community:', err);
+    res.status(500).json({ error: 'Failed to join community' });
+  }
+});
+
+// Regenerate QR Invitation Token (Creator only)
+app.post('/api/communities/:id/regenerate-invite', (req, res) => {
+  try {
+    const { userId } = req.body;
+    const community = db.prepare('SELECT * FROM communities WHERE id = ?').get(req.params.id);
+
+    if (!community) {
+      return res.status(404).json({ error: 'Community not found' });
+    }
+
+    if (Number(userId) !== community.creator_id) {
+      return res.status(403).json({ error: 'Only the community creator can regenerate this invitation link' });
+    }
+
+    const newToken = crypto.randomBytes(16).toString('hex');
+    db.prepare('UPDATE communities SET invite_token = ?, is_invite_active = 1 WHERE id = ?').run(newToken, community.id);
+
+    res.json({
+      success: true,
+      invite_token: newToken,
+      message: 'New unique QR code generated! Previous QR codes have been revoked.'
+    });
+  } catch (err) {
+    console.error('Error regenerating token:', err);
+    res.status(500).json({ error: 'Failed to regenerate invite token' });
+  }
+});
+
+// Toggle QR Invite Active Status (Creator only)
+app.post('/api/communities/:id/toggle-invite', (req, res) => {
+  try {
+    const { userId, active } = req.body;
+    const community = db.prepare('SELECT * FROM communities WHERE id = ?').get(req.params.id);
+
+    if (!community) {
+      return res.status(404).json({ error: 'Community not found' });
+    }
+
+    if (Number(userId) !== community.creator_id) {
+      return res.status(403).json({ error: 'Only the community creator can modify invitation settings' });
+    }
+
+    const newStatus = active ? 1 : 0;
+    db.prepare('UPDATE communities SET is_invite_active = ? WHERE id = ?').run(newStatus, community.id);
+
+    res.json({
+      success: true,
+      is_invite_active: Boolean(newStatus),
+      message: newStatus ? 'Invitations are now active.' : 'Invitations are paused.'
+    });
+  } catch (err) {
+    console.error('Error toggling invite:', err);
+    res.status(500).json({ error: 'Failed to update invitation status' });
+  }
+});
+
+// MongoDB Connection Health & Status Endpoint
+app.get('/api/mongodb/status', async (req, res) => {
+  try {
+    const isConn = isConnected();
+    const stats = {
+      connected: isConn,
+      database: process.env.DB_NAME || 'trivio',
+      cluster: 'cluster0.2bdjxod.mongodb.net',
+      models: Object.keys(models)
+    };
+    if (isConn) {
+      stats.counts = {
+        users: await models.User.countDocuments(),
+        cities: await models.City.countDocuments(),
+        activities: await models.Activity.countDocuments(),
+        trips: await models.Trip.countDocuments(),
+        communities: await models.Community.countDocuments()
+      };
+    }
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: err.message, connected: false });
+  }
 });
 
 app.listen(PORT, () => {

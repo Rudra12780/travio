@@ -12,8 +12,8 @@ interface AnimatedLogoProps {
 export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   size = 'md',
   showText = true,
-  title = 'Trovio',
-  badge = 'GlobalTrotters',
+  title = 'GlobalTrotter',
+  badge = 'AI Travel Hub',
   className = '',
   onClick,
 }) => {
@@ -32,7 +32,7 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => (e.key === 'Enter' || e.key === ' ') && onClick() : undefined}
-      aria-label="Trovio GlobalTrotters Logo"
+      aria-label="GlobalTrotter Logo"
     >
       <div 
         className="logo-emblem-wrapper"
@@ -43,11 +43,11 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
 
         {/* Orbiting Flight Ring */}
         <div className="logo-orbital-ring" aria-hidden="true">
-          <span className="orbital-flight-dot" />
+          <span className="orbital-flight-dot" style={{ background: '#F3AFCF', boxShadow: '0 0 10px #F3AFCF' }} />
         </div>
 
         {/* Dynamic Glass Badge */}
-        <div className="logo-glass-badge">
+        <div className="logo-glass-badge" style={{ background: 'linear-gradient(135deg, #203F70 0%, #8178E8 55%, #C39AD9 100%)', borderColor: 'rgba(232, 226, 240, 0.7)' }}>
           <svg 
             width={currentSize.svg} 
             height={currentSize.svg} 
@@ -58,19 +58,19 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
           >
             <defs>
               <linearGradient id="logoGradPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#22D3EE" />
-                <stop offset="50%" stopColor="#3B82F6" />
-                <stop offset="100%" stopColor="#8B5CF6" />
+                <stop offset="0%" stopColor="#8178E8" />
+                <stop offset="50%" stopColor="#C39AD9" />
+                <stop offset="100%" stopColor="#F3AFCF" />
               </linearGradient>
 
               <linearGradient id="needleNorth" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#FFFFFF" />
-                <stop offset="100%" stopColor="#38BDF8" />
+                <stop offset="100%" stopColor="#F3AFCF" />
               </linearGradient>
 
               <linearGradient id="needleSouth" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#F43F5E" />
-                <stop offset="100%" stopColor="#FB7185" />
+                <stop offset="0%" stopColor="#8178E8" />
+                <stop offset="100%" stopColor="#203F70" />
               </linearGradient>
 
               <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
@@ -84,7 +84,7 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
               cx="18" 
               cy="18" 
               r="15" 
-              stroke="rgba(255, 255, 255, 0.35)" 
+              stroke="rgba(232, 226, 240, 0.5)" 
               strokeWidth="1.2" 
               strokeDasharray="2 3"
               className="logo-dial-ring"
@@ -96,7 +96,7 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
               cy="18" 
               r="11.5" 
               stroke="url(#logoGradPrimary)" 
-              strokeWidth="1.6" 
+              strokeWidth="1.8" 
               strokeLinecap="round"
               strokeDasharray="18 45"
               className="logo-radar-sweep"
@@ -104,27 +104,27 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
 
             {/* 4 Cardinal Point Ticks */}
             <line x1="18" y1="4" x2="18" y2="7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="18" y1="29" x2="18" y2="32" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="4" y1="18" x2="7" y2="18" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="29" y1="18" x2="32" y2="18" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="18" y1="29" x2="18" y2="32" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="4" y1="18" x2="7" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="29" y1="18" x2="32" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
 
             {/* Dynamic Animated Compass Needle Group */}
             <g className="logo-compass-needle-group">
-              {/* North Needle Point (Cyan / White) */}
+              {/* North Needle Point (White / Soft Pink Accent) */}
               <polygon points="18,5 21.5,18 18,16" fill="url(#needleNorth)" filter="url(#logoGlow)" />
-              <polygon points="18,5 14.5,18 18,16" fill="#0284C7" />
+              <polygon points="18,5 14.5,18 18,16" fill="#F3AFCF" />
 
-              {/* South Needle Point (Coral Rose) */}
+              {/* South Needle Point (Periwinkle / Deep Blue) */}
               <polygon points="18,31 21.5,18 18,20" fill="url(#needleSouth)" />
-              <polygon points="18,31 14.5,18 18,20" fill="#BE123C" />
+              <polygon points="18,31 14.5,18 18,20" fill="#203F70" />
 
               {/* East / West Micro-Fins */}
               <polygon points="31,18 18,20.5 19.5,18" fill="rgba(255,255,255,0.85)" />
               <polygon points="5,18 18,15.5 16.5,18" fill="rgba(255,255,255,0.6)" />
 
               {/* Center Pivot Jewel */}
-              <circle cx="18" cy="18" r="3.2" fill="#0F172A" stroke="#FFFFFF" strokeWidth="1.2" />
-              <circle cx="18" cy="18" r="1.4" fill="#38BDF8" className="logo-center-sparkle" />
+              <circle cx="18" cy="18" r="3.2" fill="#203F70" stroke="#FFFFFF" strokeWidth="1.2" />
+              <circle cx="18" cy="18" r="1.4" fill="#F3AFCF" className="logo-center-sparkle" />
             </g>
           </svg>
         </div>

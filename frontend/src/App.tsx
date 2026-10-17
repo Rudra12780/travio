@@ -4,14 +4,34 @@ import { LandingPage } from './components/LandingPage';
 import { Dashboard } from './components/Dashboard';
 import { AdminSignIn } from './components/AdminSignIn';
 import { AdminDashboard } from './components/AdminDashboard';
+import { CommunityInvitePage } from './components/CommunityInvitePage';
+import { SignIn } from './components/SignIn';
+import { RegisterModal } from './components/RegisterModal';
 import { BackgroundAnimation } from './components/BackgroundAnimation';
 import { Creative3DClickEffect } from './components/Creative3DClickEffect';
+
+const extractInviteToken = (pathname: string): string | null => {
+  const joinMatch = pathname.match(/^\/community\/join\/([a-zA-Z0-9_-]+)/i);
+  if (joinMatch) return joinMatch[1];
+  const inviteMatch = pathname.match(/^\/invite\/([a-zA-Z0-9_-]+)/i);
+  if (inviteMatch) return inviteMatch[1];
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const qToken = urlParams.get('invite');
+    if (qToken) return qToken;
+  } catch (e) {}
+  return null;
+};
 
 export const App: React.FC = () => {
   // Navigation / Routing State
   const [currentPath, setCurrentPath] = useState<string>(() => {
     return window.location.pathname || '/';
   });
+
+  // Modal State for Invite page auth
+  const [showInviteSignIn, setShowInviteSignIn] = useState<boolean>(false);
+  const [showInviteSignUp, setShowInviteSignUp] = useState<boolean>(false);
 
   // Regular Traveler User State
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
@@ -35,9 +55,6 @@ export const App: React.FC = () => {
     return null;
   });
 
-  // Admin Impersonation / Traveler Redirection State
-  const [adminImpersonatedUser, setAdminImpersonatedUser] = useState<UserProfile | null>(null);
-
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname || '/');
@@ -58,6 +75,14 @@ export const App: React.FC = () => {
       localStorage.setItem('trovio_current_user', JSON.stringify(user));
     } catch (e) {}
     setCurrentUser(user);
+
+    // If an invitation was pending, redirect user straight back to that community invite page
+    const pendingInvite = localStorage.getItem('trovio_pending_invite');
+    if (pendingInvite) {
+      navigateTo(`/community/join/${pendingInvite}`);
+      return;
+    }
+
     navigateTo('/dashboard');
   };
 
@@ -91,20 +116,14 @@ export const App: React.FC = () => {
       localStorage.removeItem('trovio_admin_user');
     } catch (e) {}
     setAdminUser(null);
-    setAdminImpersonatedUser(null);
     navigateTo('/admin@1234');
   };
 
-  // Admin Redirect into User View Handler
-  const handleAdminRedirectToUser = (targetUser: UserProfile) => {
-    setAdminImpersonatedUser(targetUser);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Return from User view back to Admin Command Center
-  const handleReturnToAdmin = () => {
-    setAdminImpersonatedUser(null);
-    navigateTo('/admin@1234');
+  const handleUpdateAdminUser = (updated: UserProfile) => {
+    try {
+      localStorage.setItem('trovio_admin_user', JSON.stringify(updated));
+    } catch (e) {}
+    setAdminUser(updated);
   };
 
   // Decode and normalize pathname for routing
@@ -120,6 +139,14 @@ export const App: React.FC = () => {
   const isGenericAdminRoute =
     decodedPath.startsWith('/admin') && !isAdminSecretGate;
 
+  const isCreateCommunityRoute =
+    decodedPath === '/create-community' ||
+    decodedPath === '/community/create' ||
+    decodedPath.startsWith('/create-community') ||
+    decodedPath.startsWith('/community/create');
+
+  const inviteToken = extractInviteToken(currentPath);
+
   return (
     <>
       {/* Background Animated Flight Arcs / Cinematic Video / Aurora Glow */}
@@ -128,24 +155,14 @@ export const App: React.FC = () => {
       {/* Global Interactive 3D Spatial Holographic On-Click Effect */}
       <Creative3DClickEffect />
 
-      {/* Case 1: Admin is redirecting and viewing as a Traveler */}
-      {adminImpersonatedUser ? (
-        <Dashboard
-          user={adminImpersonatedUser}
-          adminOrigin={true}
-          onReturnToAdmin={handleReturnToAdmin}
-          onRedirectToUser={handleAdminRedirectToUser}
-          onUpdateUser={(updated) => setAdminImpersonatedUser(updated)}
-          onSignOut={handleAdminSignOut}
-        />
-      ) : isAdminSecretGate ? (
-        /* Case 2A: Dedicated Secret Admin Gate (localhost:3000/admin@1234) */
+      {isAdminSecretGate ? (
+        /* Case 1: Dedicated Secret Admin Gate (localhost:3000/admin@1234) */
         adminUser ? (
           <div className="dash-wrapper" style={{ minHeight: '100vh', position: 'relative', zIndex: 10 }}>
             <AdminDashboard
               adminUser={adminUser}
-              onRedirectToUser={handleAdminRedirectToUser}
               onAdminSignOut={handleAdminSignOut}
+              onUpdateAdminUser={handleUpdateAdminUser}
             />
           </div>
         ) : (
@@ -155,13 +172,13 @@ export const App: React.FC = () => {
           />
         )
       ) : isGenericAdminRoute ? (
-        /* Case 2B: Direct access to /admin attempted without authentication */
+        /* Case 2: Direct access to /admin attempted without authentication */
         adminUser ? (
           <div className="dash-wrapper" style={{ minHeight: '100vh', position: 'relative', zIndex: 10 }}>
             <AdminDashboard
               adminUser={adminUser}
-              onRedirectToUser={handleAdminRedirectToUser}
               onAdminSignOut={handleAdminSignOut}
+              onUpdateAdminUser={handleUpdateAdminUser}
             />
           </div>
         ) : (
@@ -276,19 +293,59 @@ export const App: React.FC = () => {
             </div>
           </div>
         )
+      ) : inviteToken ? (
+        /* Case 3: Dedicated QR Community Invite Page */
+        <div style={{ minHeight: '100vh', position: 'relative', zIndex: 10 }}>
+          <CommunityInvitePage
+            token={inviteToken}
+            currentUser={currentUser}
+            onOpenSignIn={() => setShowInviteSignIn(true)}
+            onOpenSignUp={() => setShowInviteSignUp(true)}
+            onNavigateHome={() => navigateTo('/')}
+            onNavigateCommunity={() => {
+              if (currentUser) {
+                navigateTo('/dashboard');
+              } else {
+                setShowInviteSignIn(true);
+              }
+            }}
+          />
+        </div>
       ) : (
-        /* Case 3: Regular Traveler Portal (localhost:3000) */
+        /* Case 4: Regular Traveler Portal (localhost:3000) */
         currentUser ? (
           <Dashboard
             user={currentUser}
-            adminOrigin={false}
             onUpdateUser={handleUpdateUser}
             onSignOut={handleUserSignOut}
+            initialTab={isCreateCommunityRoute ? 'community' : undefined}
+            initialOpenCreateCommunity={isCreateCommunityRoute}
           />
         ) : (
           <LandingPage onSignInSuccess={handleUserSignIn} />
         )
       )}
+
+      {/* Global Auth Modals for QR Invite scanning visitor */}
+      {showInviteSignIn && (
+        <SignIn
+          onSignInSuccess={(user) => {
+            setShowInviteSignIn(false);
+            handleUserSignIn(user);
+          }}
+          onClose={() => setShowInviteSignIn(false)}
+          isModal={true}
+        />
+      )}
+
+      <RegisterModal
+        isOpen={showInviteSignUp}
+        onClose={() => setShowInviteSignUp(false)}
+        onRegisterSuccess={(newUser) => {
+          setShowInviteSignUp(false);
+          handleUserSignIn(newUser);
+        }}
+      />
     </>
   );
 };

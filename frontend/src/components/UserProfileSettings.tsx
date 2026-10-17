@@ -63,29 +63,29 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
     <div style={{ marginTop: '24px', maxWidth: '880px', margin: '24px auto 0' }}>
       {/* Page Header */}
       <div style={{ marginBottom: '28px' }}>
-        <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px' }}>
-          Traveler Profile & Preferences
+        <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px' }}>
+          Traveler Dossier & Settings
         </h2>
-        <p style={{ fontSize: '14px', color: '#64748B' }}>
+        <p style={{ fontSize: '14px', color: '#777584' }}>
           Manage your personal voyage identity, currency localization, and saved wishlist destinations
         </p>
       </div>
 
       {savedSuccess && (
         <div style={{
-          background: '#ECFDF5',
-          border: '1px solid #A7F3D0',
-          color: '#065F46',
-          padding: '12px 18px',
-          borderRadius: '14px',
+          background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+          border: '1.5px solid #E8E2F0',
+          color: '#203F70',
+          padding: '14px 20px',
+          borderRadius: '16px',
           fontSize: '14px',
-          fontWeight: 600,
+          fontWeight: 700,
           marginBottom: '20px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px'
+          gap: '10px'
         }}>
-          <span>✓</span>
+          <span>✨</span>
           <span>Your traveler profile and preferences have been updated!</span>
         </div>
       )}
@@ -93,35 +93,39 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Profile Form Card */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         padding: '32px',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
         marginBottom: '28px'
       }}>
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Avatar & Image Selection from PC or Library */}
-          <div style={{ paddingBottom: '20px', borderBottom: '1px solid #F1F5F9' }}>
-            <label className="form-label" style={{ marginBottom: '12px', display: 'block' }}>
+          <div style={{ paddingBottom: '20px', borderBottom: '1px solid #E8E2F0' }}>
+            <label className="form-label" style={{ marginBottom: '12px', display: 'block', color: '#203F70' }}>
               TRAVELER AVATAR IDENTITY
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
               <img
                 src={avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80'}
                 alt={name}
-                style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #0D9488', boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)' }}
+                style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #8178E8', boxShadow: '0 4px 14px rgba(129, 120, 232, 0.3)' }}
               />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <input
                     type="file"
                     id="pc-avatar-upload"
-                    accept="image/*"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
                     style={{ display: 'none' }}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('Image file size must be under 5MB');
+                          return;
+                        }
                         const reader = new FileReader();
                         reader.onloadend = () => {
                           if (reader.result) setAvatarUrl(reader.result as string);
@@ -133,65 +137,53 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                   <label
                     htmlFor="pc-avatar-upload"
                     style={{
-                      background: '#0D9488',
+                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                       color: '#FFFFFF',
-                      padding: '8px 16px',
-                      borderRadius: '10px',
+                      padding: '10px 22px',
+                      borderRadius: '9999px',
                       fontSize: '13px',
-                      fontWeight: 700,
+                      fontWeight: 800,
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '6px'
+                      gap: '8px',
+                      boxShadow: '0 4px 14px rgba(129, 120, 232, 0.25)',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    <span>📁 Upload from PC</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span>Upload from PC</span>
                   </label>
+
+                  {avatarUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setAvatarUrl('')}
+                      style={{
+                        background: '#FAF9FC',
+                        color: '#777584',
+                        border: '1px solid #E8E2F0',
+                        padding: '10px 16px',
+                        borderRadius: '9999px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      title="Reset to default avatar"
+                    >
+                      Reset
+                    </button>
+                  )}
                 </div>
-                <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                <span style={{ fontSize: '11.5px', color: '#777584' }}>
                   PNG, JPG, or WebP up to 5MB from your computer
                 </span>
               </div>
-            </div>
-
-            {/* Curated Travel Avatar Library */}
-            <label className="form-label" style={{ marginBottom: '8px', display: 'block', fontSize: '11px' }}>
-              OR SELECT FROM CURATED AVATAR LIBRARY:
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '10px' }}>
-              {[
-                { name: 'Aviator', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Nomad', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Explorer', url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Hiker', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Voyager', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Captain', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Pilot', url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=150&h=150&q=80' },
-                { name: 'Adventurer', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80' }
-              ].map((av, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => setAvatarUrl(av.url)}
-                  style={{
-                    cursor: 'pointer',
-                    borderRadius: '12px',
-                    padding: '3px',
-                    border: avatarUrl === av.url ? '2.5px solid #0D9488' : '1.5px solid #E2E8F0',
-                    transition: 'all 0.15s ease',
-                    textAlign: 'center'
-                  }}
-                  title={av.name}
-                >
-                  <img
-                    src={av.url}
-                    alt={av.name}
-                    style={{ width: '100%', height: '48px', borderRadius: '8px', objectFit: 'cover' }}
-                  />
-                  <span style={{ fontSize: '10px', fontWeight: 600, color: '#475569', display: 'block', marginTop: '2px' }}>
-                    {av.name}
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -286,21 +278,21 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Saved Wishlist Destinations */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         padding: '32px',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>Saved Wishlist Destinations</h3>
-            <p style={{ fontSize: '13px', color: '#64748B' }}>Places you intend to visit on future journeys</p>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#292833' }}>Saved Wishlist Destinations</h3>
+            <p style={{ fontSize: '13px', color: '#777584' }}>Places you intend to visit on future journeys</p>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               type="button"
               className="nav-link"
-              style={{ color: '#E11D48', fontWeight: 700, background: '#FFF1F2', border: '1px solid #FECDD3' }}
+              style={{ color: '#203F70', fontWeight: 700, background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)', border: '1px solid #E8E2F0', borderRadius: '9999px', padding: '8px 16px' }}
               onClick={() => onNavigate('saved-places')}
             >
               ❤️ Go to Saved Places Page
@@ -308,7 +300,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
             <button
               type="button"
               className="nav-link"
-              style={{ color: '#0D9488', fontWeight: 700 }}
+              style={{ color: '#FFFFFF', fontWeight: 700, background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)', border: 'none', borderRadius: '9999px', padding: '8px 16px' }}
               onClick={() => onNavigate('cities')}
             >
               + Explore More Cities
@@ -317,7 +309,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
         </div>
 
         {wishlist.length === 0 ? (
-          <p style={{ fontSize: '14px', color: '#94A3B8', textAlign: 'center', padding: '30px' }}>
+          <p style={{ fontSize: '14px', color: '#777584', textAlign: 'center', padding: '30px' }}>
             Your wishlist is empty. Tap the heart icon on any destination in the Destinations tab.
           </p>
         ) : (
@@ -326,24 +318,25 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
               <div
                 key={city.id}
                 style={{
-                  background: '#F8FAFC',
+                  background: '#FAF9FC',
                   borderRadius: '16px',
-                  border: '1px solid #E2E8F0',
+                  border: '1.5px solid #E8E2F0',
                   overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
-                  padding: '10px'
+                  padding: '12px',
+                  boxShadow: '0 2px 8px rgba(32, 63, 112, 0.03)'
                 }}
               >
                 <img
                   src={city.image_url}
                   alt={city.name}
-                  style={{ width: '56px', height: '56px', borderRadius: '10px', objectFit: 'cover' }}
+                  style={{ width: '56px', height: '56px', borderRadius: '12px', objectFit: 'cover' }}
                 />
                 <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#111827' }}>{city.name}</h4>
-                  <p style={{ fontSize: '12px', color: '#64748B' }}>{city.country}</p>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>{city.name}</h4>
+                  <p style={{ fontSize: '12px', color: '#777584' }}>{city.country}</p>
                 </div>
                 <button
                   type="button"
@@ -352,7 +345,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#EF4444',
+                    color: '#8178E8',
                     cursor: 'pointer',
                     padding: '8px'
                   }}
@@ -365,34 +358,34 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
         )}
       </div>
 
-      {/* Screen 7: Preplanned Trips */}
+      {/* Preplanned Trips */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         padding: '24px',
         marginTop: '24px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)'
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', margin: 0 }}>Preplanned Trips</h3>
-            <p style={{ fontSize: '13px', color: '#64748B', margin: '4px 0 0 0' }}>Itineraries currently in design or scheduled for upcoming dates</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', margin: 0 }}>Preplanned Trips</h3>
+            <p style={{ fontSize: '13px', color: '#777584', margin: '4px 0 0 0' }}>Itineraries currently in design or scheduled for upcoming dates</p>
           </div>
         </div>
 
         {trips.filter(t => t.status === 'Planning' || t.status === 'Active').length === 0 ? (
-          <p style={{ fontSize: '13.5px', color: '#94A3B8', textAlign: 'center', padding: '24px' }}>No preplanned trips currently in queue.</p>
+          <p style={{ fontSize: '13.5px', color: '#777584', textAlign: 'center', padding: '24px' }}>No preplanned trips currently in queue.</p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
             {trips.filter(t => t.status === 'Planning' || t.status === 'Active').map(trip => (
-              <div key={trip.id} style={{ background: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+              <div key={trip.id} style={{ background: '#FAF9FC', borderRadius: '18px', border: '1.5px solid #E8E2F0', overflow: 'hidden' }}>
                 <div style={{ height: '110px' }}>
                   <img src={trip.cover_image} alt={trip.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '14px' }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0F172A', marginBottom: '4px' }}>{trip.title}</div>
-                  <div style={{ fontSize: '12px', color: '#64748B', marginBottom: '12px' }}>📅 {trip.start_date} • ${trip.total_budget}</div>
+                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#292833', marginBottom: '4px' }}>{trip.title}</div>
+                  <div style={{ fontSize: '12px', color: '#777584', marginBottom: '12px' }}>📅 {trip.start_date} • ${trip.total_budget}</div>
                   <button
                     type="button"
                     onClick={() => onNavigate('itinerary-view', trip.id)}
@@ -400,7 +393,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                       width: '100%',
                       padding: '8px',
                       borderRadius: '8px',
-                      background: '#0D9488',
+                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                       color: '#FFFFFF',
                       border: 'none',
                       fontWeight: 700,
@@ -417,34 +410,34 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
         )}
       </div>
 
-      {/* Screen 7: Previous Trips */}
+      {/* Previous Trips */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         padding: '24px',
         marginTop: '24px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)'
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', margin: 0 }}>Previous Trips</h3>
-            <p style={{ fontSize: '13px', color: '#64748B', margin: '4px 0 0 0' }}>Completed expedition logs and archived voyages</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', margin: 0 }}>Previous Trips</h3>
+            <p style={{ fontSize: '13px', color: '#777584', margin: '4px 0 0 0' }}>Completed expedition logs and archived voyages</p>
           </div>
         </div>
 
         {trips.length === 0 ? (
-          <p style={{ fontSize: '13.5px', color: '#94A3B8', textAlign: 'center', padding: '24px' }}>No previous trips logged yet.</p>
+          <p style={{ fontSize: '13.5px', color: '#777584', textAlign: 'center', padding: '24px' }}>No previous trips logged yet.</p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
             {trips.map(trip => (
-              <div key={trip.id} style={{ background: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+              <div key={trip.id} style={{ background: '#FAF9FC', borderRadius: '18px', border: '1.5px solid #E8E2F0', overflow: 'hidden' }}>
                 <div style={{ height: '110px' }}>
                   <img src={trip.cover_image} alt={trip.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '14px' }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0F172A', marginBottom: '4px' }}>{trip.title}</div>
-                  <div style={{ fontSize: '12px', color: '#64748B', marginBottom: '12px' }}>Completed • ${trip.total_budget}</div>
+                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#292833', marginBottom: '4px' }}>{trip.title}</div>
+                  <div style={{ fontSize: '12px', color: '#777584', marginBottom: '12px' }}>Completed • ${trip.total_budget}</div>
                   <button
                     type="button"
                     onClick={() => onNavigate('itinerary-view', trip.id)}
@@ -452,7 +445,7 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                       width: '100%',
                       padding: '8px',
                       borderRadius: '8px',
-                      background: '#1E293B',
+                      background: 'linear-gradient(135deg, #203F70 0%, #192B4D 100%)',
                       color: '#FFFFFF',
                       border: 'none',
                       fontWeight: 700,

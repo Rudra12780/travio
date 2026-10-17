@@ -312,15 +312,15 @@ export const SavedPlaces: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Header Banner - Matching GlobalTrotters Clean Luxury System */}
+      {/* Header Banner - Pastel Dreamscape Design */}
       <section
         style={{
           background: '#FFFFFF',
-          borderRadius: '20px',
-          border: '1px solid #E2E8F0',
+          borderRadius: '24px',
+          border: '1.5px solid #E8E2F0',
           padding: '32px',
           marginBottom: '24px',
-          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.04)',
+          boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
           position: 'relative'
         }}
       >
@@ -331,27 +331,27 @@ export const SavedPlaces: React.FC<Props> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                background: '#E6FFFA',
-                color: '#0D9488',
-                padding: '4px 12px',
+                background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+                color: '#8178E8',
+                padding: '5px 14px',
                 borderRadius: '9999px',
                 fontSize: '11px',
                 fontWeight: 800,
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',
                 marginBottom: '10px',
-                border: '1px solid #CCFBF1'
+                border: '1px solid #E8E2F0'
               }}
             >
-              <span>⭐</span>
-              <span>Personal Collection</span>
+              <span>🏝️</span>
+              <span>Pastel Sanctuary Collection</span>
             </div>
-            <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
-              Saved Places
+            <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
+              Saved Destinations & Favorites
             </h1>
-            <p style={{ fontSize: '14px', color: '#64748B', maxWidth: '600px', margin: 0, lineHeight: 1.5 }}>
-              Your collection of dream destinations and bookmarked cities.
-              Easily organize them into your itineraries or explore local activities.
+            <p style={{ fontSize: '14px', color: '#777584', maxWidth: '600px', margin: 0, lineHeight: 1.5 }}>
+              Your curated collection of dream destinations and bookmarked cities.
+              Easily organize them into your dream itineraries or explore local activities.
             </p>
           </div>
 
@@ -360,17 +360,18 @@ export const SavedPlaces: React.FC<Props> = ({
               type="button"
               onClick={() => setShowDiscover(!showDiscover)}
               style={{
-                padding: '10px 18px',
-                borderRadius: '12px',
-                background: showDiscover ? '#0D9488' : '#FFFFFF',
-                color: showDiscover ? '#FFFFFF' : '#0F172A',
-                border: showDiscover ? 'none' : '1.5px solid #CBD5E1',
+                padding: '10px 20px',
+                borderRadius: '9999px',
+                background: showDiscover ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : '#FFFFFF',
+                color: showDiscover ? '#FFFFFF' : '#292833',
+                border: showDiscover ? 'none' : '1.5px solid #E8E2F0',
                 fontSize: '13px',
                 fontWeight: 700,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
+                boxShadow: '0 2px 8px rgba(32, 63, 112, 0.05)',
                 transition: 'all 0.15s'
               }}
             >
@@ -382,9 +383,9 @@ export const SavedPlaces: React.FC<Props> = ({
                 type="button"
                 onClick={onPlanTripClick}
                 style={{
-                  padding: '10px 20px',
-                  borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                  padding: '10px 22px',
+                  borderRadius: '9999px',
+                  background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                   color: '#FFFFFF',
                   border: 'none',
                   fontSize: '13px',
@@ -393,7 +394,7 @@ export const SavedPlaces: React.FC<Props> = ({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 4px 14px rgba(13, 148, 136, 0.25)',
+                  boxShadow: '0 4px 14px rgba(129, 120, 232, 0.3)',
                   transition: 'all 0.15s'
                 }}
               >
@@ -411,50 +412,50 @@ export const SavedPlaces: React.FC<Props> = ({
             gap: '14px',
             marginTop: '24px',
             paddingTop: '20px',
-            borderTop: '1px solid #F1F5F9'
+            borderTop: '1px solid #E8E2F0'
           }}
         >
-          <div style={{ background: '#F8FAFC', padding: '12px 16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div style={{ background: '#FAF9FC', padding: '12px 16px', borderRadius: '14px', border: '1px solid #E8E2F0' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Saved Places
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '4px' }}>
-              <span style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A' }}>{totalSaved}</span>
-              <span style={{ fontSize: '12px', color: '#94A3B8' }}>destinations</span>
+              <span style={{ fontSize: '22px', fontWeight: 900, color: '#292833' }}>{totalSaved}</span>
+              <span style={{ fontSize: '12px', color: '#777584' }}>destinations</span>
             </div>
           </div>
 
-          <div style={{ background: '#F8FAFC', padding: '12px 16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div style={{ background: '#FAF9FC', padding: '12px 16px', borderRadius: '14px', border: '1px solid #E8E2F0' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Countries
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '4px' }}>
-              <span style={{ fontSize: '22px', fontWeight: 900, color: '#0F172A' }}>{uniqueCountriesCount}</span>
-              <span style={{ fontSize: '12px', color: '#94A3B8' }}>nations</span>
+              <span style={{ fontSize: '22px', fontWeight: 900, color: '#292833' }}>{uniqueCountriesCount}</span>
+              <span style={{ fontSize: '12px', color: '#777584' }}>nations</span>
             </div>
           </div>
 
-          <div style={{ background: '#F8FAFC', padding: '12px 16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div style={{ background: '#FAF9FC', padding: '12px 16px', borderRadius: '14px', border: '1px solid #E8E2F0' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Avg Daily Cost
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '4px' }}>
-              <span style={{ fontSize: '22px', fontWeight: 900, color: '#0D9488' }}>
+              <span style={{ fontSize: '22px', fontWeight: 900, color: '#8178E8' }}>
                 ${avgDailyCost}
               </span>
-              <span style={{ fontSize: '12px', color: '#94A3B8' }}>/ day</span>
+              <span style={{ fontSize: '12px', color: '#777584' }}>/ day</span>
             </div>
           </div>
 
-          <div style={{ background: '#F8FAFC', padding: '12px 16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div style={{ background: '#FAF9FC', padding: '12px 16px', borderRadius: '14px', border: '1px solid #E8E2F0' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Highest Rated
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '4px' }}>
-              <span style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span style={{ fontSize: '17px', fontWeight: 800, color: '#292833', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {topRated ? topRated.name : '—'}
               </span>
-              {topRated && <span style={{ fontSize: '12px', color: '#D97706', fontWeight: 700 }}>★ {topRated.popularity_score}</span>}
+              {topRated && <span style={{ fontSize: '12px', color: '#A678BD', fontWeight: 800 }}>★ {topRated.popularity_score}</span>}
             </div>
           </div>
         </div>
@@ -615,20 +616,20 @@ export const SavedPlaces: React.FC<Props> = ({
         </div>
 
         {/* Region Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
           {availableRegions.map(region => (
             <button
               key={region}
               type="button"
               onClick={() => setSelectedRegion(region)}
               style={{
-                padding: '5px 12px',
+                padding: '6px 14px',
                 borderRadius: '9999px',
                 fontSize: '12px',
-                fontWeight: selectedRegion === region ? 700 : 600,
-                border: selectedRegion === region ? '1px solid #CCFBF1' : '1px solid #E2E8F0',
-                background: selectedRegion === region ? '#E6FFFA' : '#FFFFFF',
-                color: selectedRegion === region ? '#0D9488' : '#475569',
+                fontWeight: selectedRegion === region ? 800 : 600,
+                border: selectedRegion === region ? '1.5px solid #8178E8' : '1px solid #E8E2F0',
+                background: selectedRegion === region ? 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)' : '#FFFFFF',
+                color: selectedRegion === region ? '#203F70' : '#777584',
                 cursor: 'pointer',
                 transition: 'all 0.15s'
               }}
@@ -640,17 +641,17 @@ export const SavedPlaces: React.FC<Props> = ({
 
         {/* Sort Dropdown */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>Sort:</span>
+          <span style={{ fontSize: '12px', color: '#777584', fontWeight: 600 }}>Sort:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             style={{
-              padding: '6px 10px',
-              borderRadius: '8px',
-              border: '1px solid #CBD5E1',
+              padding: '6px 12px',
+              borderRadius: '10px',
+              border: '1px solid #E8E2F0',
               fontSize: '12.5px',
-              fontWeight: 600,
-              color: '#0F172A',
+              fontWeight: 700,
+              color: '#292833',
               background: '#FFFFFF',
               cursor: 'pointer',
               outline: 'none'
@@ -668,19 +669,19 @@ export const SavedPlaces: React.FC<Props> = ({
       {/* Main Saved Places Grid */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <div className="spinner" style={{ margin: '0 auto 12px', borderTopColor: '#0D9488' }} />
-          <p style={{ color: '#64748B', fontSize: '13.5px' }}>Loading saved places...</p>
+          <div className="spinner" style={{ margin: '0 auto 12px', borderTopColor: '#8178E8' }} />
+          <p style={{ color: '#777584', fontSize: '13.5px' }}>Loading saved places...</p>
         </div>
       ) : displayedPlaces.length === 0 ? (
         /* Empty State */
         <div
           style={{
             background: '#FFFFFF',
-            borderRadius: '20px',
-            border: '1px solid #E2E8F0',
-            padding: '48px 24px',
+            borderRadius: '24px',
+            border: '1.5px solid #E8E2F0',
+            padding: '50px 24px',
             textAlign: 'center',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
+            boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
           }}
         >
           <div
@@ -688,8 +689,8 @@ export const SavedPlaces: React.FC<Props> = ({
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              background: '#F0FDFA',
-              color: '#0D9488',
+              background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+              color: '#8178E8',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -699,13 +700,13 @@ export const SavedPlaces: React.FC<Props> = ({
           >
             📌
           </div>
-          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '0 0 6px 0' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#292833', margin: '0 0 6px 0' }}>
             {searchTerm || selectedRegion !== 'All' ? 'No matching places found' : 'No Saved Places Yet'}
           </h2>
-          <p style={{ fontSize: '13.5px', color: '#64748B', maxWidth: '420px', margin: '0 auto 24px', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '13.5px', color: '#777584', maxWidth: '420px', margin: '0 auto 24px', lineHeight: 1.5 }}>
             {searchTerm || selectedRegion !== 'All'
               ? 'Try adjusting your search query or region filter.'
-              : 'Save destinations you love so you can easily include them in your next trip.'}
+              : 'Save destinations you love so you can easily include them in your next dream trip.'}
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
@@ -713,14 +714,15 @@ export const SavedPlaces: React.FC<Props> = ({
               type="button"
               onClick={() => setShowDiscover(true)}
               style={{
-                padding: '10px 20px',
-                borderRadius: '10px',
-                background: '#0D9488',
+                padding: '10px 22px',
+                borderRadius: '9999px',
+                background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                 color: '#FFFFFF',
                 border: 'none',
                 fontSize: '13px',
-                fontWeight: 700,
-                cursor: 'pointer'
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
               }}
             >
               + Discover Places
@@ -729,11 +731,11 @@ export const SavedPlaces: React.FC<Props> = ({
               type="button"
               onClick={() => onNavigate('cities')}
               style={{
-                padding: '10px 18px',
-                borderRadius: '10px',
-                background: '#F1F5F9',
-                color: '#334155',
-                border: '1px solid #CBD5E1',
+                padding: '10px 20px',
+                borderRadius: '9999px',
+                background: '#FAF9FC',
+                color: '#292833',
+                border: '1.5px solid #E8E2F0',
                 fontSize: '13px',
                 fontWeight: 700,
                 cursor: 'pointer'
@@ -759,10 +761,10 @@ export const SavedPlaces: React.FC<Props> = ({
                 className="saved-place-card"
                 style={{
                   background: '#FFFFFF',
-                  borderRadius: '18px',
-                  border: '1px solid #E2E8F0',
+                  borderRadius: '24px',
+                  border: '1.5px solid #E8E2F0',
                   overflow: 'hidden',
-                  boxShadow: '0 4px 15px rgba(15, 23, 42, 0.04)',
+                  boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
                   display: 'flex',
                   flexDirection: 'column'
                 }}
@@ -782,7 +784,7 @@ export const SavedPlaces: React.FC<Props> = ({
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%)'
+                      background: 'linear-gradient(180deg, rgba(32, 63, 112, 0.1) 0%, rgba(25, 43, 77, 0.75) 100%)'
                     }}
                   />
 
@@ -799,12 +801,12 @@ export const SavedPlaces: React.FC<Props> = ({
                   >
                     <span
                       style={{
-                        background: 'rgba(15, 23, 42, 0.75)',
+                        background: 'rgba(25, 43, 77, 0.75)',
                         backdropFilter: 'blur(8px)',
                         color: '#FFFFFF',
                         fontSize: '11px',
                         fontWeight: 700,
-                        padding: '3px 8px',
+                        padding: '4px 10px',
                         borderRadius: '9999px'
                       }}
                     >
@@ -814,12 +816,12 @@ export const SavedPlaces: React.FC<Props> = ({
                     {city.climate && (
                       <span
                         style={{
-                          background: 'rgba(13, 148, 136, 0.85)',
+                          background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.85) 0%, rgba(195, 154, 217, 0.85) 100%)',
                           backdropFilter: 'blur(8px)',
-                          color: '#FFFFFF',
+                          color: '#203F70',
                           fontSize: '11px',
-                          fontWeight: 700,
-                          padding: '3px 8px',
+                          fontWeight: 800,
+                          padding: '4px 10px',
                           borderRadius: '9999px'
                         }}
                       >
@@ -842,15 +844,15 @@ export const SavedPlaces: React.FC<Props> = ({
                       borderRadius: '50%',
                       background: '#FFFFFF',
                       border: 'none',
-                      color: '#475569',
+                      color: '#8178E8',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                      boxShadow: '0 4px 12px rgba(32, 63, 112, 0.2)'
                     }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#0D9488" stroke="#0D9488" strokeWidth="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#8178E8" stroke="#8178E8" strokeWidth="2">
                       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                     </svg>
                   </button>
@@ -863,10 +865,10 @@ export const SavedPlaces: React.FC<Props> = ({
                       </h3>
                       <div
                         style={{
-                          background: 'rgba(217, 119, 6, 0.9)',
+                          background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                           color: '#FFFFFF',
-                          padding: '2px 7px',
-                          borderRadius: '6px',
+                          padding: '3px 8px',
+                          borderRadius: '8px',
                           fontSize: '11px',
                           fontWeight: 800
                         }}
@@ -874,18 +876,18 @@ export const SavedPlaces: React.FC<Props> = ({
                         ★ {city.popularity_score}
                       </div>
                     </div>
-                    <p style={{ fontSize: '12.5px', color: '#E2E8F0', margin: '2px 0 0 0', fontWeight: 600 }}>
+                    <p style={{ fontSize: '12.5px', color: '#FAF9FC', margin: '2px 0 0 0', fontWeight: 600 }}>
                       {city.country}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Content */}
-                <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <p
                     style={{
                       fontSize: '12.5px',
-                      color: '#64748B',
+                      color: '#777584',
                       lineHeight: 1.5,
                       margin: '0 0 12px 0',
                       display: '-webkit-box',
@@ -903,24 +905,24 @@ export const SavedPlaces: React.FC<Props> = ({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '8px 10px',
-                      background: '#F8FAFC',
-                      borderRadius: '10px',
-                      border: '1px solid #F1F5F9',
+                      padding: '8px 12px',
+                      background: '#FAF9FC',
+                      borderRadius: '12px',
+                      border: '1px solid #E8E2F0',
                       marginBottom: '14px',
                       fontSize: '11.5px'
                     }}
                   >
                     <div>
-                      <span style={{ color: '#94A3B8' }}>Est. Cost:</span>
-                      <strong style={{ color: '#0D9488', marginLeft: '4px' }}>
+                      <span style={{ color: '#777584' }}>Est. Cost:</span>
+                      <strong style={{ color: '#8178E8', marginLeft: '4px' }}>
                         ${city.avg_cost_per_day}/day
                       </strong>
                     </div>
 
                     <div>
-                      <span style={{ color: '#94A3B8' }}>Tier:</span>
-                      <strong style={{ color: '#0F172A', marginLeft: '4px' }}>
+                      <span style={{ color: '#777584' }}>Tier:</span>
+                      <strong style={{ color: '#203F70', marginLeft: '4px' }}>
                         {city.cost_index === 1 ? 'Budget' : city.cost_index === 2 ? 'Moderate' : 'Luxury'}
                       </strong>
                     </div>
@@ -935,7 +937,7 @@ export const SavedPlaces: React.FC<Props> = ({
                         style={{
                           padding: '9px 10px',
                           borderRadius: '10px',
-                          background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                          background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                           color: '#FFFFFF',
                           border: 'none',
                           fontSize: '12px',
@@ -944,7 +946,8 @@ export const SavedPlaces: React.FC<Props> = ({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '5px'
+                          gap: '5px',
+                          boxShadow: '0 2px 8px rgba(129, 120, 232, 0.2)'
                         }}
                       >
                         <span>✈️ Add to Trip</span>
@@ -956,9 +959,9 @@ export const SavedPlaces: React.FC<Props> = ({
                         style={{
                           padding: '9px 10px',
                           borderRadius: '10px',
-                          background: '#F1F5F9',
-                          color: '#0F172A',
-                          border: '1px solid #CBD5E1',
+                          background: '#FAF9FC',
+                          color: '#292833',
+                          border: '1px solid #E8E2F0',
                           fontSize: '12px',
                           fontWeight: 700,
                           cursor: 'pointer',

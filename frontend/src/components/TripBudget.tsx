@@ -97,29 +97,30 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
       {/* Title Bar & Trip Selector */}
       <div style={{
         background: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        borderRadius: '20px',
-        padding: '24px',
+        border: '1.5px solid #E8E2F0',
+        borderRadius: '22px',
+        padding: '26px',
         marginBottom: '28px',
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: '20px'
+        gap: '20px',
+        boxShadow: '0 8px 24px rgba(32, 63, 112, 0.05)'
       }}>
         <div>
-          <span style={{ fontSize: '12px', fontWeight: 800, color: '#0D9488', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            FINANCIAL INTELLIGENCE & TRACKING
+          <span style={{ fontSize: '12px', fontWeight: 800, color: '#8178E8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            🌸 FINANCIAL INTELLIGENCE & TRACKING
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#111827' }}>Expedition Budget for</h2>
+            <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#292833' }}>Expedition Budget for</h2>
             <select
               value={currentTripId}
               onChange={(e) => handleTripChange(Number(e.target.value))}
               style={{
                 fontSize: '20px',
                 fontWeight: 900,
-                color: '#0D9488',
+                color: '#8178E8',
                 border: 'none',
                 background: 'transparent',
                 cursor: 'pointer',
@@ -131,7 +132,7 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
               ))}
             </select>
           </div>
-          <p style={{ fontSize: '13.5px', color: '#64748B', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: '#777584', marginTop: '4px' }}>
             {trip?.start_date} → {trip?.end_date} ({tripDays} Days)
           </p>
         </div>
@@ -145,15 +146,15 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
       {/* Overbudget Warning Alert */}
       {isOverBudget && (
         <div style={{
-          background: '#FFF1F2',
-          border: '1.5px solid #FDA4AF',
+          background: '#FFF2F0',
+          border: '1.5px solid #F5B0A4',
           borderRadius: '16px',
           padding: '16px 20px',
           marginBottom: '24px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          color: '#BE123C'
+          color: '#C65335'
         }}>
           <span style={{ fontSize: '24px' }}>⚠️</span>
           <div>
@@ -167,62 +168,63 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
 
       {/* Metrics Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px', marginBottom: '28px' }}>
-        <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Total Allocated</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: '#111827', marginTop: '4px' }}>${totalBudget}</p>
-          <span style={{ fontSize: '12px', color: '#0D9488', fontWeight: 600 }}>Planned Target</span>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
+          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Allocated</p>
+          <p style={{ fontSize: '28px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${totalBudget}</p>
+          <span style={{ fontSize: '12px', color: '#8178E8', fontWeight: 800 }}>Planned Target</span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Total Logged</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#0D9488', marginTop: '4px' }}>${totalSpent}</p>
-          <span style={{ fontSize: '12px', color: '#64748B' }}>{spentPercent}% of total</span>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
+          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Logged</p>
+          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#8178E8', marginTop: '4px' }}>${totalSpent}</p>
+          <span style={{ fontSize: '12px', color: '#777584' }}>{spentPercent}% of total</span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Remaining Balance</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#111827', marginTop: '4px' }}>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
+          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Remaining Balance</p>
+          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#292833', marginTop: '4px' }}>
             {isOverBudget ? `-$${Math.abs(remaining)}` : `$${remaining}`}
           </p>
-          <span style={{ fontSize: '12px', color: isOverBudget ? '#E11D48' : '#10B981', fontWeight: 600 }}>
+          <span style={{ fontSize: '12px', color: isOverBudget ? '#E11D48' : '#10B981', fontWeight: 800, background: isOverBudget ? '#FFE4E6' : '#ECFDF5', padding: '2px 8px', borderRadius: '6px' }}>
             {isOverBudget ? 'Over Budget' : 'Safe to spend'}
           </span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Daily Burn Rate</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: '#111827', marginTop: '4px' }}>${avgCostPerDay} <span style={{ fontSize: '13px', color: '#64748B', fontWeight: 500 }}>/ day</span></p>
-          <span style={{ fontSize: '12px', color: '#64748B' }}>Across {tripDays} days</span>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
+          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Daily Burn Rate</p>
+          <p style={{ fontSize: '28px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${avgCostPerDay} <span style={{ fontSize: '13px', color: '#777584', fontWeight: 500 }}>/ day</span></p>
+          <span style={{ fontSize: '12px', color: '#777584' }}>Across {tripDays} days</span>
         </div>
       </div>
 
       {/* Category Breakdown Cards */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '24px',
+        border: '1.5px solid #E8E2F0',
         padding: '24px',
-        marginBottom: '28px'
+        marginBottom: '28px',
+        boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)'
       }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#111827', marginBottom: '16px' }}>Category Allocations</h3>
+        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', marginBottom: '16px' }}>Category Allocations</h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           {[
-            { cat: 'Transit', label: '🚗 Transit & Flights', amount: breakdown.Transit || 0, color: '#6366F1' },
-            { cat: 'Stay', label: '🏨 Lodging & Hotels', amount: breakdown.Stay || 0, color: '#0D9488' },
-            { cat: 'Activities', label: '🎟️ Experiences & Tours', amount: breakdown.Activities || 0, color: '#F59E0B' },
-            { cat: 'Food', label: '🍽️ Dining & Cuisine', amount: breakdown.Food || 0, color: '#EC4899' },
-            { cat: 'Misc', label: '📦 Shopping & Misc', amount: breakdown.Misc || 0, color: '#8B5CF6' }
+            { cat: 'Transit', label: '🚗 Transit & Flights', amount: breakdown.Transit || 0, color: '#8178E8' },
+            { cat: 'Stay', label: '🏨 Lodging & Hotels', amount: breakdown.Stay || 0, color: '#38BDF8' },
+            { cat: 'Activities', label: '🎟️ Experiences & Tours', amount: breakdown.Activities || 0, color: '#F3AFCF' },
+            { cat: 'Food', label: '🍽️ Dining & Cuisine', amount: breakdown.Food || 0, color: '#F59E0B' },
+            { cat: 'Misc', label: '📦 Shopping & Misc', amount: breakdown.Misc || 0, color: '#A678BD' }
           ].map(item => {
             const percent = totalSpent > 0 ? Math.round((item.amount / totalSpent) * 100) : 0;
             return (
-              <div key={item.cat} style={{ background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                <p style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>{item.label}</p>
-                <p style={{ fontSize: '20px', fontWeight: 900, color: '#111827', marginTop: '4px' }}>${item.amount}</p>
-                <div style={{ marginTop: '8px', height: '6px', background: '#E2E8F0', borderRadius: '9999px', overflow: 'hidden' }}>
+              <div key={item.cat} style={{ background: '#FAF9FC', padding: '16px', borderRadius: '18px', border: '1.5px solid #E8E2F0' }}>
+                <p style={{ fontSize: '13px', fontWeight: 750, color: '#292833' }}>{item.label}</p>
+                <p style={{ fontSize: '20px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${item.amount}</p>
+                <div style={{ marginTop: '8px', height: '7px', background: '#E8E2F0', borderRadius: '9999px', overflow: 'hidden' }}>
                   <div style={{ width: `${percent}%`, height: '100%', background: item.color, borderRadius: '9999px' }} />
                 </div>
-                <span style={{ fontSize: '11px', color: '#64748B', marginTop: '4px', display: 'block' }}>{percent}% of spent</span>
+                <span style={{ fontSize: '11px', color: '#777584', marginTop: '4px', display: 'block', fontWeight: 600 }}>{percent}% of spent</span>
               </div>
             );
           })}

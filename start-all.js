@@ -1,9 +1,35 @@
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const path = require('path');
 
 const rootDir = __dirname;
 const backendDir = path.join(rootDir, 'backend');
 const frontendDir = path.join(rootDir, 'frontend');
+
+const isWindows = process.platform === 'win32';
+
+// Automatically free ports 3000 and 5000 if occupied by previous processes
+function freePort(port) {
+  try {
+    if (isWindows) {
+      const output = execSync(`netstat -ano | findstr :${port}`, { encoding: 'utf8' });
+      const lines = output.trim().split('\n');
+      for (const line of lines) {
+        if (line.includes('LISTENING')) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && pid !== '0' && pid !== process.pid.toString()) {
+            try {
+              execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
+            } catch (_) {}
+          }
+        }
+      }
+    }
+  } catch (_) {}
+}
+
+freePort(3000);
+freePort(5000);
 
 console.log('\x1b[32m%s\x1b[0m', '==================================================');
 console.log('\x1b[32m%s\x1b[0m', ' 🚀 Starting Trovio / GlobeTrotter Full Stack App');
@@ -14,14 +40,13 @@ console.log('📍 Admin Gate:  http://localhost:3000/admin@1234');
 console.log('--------------------------------------------------\n');
 
 // Start Backend
-const isWindows = process.platform === 'win32';
 const backendCmd = 'node';
 const backendArgs = ['server.js'];
 
 const backend = spawn(backendCmd, backendArgs, {
   cwd: backendDir,
   shell: isWindows,
-  stdio: ['inherit', 'pipe', 'pipe']
+  stdio: ['ignore', 'pipe', 'pipe']
 });
 
 backend.stdout.on('data', (data) => {
@@ -41,7 +66,7 @@ const npmCmd = isWindows ? 'npm.cmd' : 'npm';
 const frontend = spawn(npmCmd, ['run', 'dev'], {
   cwd: frontendDir,
   shell: isWindows,
-  stdio: ['inherit', 'pipe', 'pipe']
+  stdio: ['ignore', 'pipe', 'pipe']
 });
 
 frontend.stdout.on('data', (data) => {

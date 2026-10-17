@@ -146,13 +146,13 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
 
   return (
     <div style={{ marginTop: '24px' }}>
-      {/* Title (Screen 8 Wireframe) */}
+      {/* Title */}
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
-          City Search Page (Screen 8)
+        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
+          Explore World Destinations
         </h2>
-        <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
-          Explore world heritage cities, climate metrics, and cost indices to include in your journeys
+        <p style={{ fontSize: '13.5px', color: '#777584', margin: 0 }}>
+          Discover curated world cities, seasonal climates, and cost metrics to craft your dreamscape voyages
         </p>
       </div>
 
@@ -194,18 +194,21 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
             return (
               <div
                 key={city.id}
+                className="destination-warm-card"
                 style={{
                   background: '#FFFFFF',
-                  borderRadius: '20px',
-                  border: '1px solid #E2E8F0',
+                  borderRadius: '24px',
+                  border: '1.5px solid #E8E2F0',
                   overflow: 'hidden',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                  boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.06)',
                   display: 'flex',
-                  flexDirection: 'column'
+                  flexDirection: 'column',
+                  transition: 'all 0.25s ease',
+                  backdropFilter: 'blur(12px)'
                 }}
               >
                 {/* Image & Wishlist Button */}
-                <div style={{ position: 'relative', height: '180px' }}>
+                <div style={{ position: 'relative', height: '190px' }}>
                   <img
                     src={city.image_url}
                     alt={city.name}
@@ -223,19 +226,19 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                       width: '38px',
                       height: '38px',
                       borderRadius: '50%',
-                      background: isWishlisted ? '#FFF1F2' : '#FFFFFF',
-                      border: isWishlisted ? '1.5px solid #FECDD3' : '1px solid #E2E8F0',
+                      background: isWishlisted ? '#FAF0F6' : '#FFFFFF',
+                      border: isWishlisted ? '1.5px solid #F3AFCF' : '1px solid #E8E2F0',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      color: isWishlisted ? '#E11D48' : '#94A3B8',
+                      boxShadow: '0 4px 12px rgba(32, 63, 112, 0.08)',
+                      color: isWishlisted ? '#E11D48' : '#8E8A9C',
                       transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                       transform: isWishlisted ? 'scale(1.08)' : 'scale(1)'
                     }}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? '#E11D48' : 'none'} stroke={isWishlisted ? '#E11D48' : '#94A3B8'} strokeWidth="2.2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? '#E11D48' : 'none'} stroke={isWishlisted ? '#E11D48' : '#8E8A9C'} strokeWidth="2.2">
                       <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                     </svg>
                   </button>
@@ -244,13 +247,13 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                     position: 'absolute',
                     bottom: '12px',
                     left: '12px',
-                    background: 'rgba(17, 24, 39, 0.75)',
-                    backdropFilter: 'blur(4px)',
-                    color: '#FFFFFF',
+                    background: 'rgba(32, 63, 112, 0.85)',
+                    backdropFilter: 'blur(8px)',
+                    color: '#FAF9FC',
                     fontSize: '11px',
                     fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: '6px'
+                    padding: '4px 12px',
+                    borderRadius: '999px'
                   }}>
                     {city.climate}
                   </span>
@@ -259,13 +262,13 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                     position: 'absolute',
                     top: '12px',
                     left: '12px',
-                    background: '#FFFFFF',
-                    color: '#D97706',
-                    fontSize: '11.5px',
+                    background: 'linear-gradient(135deg, #203F70 0%, #192B4D 100%)',
+                    color: '#FAF9FC',
+                    fontSize: '12px',
                     fontWeight: 800,
-                    padding: '3px 8px',
+                    padding: '3px 10px',
                     borderRadius: '9999px',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 8px rgba(32, 63, 112, 0.15)'
                   }}>
                     ★ {city.popularity_score}
                   </span>
@@ -274,17 +277,17 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                 {/* Content */}
                 <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-                    <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>{city.name}</h3>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#6366F1' }}>
-                      {'$'.repeat(city.cost_index)} ({city.cost_index === 1 ? 'Budget' : city.cost_index === 2 ? 'Moderate' : 'Luxury'})
+                    <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#292833' }}>{city.name}</h3>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: '#8178E8' }}>
+                      {'$'.repeat(city.cost_index)} ({city.cost_index === 1 ? 'Budget' : city.cost_index === 2 ? 'Comfort' : 'Luxury'})
                     </span>
                   </div>
 
-                  <p style={{ fontSize: '12.5px', color: '#0D9488', fontWeight: 600, marginBottom: '8px' }}>
+                  <p style={{ fontSize: '13px', color: '#A678BD', fontWeight: 700, marginBottom: '8px' }}>
                     {city.country} • {city.region}
                   </p>
 
-                  <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.45', marginBottom: '16px' }}>
+                  <p style={{ fontSize: '13px', color: '#777584', lineHeight: '1.5', marginBottom: '16px' }}>
                     {city.description}
                   </p>
 
@@ -292,30 +295,32 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    paddingTop: '12px',
-                    borderTop: '1px solid #F1F5F9',
+                    paddingTop: '14px',
+                    borderTop: '1px solid #E8E2F0',
                     marginTop: 'auto'
                   }}>
                     <div>
-                      <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>Avg Cost</span>
-                      <span style={{ fontSize: '15px', fontWeight: 800, color: '#111827' }}>${city.avg_cost_per_day} <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}>/ day</span></span>
+                      <span style={{ fontSize: '10.5px', color: '#777584', display: 'block', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.5px' }}>Avg Cost</span>
+                      <span style={{ fontSize: '16px', fontWeight: 850, color: '#292833' }}>${city.avg_cost_per_day} <span style={{ fontSize: '12px', fontWeight: 500, color: '#777584' }}>/ day</span></span>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => openAddTripModal(city)}
                       style={{
-                        background: '#0D9488',
+                        background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 50%, #F3AFCF 100%)',
                         color: '#FFFFFF',
                         border: 'none',
-                        borderRadius: '10px',
-                        padding: '8px 16px',
-                        fontSize: '13px',
-                        fontWeight: 700,
+                        borderRadius: '12px',
+                        padding: '10px 20px',
+                        fontSize: '13.5px',
+                        fontWeight: 800,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px'
+                        gap: '6px',
+                        boxShadow: '0 4px 16px rgba(129, 120, 232, 0.35)',
+                        transition: 'all 0.2s ease'
                       }}
                     >
                       <span>+ Add to Trip</span>
@@ -481,13 +486,13 @@ export const CitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   marginTop: '8px',
                   padding: '12px',
                   borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                  background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 50%, #F3AFCF 100%)',
                   color: '#FFFFFF',
                   border: 'none',
                   fontSize: '14px',
                   fontWeight: 800,
                   cursor: trips.length === 0 ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)'
+                  boxShadow: '0 4px 14px rgba(129, 120, 232, 0.3)'
                 }}
               >
                 <span>Append Stop to Itinerary</span>

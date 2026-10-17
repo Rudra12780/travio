@@ -247,8 +247,8 @@ export const BackgroundAnimation: React.FC = () => {
 
       // 2. RENDER FULL-SCREEN FLIGHT CORRIDORS (LEFT TO RIGHT)
       for (const route of routes) {
-        // Path spans all the way from offscreen left to offscreen right
-        const startX = -80;
+        // Origin pin on the left side (reference design: 📍 - - - - ✈️)
+        const startX = Math.max(36, width * 0.04);
         const endX = width + 80;
         const midX = width * 0.5;
 
@@ -260,18 +260,54 @@ export const BackgroundAnimation: React.FC = () => {
         const cpX = midX;
         const cpY = 2 * midY - 0.5 * (startY + endY);
 
-        // A. Draw Subtle Dashed Cruising Corridor Line Across Entire Screen
+        // A. Draw Departure Location Pin (📍) at Corridor Origin
+        ctx.save();
+        ctx.translate(startX, startY);
+
+        // Ground ripple / radar base
+        ctx.beginPath();
+        ctx.ellipse(0, 3, 10, 3.5, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `${route.accentColor}80`;
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.ellipse(0, 3, 5, 1.8, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `${route.color}60`;
+        ctx.fill();
+
+        // Pin body
+        ctx.beginPath();
+        ctx.moveTo(0, 1);
+        ctx.bezierCurveTo(-5, -6, -7, -11, -7, -15);
+        ctx.arc(0, -15, 7, Math.PI, 0, false);
+        ctx.bezierCurveTo(7, -11, 5, -6, 0, 1);
+        ctx.closePath();
+        ctx.fillStyle = route.color;
+        ctx.shadowColor = route.accentColor;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+
+        // Pin inner dot
+        ctx.beginPath();
+        ctx.arc(0, -15, 2.8, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowBlur = 0;
+        ctx.fill();
+        ctx.restore();
+
+        // B. Draw Subtle Dashed Cruising Corridor Line Across Entire Screen
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        ctx.strokeStyle = `${route.color}25`; // Translucent delicate flight line
-        ctx.lineWidth = 1.6;
-        ctx.setLineDash([5, 8]);
+        ctx.strokeStyle = `${route.color}35`; // Translucent delicate flight line
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([6, 9]);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // B. Waypoint Radar Nodes along the corridor
-        const waypoints = [0.25, 0.5, 0.75];
+        // C. Waypoint Radar Nodes along the corridor
+        const waypoints = [0.3, 0.6, 0.85];
         for (const wpT of waypoints) {
           const wpMt = 1 - wpT;
           const wpX = wpMt * wpMt * startX + 2 * wpMt * wpT * cpX + wpT * wpT * endX;

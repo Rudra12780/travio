@@ -187,21 +187,22 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
       {/* Top Controls: Trip Selector & Summary */}
       <div style={{
         background: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        borderRadius: '20px',
+        border: '1.5px solid #E8E2F0',
+        borderRadius: '24px',
         padding: '24px',
         marginBottom: '28px',
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: '20px'
+        gap: '20px',
+        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: '280px' }}>
           <img
             src={trip.cover_image}
             alt={trip.title}
-            style={{ width: '64px', height: '64px', borderRadius: '16px', objectFit: 'cover' }}
+            style={{ width: '68px', height: '68px', borderRadius: '18px', objectFit: 'cover', border: '2px solid #C39AD9' }}
           />
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -211,7 +212,7 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                 style={{
                   fontSize: '20px',
                   fontWeight: 900,
-                  color: '#111827',
+                  color: '#292833',
                   border: 'none',
                   background: 'transparent',
                   cursor: 'pointer',
@@ -224,7 +225,7 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                 ))}
               </select>
             </div>
-            <p style={{ fontSize: '13.5px', color: '#64748B' }}>
+            <p style={{ fontSize: '13.5px', color: '#777584', marginTop: '4px' }}>
               {trip.start_date} → {trip.end_date} • Budget: ${trip.total_budget} • {trip.stops?.length || 0} Destination Stops
             </p>
           </div>
@@ -248,14 +249,15 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
             type="button"
             onClick={() => onNavigate('itinerary-view', trip.id)}
             style={{
-              background: '#F1F5F9',
-              color: '#1E293B',
-              border: '1px solid #CBD5E1',
+              background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
+              color: '#203F70',
+              border: '1.5px solid #E8E2F0',
               borderRadius: '9999px',
-              padding: '12px 20px',
+              padding: '12px 22px',
               fontSize: '13.5px',
-              fontWeight: 700,
-              cursor: 'pointer'
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(129, 120, 232, 0.1)'
             }}
           >
             Preview Timeline 👁️
@@ -277,10 +279,10 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
               key={stop.id}
               style={{
                 background: '#FFFFFF',
-                borderRadius: '20px',
-                border: '1.5px solid #E2E8F0',
+                borderRadius: '24px',
+                border: '1.5px solid #E8E2F0',
                 padding: '24px',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
+                boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)',
                 position: 'relative'
               }}
             >
@@ -288,30 +290,31 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '18px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <div style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '12px',
-                    background: '#0D9488',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '14px',
+                    background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                     color: '#FFFFFF',
                     fontWeight: 900,
                     fontSize: '18px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px rgba(129, 120, 232, 0.25)'
                   }}>
                     {idx + 1}
                   </div>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>Section {idx + 1}: {stop.city_name}</h3>
-                      <span style={{ fontSize: '12px', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833' }}>Section {idx + 1}: {stop.city_name}</h3>
+                      <span style={{ fontSize: '12px', background: '#FAF9FC', color: '#777584', padding: '3px 10px', borderRadius: '8px', fontWeight: 600, border: '1px solid #E8E2F0' }}>
                         {stop.city_country}
                       </span>
-                      <span style={{ fontSize: '12px', background: '#E6FFFA', color: '#0D9488', padding: '3px 8px', borderRadius: '6px', fontWeight: 700 }}>
+                      <span style={{ fontSize: '12px', background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.2) 0%, rgba(195, 154, 217, 0.2) 100%)', color: '#203F70', padding: '3px 10px', borderRadius: '8px', fontWeight: 700, border: '1px solid #E8E2F0' }}>
                         {transitIcons[stop.transit_mode] || '🚗'} {stop.transit_mode} Transit
                       </span>
                     </div>
-                    <p style={{ fontSize: '13px', color: '#64748B', marginTop: '4px' }}>
+                    <p style={{ fontSize: '13px', color: '#777584', marginTop: '4px' }}>
                       Date Range: {stop.start_date} to {stop.end_date} • Budget of this section: ${stop.stay_cost}
                     </p>
                   </div>
@@ -325,12 +328,14 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                     disabled={idx === 0}
                     onClick={() => handleMoveStop(idx, 'up')}
                     style={{
-                      background: '#F1F5F9',
-                      border: 'none',
-                      borderRadius: '8px',
+                      background: '#FAF9FC',
+                      border: '1px solid #E8E2F0',
+                      borderRadius: '10px',
                       padding: '8px 12px',
                       cursor: idx === 0 ? 'not-allowed' : 'pointer',
-                      opacity: idx === 0 ? 0.4 : 1
+                      opacity: idx === 0 ? 0.4 : 1,
+                      color: '#292833',
+                      fontWeight: 700
                     }}
                   >
                     ↑
@@ -341,12 +346,14 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                     disabled={idx === (trip.stops?.length || 0) - 1}
                     onClick={() => handleMoveStop(idx, 'down')}
                     style={{
-                      background: '#F1F5F9',
-                      border: 'none',
-                      borderRadius: '8px',
+                      background: '#FAF9FC',
+                      border: '1px solid #E8E2F0',
+                      borderRadius: '10px',
                       padding: '8px 12px',
                       cursor: idx === (trip.stops?.length || 0) - 1 ? 'not-allowed' : 'pointer',
-                      opacity: idx === (trip.stops?.length || 0) - 1 ? 0.4 : 1
+                      opacity: idx === (trip.stops?.length || 0) - 1 ? 0.4 : 1,
+                      color: '#292833',
+                      fontWeight: 700
                     }}
                   >
                     ↓
@@ -358,8 +365,8 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                     style={{
                       background: '#FFF1F2',
                       color: '#E11D48',
-                      border: 'none',
-                      borderRadius: '8px',
+                      border: '1px solid #FFE4E6',
+                      borderRadius: '10px',
                       padding: '8px 12px',
                       cursor: 'pointer',
                       fontWeight: 700
@@ -371,23 +378,24 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
               </div>
 
               {/* Scheduled Activities for this Stop */}
-              <div style={{ background: '#F8FAFC', borderRadius: '14px', padding: '16px', border: '1px solid #E2E8F0' }}>
+              <div style={{ background: '#FAF9FC', borderRadius: '16px', padding: '16px', border: '1px solid #E8E2F0' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#203F70', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Scheduled Stop Activities ({stop.activities?.length || 0})
                   </span>
                   <button
                     type="button"
                     onClick={() => openAddActivity(stop)}
                     style={{
-                      background: '#0D9488',
+                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                       color: '#FFFFFF',
                       border: 'none',
                       borderRadius: '8px',
-                      padding: '5px 12px',
+                      padding: '6px 14px',
                       fontSize: '12px',
-                      fontWeight: 700,
-                      cursor: 'pointer'
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(129, 120, 232, 0.25)'
                     }}
                   >
                     + Add Activity
@@ -395,7 +403,7 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                 </div>
 
                 {(!stop.activities || stop.activities.length === 0) ? (
-                  <p style={{ fontSize: '13px', color: '#94A3B8', fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '13px', color: '#777584', fontStyle: 'italic' }}>
                     No activities scheduled yet for {stop.city_name}. Click "+ Add Activity" to browse recommendations.
                   </p>
                 ) : (
@@ -405,17 +413,18 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                         key={act.id}
                         style={{
                           background: '#FFFFFF',
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '10px',
+                          border: '1px solid #E8E2F0',
+                          borderRadius: '12px',
                           padding: '10px 14px',
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'center'
+                          alignItems: 'center',
+                          boxShadow: '0 2px 8px rgba(32, 63, 112, 0.03)'
                         }}
                       >
                         <div>
-                          <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827' }}>{act.custom_title}</p>
-                          <p style={{ fontSize: '11.5px', color: '#64748B' }}>
+                          <p style={{ fontSize: '13.5px', fontWeight: 800, color: '#292833' }}>{act.custom_title}</p>
+                          <p style={{ fontSize: '11.5px', color: '#777584' }}>
                             ⏰ {act.scheduled_time} • ${act.cost} {act.category ? `• ${act.category}` : ''}
                           </p>
                         </div>
@@ -425,7 +434,7 @@ export const ItineraryBuilder: React.FC<Props> = ({ selectedTripId, userId = 1, 
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: '#94A3B8',
+                            color: '#777584',
                             cursor: 'pointer',
                             padding: '4px'
                           }}

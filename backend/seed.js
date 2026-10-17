@@ -4,7 +4,7 @@ function seedDatabase() {
   console.log('🌱 Starting database seeding...');
 
   // 1. Seed Regular Traveler User
-  const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get('panther@trovio.com');
+  const existingUser = db.prepare('SELECT id FROM users WHERE email = ? OR email = ? OR id = 1').get('panther.explorer@trovio.com', 'panther@trovio.com');
   let userId;
   if (!existingUser) {
     const userStmt = db.prepare(`
@@ -12,8 +12,8 @@ function seedDatabase() {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const result = userStmt.run(
-      'panther',
-      'panther@trovio.com',
+      'Panther Explorer',
+      'panther.explorer@trovio.com',
       'password123',
       'Traveler',
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80',

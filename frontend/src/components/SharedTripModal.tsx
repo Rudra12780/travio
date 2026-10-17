@@ -42,7 +42,7 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
       <div className="modal-card" style={{ maxWidth: '620px' }} onClick={(e) => e.stopPropagation()}>
         <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close modal">✕</button>
 
-        <div className="modal-icon-badge" style={{ background: '#EEF2FF', color: '#4F46E5' }}>
+        <div className="modal-icon-badge" style={{ background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.3) 0%, rgba(195, 154, 217, 0.3) 100%)', color: '#8178E8', border: '1px solid rgba(129, 120, 232, 0.2)' }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
             <circle cx="18" cy="5" r="3" />
             <circle cx="6" cy="12" r="3" />
@@ -61,10 +61,10 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
         <div style={{
           display: 'flex',
           gap: '16px',
-          background: '#F8FAFC',
+          background: '#FAF9FC',
           borderRadius: '16px',
           padding: '16px',
-          border: '1px solid #E2E8F0',
+          border: '1.5px solid #E8E2F0',
           marginBottom: '20px'
         }}>
           <img
@@ -73,11 +73,11 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
             style={{ width: '80px', height: '80px', borderRadius: '12px', objectFit: 'cover' }}
           />
           <div>
-            <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#111827' }}>{trip.title}</h4>
-            <p style={{ fontSize: '12.5px', color: '#64748B', margin: '4px 0' }}>
+            <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#292833' }}>{trip.title}</h4>
+            <p style={{ fontSize: '12.5px', color: '#777584', margin: '4px 0' }}>
               📅 {trip.start_date} → {trip.end_date} • {trip.stops?.length || trip.stops_count || 0} Destination Stops
             </p>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#0D9488' }}>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: '#8178E8' }}>
               Est. Investment: ${trip.total_budget}
             </span>
           </div>
@@ -92,21 +92,22 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
               readOnly
               value={publicUrl}
               className="form-input"
-              style={{ fontSize: '13px', color: '#475569' }}
+              style={{ fontSize: '13px', color: '#292833' }}
             />
             <button
               type="button"
               onClick={handleCopyLink}
               style={{
-                background: copied ? '#10B981' : '#0D9488',
+                background: copied ? '#8178E8' : 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                 color: '#FFFFFF',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 padding: '6px 14px',
                 fontSize: '12.5px',
                 fontWeight: 700,
                 cursor: 'pointer',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
               }}
             >
               {copied ? 'Copied! ✓' : 'Copy Link'}
@@ -123,12 +124,13 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
             style={{
               flex: 1,
               textAlign: 'center',
-              background: '#F1F5F9',
-              color: '#0F172A',
+              background: '#FFFFFF',
+              color: '#292833',
+              border: '1.5px solid #E8E2F0',
               padding: '10px',
-              borderRadius: '10px',
+              borderRadius: '12px',
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 700,
               textDecoration: 'none'
             }}
           >
@@ -141,12 +143,13 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
             style={{
               flex: 1,
               textAlign: 'center',
-              background: '#ECFDF5',
-              color: '#059669',
+              background: 'rgba(129, 120, 232, 0.1)',
+              color: '#8178E8',
+              border: '1.5px solid rgba(129, 120, 232, 0.2)',
               padding: '10px',
-              borderRadius: '10px',
+              borderRadius: '12px',
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 700,
               textDecoration: 'none'
             }}
           >
@@ -157,12 +160,13 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
             style={{
               flex: 1,
               textAlign: 'center',
-              background: '#F1F5F9',
-              color: '#475569',
+              background: '#FFFFFF',
+              color: '#777584',
+              border: '1.5px solid #E8E2F0',
               padding: '10px',
-              borderRadius: '10px',
+              borderRadius: '12px',
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 700,
               textDecoration: 'none'
             }}
           >
@@ -176,7 +180,7 @@ export const SharedTripModal: React.FC<Props> = ({ trip, userId = 1, onClose, on
           onClick={handleCloneTrip}
           disabled={cloning}
           className="btn-submit"
-          style={{ background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #8178E8 0%, #203F70 100%)', boxShadow: '0 8px 24px rgba(32, 63, 112, 0.25)' }}
         >
           {!cloning ? (
             <span>Copy This Trip to My Plans 📑</span>

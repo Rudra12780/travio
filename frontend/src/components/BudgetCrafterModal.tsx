@@ -74,13 +74,13 @@ export const BudgetCrafterModal: React.FC<Props> = ({
       <div className="modal-card" style={{ maxWidth: '560px' }} onClick={(e) => e.stopPropagation()}>
         <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close modal">✕</button>
 
-        <div className="modal-icon-badge" style={{ background: '#FFF1F2', color: '#E11D48' }}>
+        <div className="modal-icon-badge" style={{ background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)', color: '#8178E8' }}>
           <span style={{ fontSize: '24px' }}>✨</span>
         </div>
 
         <h2 className="modal-title">AI Smart Budget Crafter</h2>
         <p className="modal-desc">
-          Set your total spend and let our travel intelligence engine design your complete multi-city itinerary.
+          Set your total spend and let our travel intelligence engine design your complete multi-city luxury itinerary.
         </p>
 
         <form onSubmit={handleGenerate} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -88,7 +88,7 @@ export const BudgetCrafterModal: React.FC<Props> = ({
           <div className="form-group">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
               <label className="form-label">TARGET EXPEDITION BUDGET</label>
-              <span style={{ fontSize: '24px', fontWeight: 900, color: '#0D9488' }}>${budget}</span>
+              <span style={{ fontSize: '24px', fontWeight: 900, color: '#8178E8' }}>${budget}</span>
             </div>
             <input
               type="range"
@@ -97,9 +97,9 @@ export const BudgetCrafterModal: React.FC<Props> = ({
               step="100"
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
-              style={{ width: '100%', accentColor: '#0D9488', cursor: 'pointer' }}
+              style={{ width: '100%', accentColor: '#8178E8', cursor: 'pointer' }}
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#94A3B8', marginTop: '4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#777584', marginTop: '4px' }}>
               <span>$500 (Budget Explorer)</span>
               <span>$4,000 (Comfort)</span>
               <span>$8,000 (Royal Luxury)</span>
@@ -116,14 +116,15 @@ export const BudgetCrafterModal: React.FC<Props> = ({
                   type="button"
                   onClick={() => setRegion(r)}
                   style={{
-                    background: region === r ? '#0D9488' : '#F1F5F9',
-                    color: region === r ? '#FFFFFF' : '#1E293B',
-                    border: 'none',
-                    borderRadius: '10px',
+                    background: region === r ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : '#FAF9FC',
+                    color: region === r ? '#FFFFFF' : '#292833',
+                    border: region === r ? 'none' : '1px solid #E8E2F0',
+                    borderRadius: '12px',
                     padding: '10px 8px',
                     fontSize: '12.5px',
                     fontWeight: 700,
                     cursor: 'pointer',
+                    boxShadow: region === r ? '0 4px 12px rgba(129, 120, 232, 0.25)' : 'none',
                     transition: 'all 0.15s ease'
                   }}
                 >
@@ -143,13 +144,13 @@ export const BudgetCrafterModal: React.FC<Props> = ({
                   type="button"
                   onClick={() => setTheme(t)}
                   style={{
-                    background: theme === t ? '#4F46E5' : '#F8FAFC',
-                    color: theme === t ? '#FFFFFF' : '#334155',
-                    border: theme === t ? '1.5px solid #4F46E5' : '1.5px solid #E2E8F0',
-                    borderRadius: '10px',
-                    padding: '10px 12px',
+                    background: theme === t ? 'linear-gradient(135deg, rgba(195, 154, 217, 0.2) 0%, rgba(129, 120, 232, 0.2) 100%)' : '#FAF9FC',
+                    color: theme === t ? '#203F70' : '#777584',
+                    border: theme === t ? '1.5px solid #8178E8' : '1px solid #E8E2F0',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
                     fontSize: '12.5px',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     cursor: 'pointer',
                     textAlign: 'left'
                   }}
@@ -173,13 +174,13 @@ export const BudgetCrafterModal: React.FC<Props> = ({
                     onClick={() => setPace(paceKey)}
                     style={{
                       flex: 1,
-                      background: pace === paceKey ? '#0D9488' : '#F1F5F9',
-                      color: pace === paceKey ? '#FFFFFF' : '#475569',
-                      border: 'none',
-                      borderRadius: '8px',
+                      background: pace === paceKey ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : '#FAF9FC',
+                      color: pace === paceKey ? '#FFFFFF' : '#777584',
+                      border: pace === paceKey ? 'none' : '1px solid #E8E2F0',
+                      borderRadius: '10px',
                       padding: '8px',
                       fontSize: '11.5px',
-                      fontWeight: 600,
+                      fontWeight: 700,
                       cursor: 'pointer'
                     }}
                   >
@@ -194,7 +195,7 @@ export const BudgetCrafterModal: React.FC<Props> = ({
             type="submit"
             disabled={loading}
             className="btn-submit"
-            style={{ marginTop: '8px', background: 'linear-gradient(135deg, #E11D48 0%, #EA580C 100%)' }}
+            style={{ marginTop: '8px', background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' }}
           >
             {!loading ? (
               <span>⚡ Generate Custom Package & Itinerary</span>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 
 export interface DreamscapeDestination {
   id: string;
@@ -165,108 +165,10 @@ interface TravelDreamscapeProps {
 export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlanning }) => {
   const [selectedId, setSelectedId] = useState<string>('norway-aurora');
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [atmosphere, setAtmosphere] = useState<'celestial' | 'golden' | 'dawn'>('celestial');
+  const [atmosphere, setAtmosphere] = useState<'celestial' | 'golden' | 'dawn'>('golden');
   const [savedWishlist, setSavedWishlist] = useState<Set<string>>(new Set(['norway-aurora']));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isPlayingSound, setIsPlayingSound] = useState<boolean>(false);
-
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const oscillatorsRef = useRef<OscillatorNode[]>([]);
-  const gainNodeRef = useRef<GainNode | null>(null);
-
   const activeDreamscape = DREAMSCAPES.find(d => d.id === selectedId) || DREAMSCAPES[0];
-
-  // Harmonious ambient synthesizer
-  const toggleSoundscape = () => {
-    if (isPlayingSound) {
-      stopSoundscape();
-    } else {
-      startSoundscape();
-    }
-  };
-
-  const startSoundscape = () => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) {
-        setIsPlayingSound(true);
-        showToast(`🎧 Atmospheric soundscape simulated: ${activeDreamscape.soundscapeName}`);
-        return;
-      }
-
-      if (!audioContextRef.current) {
-        audioContextRef.current = new AudioCtx();
-      }
-
-      const ctx = audioContextRef.current;
-      if (ctx.state === 'suspended') {
-        ctx.resume();
-      }
-
-      const masterGain = ctx.createGain();
-      masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-      masterGain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 1.2);
-      masterGain.connect(ctx.destination);
-      gainNodeRef.current = masterGain;
-
-      const freqs = activeDreamscape.soundscapeFrequencies;
-      const oscs: OscillatorNode[] = [];
-
-      freqs.forEach(freq => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        osc.connect(masterGain);
-        osc.start();
-        oscs.push(osc);
-      });
-
-      oscillatorsRef.current = oscs;
-      setIsPlayingSound(true);
-      showToast(`🎧 Resonance playing: ${activeDreamscape.soundscapeName}`);
-    } catch {
-      setIsPlayingSound(true);
-      showToast(`🎧 Resonance activated: ${activeDreamscape.soundscapeName}`);
-    }
-  };
-
-  const stopSoundscape = () => {
-    if (gainNodeRef.current && audioContextRef.current) {
-      const ctx = audioContextRef.current;
-      try {
-        gainNodeRef.current.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
-        setTimeout(() => {
-          oscillatorsRef.current.forEach(osc => {
-            try { osc.stop(); osc.disconnect(); } catch {}
-          });
-          oscillatorsRef.current = [];
-        }, 650);
-      } catch {
-        oscillatorsRef.current = [];
-      }
-    }
-    setIsPlayingSound(false);
-    showToast(`Soundscape paused`);
-  };
-
-  // Stop audio on destination change
-  useEffect(() => {
-    if (isPlayingSound) {
-      stopSoundscape();
-    }
-  }, [selectedId]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      oscillatorsRef.current.forEach(osc => {
-        try { osc.stop(); osc.disconnect(); } catch {}
-      });
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        try { audioContextRef.current.close(); } catch {}
-      }
-    };
-  }, []);
 
   const toggleWishlist = (id: string, title: string) => {
     setSavedWishlist(prev => {
@@ -504,64 +406,6 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
                     </svg>
                     <span>Surprise Horizon</span>
                   </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------------ */}
-          {/* BENTO TILE 2: ATMOSPHERIC SOUNDSCAPE STUDIO (5-Col Tile) */}
-          {/* ------------------------------------------------------------------ */}
-          <div className="bento-tile bento-tile-soundscape">
-            <div className="bento-tile-header">
-              <div className="bento-tile-icon-box sound">
-                <span>🎧</span>
-              </div>
-              <div>
-                <span className="bento-tile-sub">NATURAL RESONANCE</span>
-                <h4 className="bento-tile-heading">Harmonic Soundscape</h4>
-              </div>
-            </div>
-
-            <div className="soundscape-body">
-              <div className="soundscape-name-card">
-                <span className="pulse-signal-dot" />
-                <span className="sound-title-text">{activeDreamscape.soundscapeName}</span>
-              </div>
-
-              {/* Interactive Equalizer Visualizer */}
-              <div className="soundscape-visualizer-box">
-                <div className={`sound-bars-wrap ${isPlayingSound ? 'active' : ''}`}>
-                  {[45, 80, 50, 95, 65, 85, 40, 90, 60, 75, 88, 55].map((h, i) => (
-                    <span 
-                      key={i} 
-                      className={`sound-bar-col bar-${i}`} 
-                      style={{ 
-                        height: isPlayingSound ? `${h}%` : '20%',
-                        animationDuration: `${0.8 + (i % 4) * 0.25}s` 
-                      }} 
-                    />
-                  ))}
-                </div>
-
-                <button 
-                  type="button" 
-                  className={`btn-soundscape-toggle ${isPlayingSound ? 'playing' : ''}`}
-                  onClick={toggleSoundscape}
-                  aria-label={isPlayingSound ? 'Pause Soundscape' : 'Play Soundscape Resonance'}
-                >
-                  <span className="play-icon">{isPlayingSound ? '⏸' : '▶'}</span>
-                  <span>{isPlayingSound ? 'Pause Aura' : 'Play Resonance'}</span>
-                </button>
-              </div>
-
-              {/* Harmonic Solfeggio Tones */}
-              <div className="frequencies-row">
-                <span className="freq-label">Harmonic Tones:</span>
-                <div className="freq-chips-list">
-                  {activeDreamscape.soundscapeFrequencies.map((f, i) => (
-                    <span key={i} className="freq-pill">{f} Hz</span>
-                  ))}
                 </div>
               </div>
             </div>

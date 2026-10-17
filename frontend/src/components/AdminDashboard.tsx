@@ -3,17 +3,18 @@ import { AdminStats, UserProfile, Trip, City, Activity } from '../types';
 import { api } from '../api';
 import { GlobalSearchBar } from './GlobalSearchBar';
 import { AdminPlaneRadarBackground } from './AdminPlaneRadarBackground';
+import { AnimatedLogo } from './AnimatedLogo';
 
 interface Props {
   adminUser?: UserProfile | null;
-  onRedirectToUser: (targetUser: UserProfile) => void;
   onAdminSignOut: () => void;
+  onUpdateAdminUser?: (user: UserProfile) => void;
 }
 
 type AdminTab = 'manage-users' | 'popular-cities' | 'popular-activities' | 'user-trends';
 export type AdminThemeMode = 'aurora' | 'cyber-teal' | 'glass-light';
 
-export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, onAdminSignOut }) => {
+export const AdminDashboard: React.FC<Props> = ({ adminUser, onAdminSignOut, onUpdateAdminUser }) => {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<any[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -42,6 +43,35 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
   const adminDisplayName = adminUser?.name || 'Administrator';
   const adminEmail = adminUser?.email || 'admin@trovio.com';
   const adminAvatar = adminUser?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
+
+  // Admin Profile Settings Modal state
+  const [showAdminSettingsModal, setShowAdminSettingsModal] = useState(false);
+  const [adminSettingsTab, setAdminSettingsTab] = useState<'profile' | 'broadcast'>('profile');
+
+  // Edit Admin Profile fields
+  const [editAdminName, setEditAdminName] = useState(adminDisplayName);
+  const [editAdminEmail, setEditAdminEmail] = useState(adminEmail);
+  const [editAdminBio, setEditAdminBio] = useState(adminUser?.bio || 'Super Administrator & Global Mission Control Fleet Commander');
+  const [editAdminAvatar, setEditAdminAvatar] = useState(adminAvatar);
+  const [editAdminCountry, setEditAdminCountry] = useState(adminUser?.home_country || 'Global HQ');
+  const [savingAdminProfile, setSavingAdminProfile] = useState(false);
+
+  // Synchronize whenever adminUser prop changes
+  useEffect(() => {
+    if (adminUser) {
+      if (adminUser.name) setEditAdminName(adminUser.name);
+      if (adminUser.email) setEditAdminEmail(adminUser.email);
+      if (adminUser.bio) setEditAdminBio(adminUser.bio);
+      if (adminUser.avatar_url) setEditAdminAvatar(adminUser.avatar_url);
+      if (adminUser.home_country) setEditAdminCountry(adminUser.home_country);
+    }
+  }, [adminUser]);
+
+  // Broadcast Alert states
+  const [broadcastTitle, setBroadcastTitle] = useState('Voyage Advisory from Mission Control');
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [broadcastIcon, setBroadcastIcon] = useState('📢');
+  const [sendingBroadcast, setSendingBroadcast] = useState(false);
 
   // Admin Theme state ('aurora' | 'cyber-teal' | 'glass-light') - Previous clean theme by default
   const [adminTheme, setAdminTheme] = useState<AdminThemeMode>('glass-light');
@@ -139,6 +169,53 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
     }
   };
 
+  const handleSaveAdminProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingAdminProfile(true);
+    try {
+      const res = await api.updateProfile({
+        id: adminUser?.id || 1,
+        name: editAdminName.trim(),
+        bio: editAdminBio.trim(),
+        home_country: editAdminCountry.trim(),
+        avatar_url: editAdminAvatar
+      });
+      if (res?.user) {
+        onUpdateAdminUser?.(res.user);
+      }
+      showToast('✅ Mission Commander profile updated successfully!');
+      setShowAdminSettingsModal(false);
+    } catch (err: any) {
+      showToast(`❌ ${err.message || 'Could not update admin profile'}`);
+    } finally {
+      setSavingAdminProfile(false);
+    }
+  };
+
+  const handleSendBroadcast = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastTitle.trim() || !broadcastMessage.trim()) {
+      showToast('⚠️ Please provide both title and broadcast message');
+      return;
+    }
+    setSendingBroadcast(true);
+    try {
+      const res = await api.broadcastAdminMessage({
+        title: broadcastTitle.trim(),
+        message: broadcastMessage.trim(),
+        icon: broadcastIcon,
+        sender: `${editAdminName || 'Super Admin'} (Mission Control)`
+      });
+      showToast(`📢 Global Broadcast dispatched to ${res.count || 'all'} voyagers!`);
+      setBroadcastMessage('');
+      setShowAdminSettingsModal(false);
+    } catch (err: any) {
+      showToast(`❌ ${err.message || 'Failed to send broadcast'}`);
+    } finally {
+      setSendingBroadcast(false);
+    }
+  };
+
   const handleViewUserTrips = async (user: any) => {
     setLoadingUserTrips(true);
     setViewUserTrips({ user, trips: [] });
@@ -200,23 +277,23 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
     return matchSearch && matchFilter;
   });
 
-  // Dynamic Theme Styling Tokens
-  const isDark = adminTheme !== 'glass-light';
+  // Dynamic Pastel Dreamscape Styling Tokens
+  const isDark = false;
   const cardStyle: React.CSSProperties = {
-    background: isDark ? 'rgba(15, 23, 42, 0.88)' : '#FFFFFF',
-    borderRadius: '28px',
-    border: isDark ? '1.5px solid rgba(45, 212, 191, 0.25)' : '1px solid #E2E8F0',
+    background: '#FFFFFF',
+    borderRadius: '24px',
+    border: '1.5px solid #E8E2F0',
     padding: '32px',
-    boxShadow: isDark ? '0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(45, 212, 191, 0.1)' : '0 4px 20px rgba(0,0,0,0.04)',
+    boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
     backdropFilter: 'blur(20px)',
     WebkitBackdropFilter: 'blur(20px)',
-    color: isDark ? '#FFFFFF' : '#0F172A',
+    color: '#292833',
     transition: 'all 0.3s ease'
   };
-  const titleColor = isDark ? '#FFFFFF' : '#0F172A';
-  const descColor = isDark ? '#94A3B8' : '#64748B';
-  const subCardBg = isDark ? 'rgba(30, 41, 59, 0.72)' : '#FFFFFF';
-  const subCardBorder = isDark ? '1px solid rgba(45, 212, 191, 0.22)' : '1px solid #E2E8F0';
+  const titleColor = '#292833';
+  const descColor = '#777584';
+  const subCardBg = '#FFFFFF';
+  const subCardBorder = '1.5px solid #E8E2F0';
 
   return (
     <>
@@ -227,23 +304,13 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
       <header className="dash-navbar admin-top-navbar theme-glass-light">
         <div className="dash-container admin-nav-container">
           <div className="dash-nav-inner admin-nav-inner">
-            {/* Brand Logo & Mission Control Badge */}
-            <div className="nav-brand admin-nav-brand" onClick={() => setActiveTab('manage-users')} style={{ cursor: 'pointer', flexShrink: 0, marginRight: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div className="nav-brand-icon" style={{
-                background: 'linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%)',
-                boxShadow: '0 4px 14px rgba(13, 148, 136, 0.4)'
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                </svg>
-              </div>
-              <span className="nav-brand-title" style={{ color: '#0F172A', fontWeight: 800 }}>
-                GlobalTrotter
-              </span>
-              <span className="admin-command-badge" style={{ marginLeft: '6px' }}>
-                MISSION CONTROL
-              </span>
+            {/* Brand Logo */}
+            <div className="nav-brand admin-nav-brand" onClick={() => setActiveTab('manage-users')} style={{ cursor: 'pointer', flexShrink: 0, marginRight: '24px' }}>
+              <AnimatedLogo 
+                size="sm" 
+                title="GlobalTrotter" 
+                badge="ADMIN" 
+              />
             </div>
 
             {/* Navigation Tab Links (The Parts like the user nav: Manage Users, Cities, Activities, Analytics) */}
@@ -326,14 +393,14 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                 >
                   <div className="admin-avatar-wrapper">
                     <img
-                      src={adminAvatar}
-                      alt={adminDisplayName}
+                      src={editAdminAvatar || adminAvatar}
+                      alt={editAdminName || adminDisplayName}
                       className="user-avatar admin-avatar"
                     />
                     <span className="admin-online-dot" />
                   </div>
                   <div className="admin-pill-text">
-                    <span className="admin-pill-name">{adminDisplayName}</span>
+                    <span className="admin-pill-name">{editAdminName || adminDisplayName}</span>
                     <span className="admin-pill-role">SUPER ADMIN</span>
                   </div>
                   <svg className={`admin-chevron ${showAdminDropdown ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -341,23 +408,23 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                   </svg>
                 </button>
 
-                {/* Dropdown Menu - Clean Profile Details & Sign Out Only */}
+                {/* Dropdown Menu - Clean Profile Details & Mission Features */}
                 {showAdminDropdown && (
-                  <div className="admin-profile-dropdown theme-glass-light" style={{ width: '290px' }}>
+                  <div className={`admin-profile-dropdown theme-${adminTheme}`} style={{ width: '300px' }}>
                     {/* Header */}
                     <div className="admin-dropdown-header">
-                      <div className="admin-avatar-wrapper" style={{ width: '42px', height: '42px' }}>
+                      <div className="admin-avatar-wrapper" style={{ width: '44px', height: '44px' }}>
                         <img
-                          src={adminAvatar}
-                          alt={adminDisplayName}
+                          src={editAdminAvatar || adminAvatar}
+                          alt={editAdminName || adminDisplayName}
                           className="admin-avatar"
-                          style={{ width: '42px', height: '42px' }}
+                          style={{ width: '44px', height: '44px' }}
                         />
                         <span className="admin-online-dot" style={{ width: '10px', height: '10px' }} />
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontSize: '13.5px', fontWeight: 800 }}>{adminDisplayName}</span>
+                          <span style={{ fontSize: '13.5px', fontWeight: 800 }}>{editAdminName || adminDisplayName}</span>
                           <span style={{
                             fontSize: '9px',
                             fontWeight: 800,
@@ -370,7 +437,7 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                           </span>
                         </div>
                         <span style={{ fontSize: '11px', color: '#64748B' }}>
-                          {adminEmail}
+                          {editAdminEmail || adminEmail}
                         </span>
                         <span style={{
                           fontSize: '10px',
@@ -386,15 +453,41 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                       </div>
                     </div>
 
-                    {/* Telemetry Status Box */}
-                    <div className="admin-dropdown-telemetry-box">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
-                        <span>✈️</span>
-                        <span>Airspace Radar: 14 Flights Active</span>
-                      </div>
-                      <div style={{ fontSize: '10.5px', marginTop: '3px', opacity: 0.85 }}>
-                        8 Hubs Aligned (DEL, UDR, HND, CDG, JFK) • 0 Delays
-                      </div>
+                    {/* Features & Profile Settings Navigation */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', padding: '4px 0' }}>
+                      <button
+                        type="button"
+                        className="admin-dropdown-item"
+                        onClick={() => {
+                          setShowAdminDropdown(false);
+                          setAdminSettingsTab('profile');
+                          setShowAdminSettingsModal(true);
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="3" />
+                          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        <span>Profile & Settings</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        className="admin-dropdown-item"
+                        onClick={() => {
+                          setShowAdminDropdown(false);
+                          setAdminSettingsTab('broadcast');
+                          setShowAdminSettingsModal(true);
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                          <path d="M2 8c0-2.2 1.8-4 4-4" />
+                          <path d="M22 8c0-2.2-1.8-4-4-4" />
+                        </svg>
+                        <span>Broadcast Global Alert</span>
+                      </button>
                     </div>
 
                     {/* Sign Out Button */}
@@ -456,14 +549,14 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
             zIndex: 40,
             borderRadius: '24px',
             padding: '24px 28px',
-            color: '#0F172A',
+            color: '#292833',
             marginBottom: '24px',
             overflow: 'visible',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(204, 251, 241, 0.92) 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 191, 213, 0.15) 50%, rgba(195, 154, 217, 0.15) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1.5px solid rgba(13, 148, 136, 0.25)',
-            boxShadow: '0 16px 36px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(13, 148, 136, 0.12)',
+            border: '1.5px solid #E8E2F0',
+            boxShadow: '0 16px 36px -10px rgba(32, 63, 112, 0.08), 0 0 0 1px rgba(129, 120, 232, 0.15)',
             transition: 'all 0.3s ease'
           }}
         >
@@ -676,25 +769,6 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                           }}
                         >
                           ✉️ Message
-                        </button>
-
-                        {/* Redirect to User Session */}
-                        <button
-                          type="button"
-                          onClick={() => onRedirectToUser(u)}
-                          style={{
-                            background: isDark ? 'rgba(13, 148, 136, 0.22)' : '#F0FDFA',
-                            color: isDark ? '#2DD4BF' : '#0D9488',
-                            border: isDark ? '1px solid rgba(45, 212, 191, 0.4)' : '1px solid #99F6E4',
-                            padding: '6px 12px',
-                            borderRadius: '8px',
-                            fontSize: '12px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          🚪 Login As
                         </button>
 
                         {/* Delete User button */}
@@ -1288,18 +1362,58 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
       {/* MODAL 4: Post & Schedule New Trip                                        */}
       {/* ========================================================================= */}
       {showScheduleModal && (
-        <div className="modal-overlay" onClick={() => setShowScheduleModal(false)}>
-          <div className="modal-card" style={{ maxWidth: '580px' }} onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="modal-close-btn" onClick={() => setShowScheduleModal(false)}>✕</button>
-            <div className="modal-icon-badge" style={{ background: 'rgba(225, 29, 72, 0.15)', color: '#F43F5E' }}>
-              📅
+        <div className="modal-overlay" onClick={() => setShowScheduleModal(false)} style={{ zIndex: 1000, padding: '20px' }}>
+          <div
+            className="modal-card"
+            style={{
+              maxWidth: '720px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              borderRadius: '24px',
+              padding: '28px 32px',
+              margin: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="modal-close-btn"
+              onClick={() => setShowScheduleModal(false)}
+              style={{ top: '22px', right: '22px' }}
+            >
+              ✕
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '12px',
+                  background: 'rgba(244, 63, 94, 0.12)',
+                  color: '#F43F5E',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  fontWeight: 800
+                }}
+              >
+                📅
+              </div>
+              <div>
+                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.3px' }}>
+                  Post & Schedule Trip Package
+                </h2>
+                <p style={{ fontSize: '12.5px', color: '#64748B', margin: '2px 0 0 0' }}>
+                  Admin tool: Publish package immediately or set an automated launch schedule.
+                </p>
+              </div>
             </div>
-            <h2 className="modal-title">Post & Schedule Trip Package</h2>
-            <p className="modal-desc">
-              Admin exclusive tool: Publish trip immediately or set automated launch date & time.
-            </p>
 
             <form onSubmit={handleScheduleTrip} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {/* Trip Title */}
               <div className="form-group">
                 <label className="form-label">TRIP TITLE</label>
                 <input
@@ -1312,88 +1426,237 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">DESCRIPTION</label>
-                <textarea
-                  className="form-input"
-                  style={{ minHeight: '70px' }}
-                  placeholder="Overview of the curated package stops and highlights..."
-                  value={tripDesc}
-                  onChange={(e) => setTripDesc(e.target.value)}
-                />
-              </div>
+              {/* 2-Column Balanced Section: Details & Cover Photo */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', alignItems: 'start' }}>
+                {/* Left Column: Description, Dates, Budget */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div className="form-group">
+                    <label className="form-label">DESCRIPTION</label>
+                    <textarea
+                      className="form-input"
+                      rows={3}
+                      style={{ resize: 'none', height: '72px' }}
+                      placeholder="Overview of curated package stops & highlights..."
+                      value={tripDesc}
+                      onChange={(e) => setTripDesc(e.target.value)}
+                    />
+                  </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div className="form-group">
-                  <label className="form-label">START DATE</label>
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={tripStartDate}
-                    onChange={(e) => setTripStartDate(e.target.value)}
-                  />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div className="form-group">
+                      <label className="form-label">START DATE</label>
+                      <input
+                        type="date"
+                        className="form-input"
+                        value={tripStartDate}
+                        onChange={(e) => setTripStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">END DATE</label>
+                      <input
+                        type="date"
+                        className="form-input"
+                        value={tripEndDate}
+                        onChange={(e) => setTripEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">BUDGET (USD)</label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      value={tripBudget}
+                      onChange={(e) => setTripBudget(Number(e.target.value))}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">END DATE</label>
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={tripEndDate}
-                    onChange={(e) => setTripEndDate(e.target.value)}
-                  />
+
+                {/* Right Column: Cover Photo Upload from PC */}
+                <div className="form-group" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>COVER PHOTO (UPLOAD FROM PC)</span>
+                    {tripCover && (
+                      <span style={{ fontSize: '11px', color: '#0D9488', fontWeight: 700 }}>
+                        ✓ Photo Ready
+                      </span>
+                    )}
+                  </label>
+
+                  <div style={{
+                    border: '1.5px dashed #CBD5E1',
+                    borderRadius: '14px',
+                    padding: '12px',
+                    background: '#F8FAFC',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    flex: 1
+                  }}>
+                    {tripCover && (
+                      <div style={{ position: 'relative', width: '100%', height: '115px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #E2E8F0' }}>
+                        <img
+                          src={tripCover}
+                          alt="Trip Cover Preview"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <div style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)',
+                          display: 'flex',
+                          alignItems: 'flex-end',
+                          justifyContent: 'space-between',
+                          padding: '8px 10px'
+                        }}>
+                          <span style={{ color: '#FFFFFF', fontSize: '11px', fontWeight: 700 }}>
+                            📸 Preview
+                          </span>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <label
+                              htmlFor="admin-trip-photo-upload"
+                              style={{
+                                background: '#FFFFFF',
+                                color: '#0F172A',
+                                padding: '3px 10px',
+                                borderRadius: '6px',
+                                fontSize: '11px',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+                              }}
+                            >
+                              Change
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => setTripCover('https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=1200&q=80')}
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.9)',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                padding: '3px 8px',
+                                borderRadius: '6px',
+                                fontSize: '11px',
+                                fontWeight: 700,
+                                cursor: 'pointer'
+                              }}
+                              title="Reset to default photo"
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <input
+                        type="file"
+                        id="admin-trip-photo-upload"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            if (file.size > 8 * 1024 * 1024) {
+                              alert('Photo file size must be under 8MB');
+                              return;
+                            }
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              if (reader.result) setTripCover(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor="admin-trip-photo-upload"
+                        style={{
+                          background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                          color: '#FFFFFF',
+                          padding: '8px 14px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          boxShadow: '0 2px 8px rgba(13, 148, 136, 0.25)',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span>Upload Cover from PC</span>
+                      </label>
+                      <span style={{ fontSize: '11px', color: '#64748B', textAlign: 'center' }}>
+                        PNG, JPG, WebP up to 8MB from computer
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">BUDGET (USD)</label>
-                <input
-                  type="number"
-                  className="form-input"
-                  value={tripBudget}
-                  onChange={(e) => setTripBudget(Number(e.target.value))}
-                />
-              </div>
-
-              <div className="form-group">
+              {/* Publishing Mode */}
+              <div className="form-group" style={{ marginTop: '2px' }}>
                 <label className="form-label">PUBLISHING MODE</label>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <button
                     type="button"
                     onClick={() => setScheduleStatus('immediate')}
                     style={{
-                      flex: 1,
-                      padding: '10px',
+                      padding: '9px 12px',
                       borderRadius: '10px',
-                      border: scheduleStatus === 'immediate' ? '2px solid #2DD4BF' : '1px solid rgba(255, 255, 255, 0.15)',
-                      background: scheduleStatus === 'immediate' ? 'rgba(45, 212, 191, 0.18)' : 'rgba(30, 41, 59, 0.65)',
-                      color: scheduleStatus === 'immediate' ? '#2DD4BF' : '#CBD5E1',
+                      border: scheduleStatus === 'immediate' ? '2px solid #0D9488' : '1px solid #CBD5E1',
+                      background: scheduleStatus === 'immediate' ? '#F0FDFA' : '#FFFFFF',
+                      color: scheduleStatus === 'immediate' ? '#0D9488' : '#64748B',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      fontSize: '12.5px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.15s ease'
                     }}
                   >
-                    ⚡ Publish Immediately
+                    <span>⚡ Publish Immediately</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setScheduleStatus('scheduled')}
                     style={{
-                      flex: 1,
-                      padding: '10px',
+                      padding: '9px 12px',
                       borderRadius: '10px',
-                      border: scheduleStatus === 'scheduled' ? '2px solid #F43F5E' : '1px solid rgba(255, 255, 255, 0.15)',
-                      background: scheduleStatus === 'scheduled' ? 'rgba(244, 63, 94, 0.18)' : 'rgba(30, 41, 59, 0.65)',
-                      color: scheduleStatus === 'scheduled' ? '#F43F5E' : '#CBD5E1',
+                      border: scheduleStatus === 'scheduled' ? '2px solid #E11D48' : '1px solid #CBD5E1',
+                      background: scheduleStatus === 'scheduled' ? '#FFF1F2' : '#FFFFFF',
+                      color: scheduleStatus === 'scheduled' ? '#E11D48' : '#64748B',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      fontSize: '12.5px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.15s ease'
                     }}
                   >
-                    📅 Schedule Date & Time
+                    <span>📅 Schedule Date & Time</span>
                   </button>
                 </div>
               </div>
 
               {scheduleStatus === 'scheduled' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: 'rgba(30, 41, 59, 0.65)', padding: '14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: '#F8FAFC', padding: '12px 14px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
                   <div className="form-group">
                     <label className="form-label">SCHEDULE RELEASE DATE</label>
                     <input
@@ -1415,19 +1678,467 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onRedirectToUser, o
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="btn-plan-budget"
-                style={{
-                  background: scheduleStatus === 'immediate'
-                    ? 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)'
-                    : 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.15)'
-                }}
-              >
-                {scheduleStatus === 'immediate' ? 'Post Trip Now' : 'Schedule Trip Launch'}
-              </button>
+              {/* Action Buttons: Cancel and Submit */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid #E2E8F0', paddingTop: '16px', marginTop: '4px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowScheduleModal(false)}
+                  style={{
+                    padding: '10px 18px',
+                    borderRadius: '10px',
+                    border: '1px solid #CBD5E1',
+                    background: '#FFFFFF',
+                    color: '#64748B',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '10px 24px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: scheduleStatus === 'immediate'
+                      ? 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)'
+                      : 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {scheduleStatus === 'immediate' ? '⚡ Post & Dispatch Trip Now' : '📅 Schedule Package Launch'}
+                </button>
+              </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: Admin Profile & Mission Control Settings */}
+      {/* ========================================================================= */}
+      {showAdminSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowAdminSettingsModal(false)} style={{ zIndex: 1000 }}>
+          <div
+            className="modal-card"
+            style={{
+              maxWidth: '680px',
+              width: '95%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              borderRadius: '24px',
+              padding: '28px'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '14px',
+                  background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '22px',
+                  color: '#fff',
+                  boxShadow: '0 8px 18px rgba(13, 148, 136, 0.35)'
+                }}>
+                  ⚙️
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.3px' }}>
+                    Mission Control & Profile Settings
+                  </h2>
+                  <p style={{ fontSize: '12.5px', color: '#64748B', margin: '3px 0 0 0' }}>
+                    Manage commander identity and global broadcasts
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowAdminSettingsModal(false)}
+                style={{ top: '24px', right: '24px' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Navigation Tab Bar inside Settings */}
+            <div style={{
+              display: 'flex',
+              gap: '6px',
+              background: '#F1F5F9',
+              padding: '5px',
+              borderRadius: '12px',
+              marginBottom: '24px'
+            }}>
+              {[
+                { id: 'profile', label: 'Admin Profile', icon: '👤' },
+                { id: 'broadcast', label: 'Global Broadcast', icon: '📢' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setAdminSettingsTab(tab.id as any)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    background: adminSettingsTab === tab.id ? '#FFFFFF' : 'transparent',
+                    color: adminSettingsTab === tab.id ? '#0D9488' : '#64748B',
+                    boxShadow: adminSettingsTab === tab.id ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* TAB 1: ADMIN PROFILE SETTINGS */}
+            {adminSettingsTab === 'profile' && (
+              <form onSubmit={handleSaveAdminProfile} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Avatar section - strictly Upload from PC only */}
+                <div>
+                  <label className="form-label" style={{ marginBottom: '10px', display: 'block' }}>
+                    COMMANDER AVATAR IDENTITY (UPLOAD FROM PC ONLY)
+                  </label>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px',
+                    padding: '16px',
+                    background: '#F8FAFC',
+                    borderRadius: '16px',
+                    border: '1.5px dashed #CBD5E1'
+                  }}>
+                    <div style={{ position: 'relative', width: '82px', height: '82px', flexShrink: 0 }}>
+                      <img
+                        src={editAdminAvatar}
+                        alt={editAdminName}
+                        style={{
+                          width: '82px',
+                          height: '82px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '3px solid #0D9488',
+                          boxShadow: '0 4px 14px rgba(13, 148, 136, 0.25)'
+                        }}
+                      />
+                      <span style={{
+                        position: 'absolute',
+                        bottom: '2px',
+                        right: '2px',
+                        width: '14px',
+                        height: '14px',
+                        borderRadius: '50%',
+                        background: '#10B981',
+                        border: '2px solid #FFFFFF'
+                      }} />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <input
+                          type="file"
+                          id="admin-pc-avatar-upload"
+                          accept="image/png, image/jpeg, image/jpg, image/webp"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              if (file.size > 5 * 1024 * 1024) {
+                                alert('Image file size must be under 5MB');
+                                return;
+                              }
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                if (reader.result) setEditAdminAvatar(reader.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor="admin-pc-avatar-upload"
+                          style={{
+                            background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                            color: '#FFFFFF',
+                            padding: '10px 18px',
+                            borderRadius: '10px',
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            boxShadow: '0 4px 12px rgba(13, 148, 136, 0.25)',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                          </svg>
+                          <span>Upload from PC</span>
+                        </label>
+
+                        {editAdminAvatar && (
+                          <button
+                            type="button"
+                            onClick={() => setEditAdminAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80')}
+                            style={{
+                              background: '#FFFFFF',
+                              color: '#64748B',
+                              border: '1px solid #CBD5E1',
+                              padding: '10px 14px',
+                              borderRadius: '10px',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              cursor: 'pointer'
+                            }}
+                            title="Reset to default avatar"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
+                      <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                        PNG, JPG, or WebP up to 5MB directly from your PC
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div className="form-group">
+                    <label className="form-label">ADMIN DISPLAY NAME</label>
+                    <div className="input-container">
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editAdminName}
+                        onChange={(e) => setEditAdminName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">HEADQUARTERS / BASE CORRIDOR</label>
+                    <div className="input-container">
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editAdminCountry}
+                        onChange={(e) => setEditAdminCountry(e.target.value)}
+                        placeholder="Global HQ, Command Base..."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">MISSION CONTROL EMAIL</label>
+                  <div className="input-container" style={{ background: '#F8FAFC', opacity: 0.85 }}>
+                    <input
+                      type="email"
+                      className="form-input"
+                      value={editAdminEmail}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#64748B', marginTop: '4px', display: 'block' }}>
+                    Super Administrator access identifier (Root HQ)
+                  </span>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">COMMAND DIRECTIVE & BIO</label>
+                  <div className="input-container" style={{ height: 'auto', padding: '10px 14px' }}>
+                    <textarea
+                      className="form-input"
+                      rows={3}
+                      value={editAdminBio}
+                      onChange={(e) => setEditAdminBio(e.target.value)}
+                      placeholder="Write your mission clearance notes or platform bio..."
+                      style={{ resize: 'none' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', borderTop: '1px solid #E2E8F0', paddingTop: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminSettingsModal(false)}
+                    style={{
+                      padding: '10px 20px',
+                      borderRadius: '10px',
+                      border: '1px solid #CBD5E1',
+                      background: '#FFFFFF',
+                      color: '#475569',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingAdminProfile}
+                    style={{
+                      padding: '10px 24px',
+                      borderRadius: '10px',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)',
+                      color: '#FFFFFF',
+                      fontWeight: 700,
+                      cursor: savingAdminProfile ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 4px 12px rgba(13, 148, 136, 0.3)'
+                    }}
+                  >
+                    {savingAdminProfile ? 'Saving Changes...' : 'Save Profile Settings'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* TAB 2: GLOBAL BROADCAST ANNOUNCEMENT */}
+            {adminSettingsTab === 'broadcast' && (
+              <form onSubmit={handleSendBroadcast} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                <div style={{
+                  padding: '14px 18px',
+                  borderRadius: '14px',
+                  background: '#EFF6FF',
+                  border: '1px solid #BFDBFE',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{ fontSize: '24px' }}>📢</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: '13.5px', color: '#1E40AF' }}>
+                      Dispatch Urgent Broadcast to All Active Voyagers
+                    </div>
+                    <div style={{ fontSize: '11.5px', color: '#2563EB' }}>
+                      This message will be instantly delivered to every registered traveler's notification bell with acoustic priority.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">CHOOSE BROADCAST ICON</label>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {['📢', '✈️', '⚠️', '🌟', '🏖️', '🚨', '🗺️', '🔔'].map((ic) => (
+                      <button
+                        key={ic}
+                        type="button"
+                        onClick={() => setBroadcastIcon(ic)}
+                        style={{
+                          width: '42px',
+                          height: '42px',
+                          borderRadius: '10px',
+                          border: broadcastIcon === ic ? '2.5px solid #0D9488' : '1px solid #CBD5E1',
+                          background: broadcastIcon === ic ? '#F0FDFA' : '#FFFFFF',
+                          fontSize: '18px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {ic}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">BROADCAST TITLE</label>
+                  <div className="input-container">
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={broadcastTitle}
+                      onChange={(e) => setBroadcastTitle(e.target.value)}
+                      placeholder="e.g., Airspace Advisory, Monsoon Season Guidance..."
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">BROADCAST MESSAGE BODY</label>
+                  <div className="input-container" style={{ height: 'auto', padding: '10px 14px' }}>
+                    <textarea
+                      className="form-input"
+                      rows={4}
+                      value={broadcastMessage}
+                      onChange={(e) => setBroadcastMessage(e.target.value)}
+                      placeholder="Provide comprehensive updates, advisory information, or welcoming statements..."
+                      style={{ resize: 'none' }}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', borderTop: '1px solid #E2E8F0', paddingTop: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminSettingsModal(false)}
+                    style={{
+                      padding: '10px 20px',
+                      borderRadius: '10px',
+                      border: '1px solid #CBD5E1',
+                      background: '#FFFFFF',
+                      color: '#475569',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={sendingBroadcast}
+                    style={{
+                      padding: '10px 24px',
+                      borderRadius: '10px',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                      color: '#FFFFFF',
+                      fontWeight: 700,
+                      cursor: sendingBroadcast ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                    }}
+                  >
+                    {sendingBroadcast ? 'Broadcasting...' : '📢 Dispatch Broadcast Now'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

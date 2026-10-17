@@ -68,21 +68,22 @@ export const WishlistModal: React.FC<Props> = ({ isOpen, onClose, onNavigate }) 
           <div style={{
             width: '36px',
             height: '36px',
-            borderRadius: '10px',
-            background: '#FFF1F2',
-            color: '#E11D48',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.3) 0%, rgba(243, 175, 207, 0.3) 100%)',
+            color: '#A678BD',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '18px'
+            fontSize: '18px',
+            border: '1px solid rgba(166, 120, 189, 0.2)'
           }}>
             ❤️
           </div>
           <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#111827', margin: 0 }}>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#292833', margin: 0 }}>
               Traveler Wishlist & Bookmarks
             </h2>
-            <p style={{ fontSize: '13px', color: '#64748B', margin: 0 }}>
+            <p style={{ fontSize: '13px', color: '#777584', margin: 0 }}>
               Saved destinations and experiences ready to include in your voyages
             </p>
           </div>
@@ -97,27 +98,27 @@ export const WishlistModal: React.FC<Props> = ({ isOpen, onClose, onNavigate }) 
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px',
-                background: '#F8FAFC',
-                borderRadius: '14px',
-                border: '1px solid #E2E8F0',
+                background: '#FAF9FC',
+                borderRadius: '16px',
+                border: '1.5px solid #E8E2F0',
                 gap: '14px'
               }}
             >
               <img
                 src={item.image}
                 alt={item.name}
-                style={{ width: '64px', height: '64px', borderRadius: '10px', objectFit: 'cover' }}
+                style={{ width: '64px', height: '64px', borderRadius: '12px', objectFit: 'cover' }}
               />
 
               <div style={{ flex: 1 }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#0D9488', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#8178E8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {item.category}
                 </span>
-                <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#111827', margin: '2px 0' }}>
+                <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#292833', margin: '2px 0' }}>
                   {item.name}
                 </h4>
-                <p style={{ fontSize: '12px', color: '#64748B', margin: 0 }}>
-                  📍 {item.location} • <span style={{ color: '#D97706', fontWeight: 700 }}>★ {item.rating}</span> • {item.estCost}
+                <p style={{ fontSize: '12px', color: '#777584', margin: 0 }}>
+                  📍 {item.location} • <span style={{ color: '#A678BD', fontWeight: 700 }}>★ {item.rating}</span> • {item.estCost}
                 </p>
               </div>
 
@@ -128,15 +129,16 @@ export const WishlistModal: React.FC<Props> = ({ isOpen, onClose, onNavigate }) 
                   onNavigate('itinerary-builder');
                 }}
                 style={{
-                  background: '#0D9488',
+                  background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
                   color: '#FFFFFF',
                   border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   padding: '8px 14px',
                   fontSize: '12.5px',
                   fontWeight: 700,
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
                 }}
               >
                 + Add to Plan
@@ -153,10 +155,10 @@ export const WishlistModal: React.FC<Props> = ({ isOpen, onClose, onNavigate }) 
               onNavigate('cities');
             }}
             style={{
-              background: '#F1F5F9',
-              color: '#334155',
-              border: 'none',
-              borderRadius: '10px',
+              background: '#FFFFFF',
+              color: '#292833',
+              border: '1.5px solid #E8E2F0',
+              borderRadius: '12px',
               padding: '10px 18px',
               fontSize: '13px',
               fontWeight: 700,
@@ -169,14 +171,15 @@ export const WishlistModal: React.FC<Props> = ({ isOpen, onClose, onNavigate }) 
             type="button"
             onClick={onClose}
             style={{
-              background: '#111827',
+              background: '#203F70',
               color: '#FFFFFF',
               border: 'none',
-              borderRadius: '10px',
+              borderRadius: '12px',
               padding: '10px 18px',
               fontSize: '13px',
               fontWeight: 700,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(32, 63, 112, 0.2)'
             }}
           >
             Close
