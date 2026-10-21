@@ -219,13 +219,19 @@ export const TravelDreamscape: React.FC<TravelDreamscapeProps> = ({ onStartPlann
       <div className="section-container dreamscape-inner">
         {/* Section Header */}
         <div className="dreamscape-header-block">
+          <div style={{ marginBottom: '14px' }}>
+            <span style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', color: '#101010', textTransform: 'uppercase', fontFamily: 'monospace' }}>
+              IMMERSIVE REALMS // 05
+            </span>
+          </div>
+
           <div className="dreamscape-badge-pill">
             <span className="dreamscape-sparkle-icon">✨</span>
-            <span className="badge-text">Interactive Showcase • Bento Grid Architecture</span>
+            <span className="badge-text">Interactive Showcase // Bento Grid Architecture</span>
             <span className="live-pulse-dot" />
           </div>
 
-          <h2 className="dreamscape-main-title">
+          <h2 className="dreamscape-main-title preserve-discover-font">
             Step Into Your <span className="dreamscape-gradient-title">Travel Dreamscape</span>
           </h2>
 

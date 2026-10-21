@@ -14,22 +14,19 @@ import { AdminDashboard } from './AdminDashboard';
 import { CreateTripModal } from './CreateTripModal';
 import { SharedTripModal } from './SharedTripModal';
 import { SavedPlaces } from './SavedPlaces';
-import { CommunityTab } from './CommunityTab';
 
 interface Props {
   user: UserProfile;
   onUpdateUser: (updated: UserProfile) => void;
   onSignOut: () => void;
   initialTab?: ActiveTab;
-  initialOpenCreateCommunity?: boolean;
 }
 
 export const Dashboard: React.FC<Props> = ({
   user,
   onUpdateUser,
   onSignOut,
-  initialTab,
-  initialOpenCreateCommunity
+  initialTab
 }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab || 'dashboard');
   const [selectedTripId, setSelectedTripId] = useState<number | undefined>(undefined);
@@ -140,15 +137,6 @@ export const Dashboard: React.FC<Props> = ({
             user={user}
             onUpdateUser={onUpdateUser}
             onNavigate={handleNavigate}
-          />
-        )}
-
-        {activeTab === 'community' && (
-          <CommunityTab
-            user={user}
-            onNavigate={handleNavigate}
-            selectedTripId={selectedTripId}
-            initialOpenCreate={initialOpenCreateCommunity}
           />
         )}
 

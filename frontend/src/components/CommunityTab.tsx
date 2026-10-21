@@ -56,7 +56,7 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedSort, setSelectedSort] = useState('Newest');
 
-  // New post state (text only - no images)
+  // New post state (text only)
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newLocation, setNewLocation] = useState('');
@@ -90,7 +90,6 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
         if (s.city_name && s.city_name.trim()) destinationsFound.add(s.city_name.trim());
       });
     }
-    // Search in title and description against known destinations
     KNOWN_DESTINATIONS.forEach((known) => {
       const regex = new RegExp(`\\b${known}\\b`, 'i');
       if (t.title && regex.test(t.title)) destinationsFound.add(known);
@@ -122,8 +121,6 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
       const res = await api.getTrips(user?.id || 1);
       if (res && res.trips && res.trips.length > 0) {
         setUserTrips(res.trips);
-
-        // If selectedTripId was explicitly passed, select that trip
         if (selectedTripId) {
           const currentTrip = res.trips.find((t: Trip) => t.id === selectedTripId);
           if (currentTrip) {
@@ -131,8 +128,6 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
             return;
           }
         }
-
-        // If no trip was selected, do not auto-pick one; show the select trip prompt
         setPlannedTrip(null);
         setPlannedDestinations([]);
         setActiveDestination('');
@@ -174,11 +169,9 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
       const next = new Set(prev);
       const isAlreadyLiked = next.has(id);
       if (isAlreadyLiked) {
-        // Unlike: decrease by 1
         next.delete(id);
         setPosts(current => current.map(p => p.id === id ? { ...p, likes: Math.max(0, p.likes - 1) } : p));
       } else {
-        // Like once
         next.add(id);
         setPosts(current => current.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
       }
@@ -186,7 +179,6 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
     });
   };
 
-  // User shares text-only experience (no images allowed or added)
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim() || !newContent.trim()) return;
@@ -194,9 +186,9 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
     const defaultLoc = plannedDestinations[0] || (activeDestination !== 'ALL_PLANNED' && activeDestination !== 'ALL_GLOBAL' ? activeDestination : 'Global');
     const post: CommunityPost = {
       id: Date.now(),
-      author: user.name || 'panther',
+      author: user.name || 'Explorer',
       authorAvatar: user.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-      location: newLocation.trim() || `${defaultLoc}, India`,
+      location: newLocation.trim() || `${defaultLoc}, World`,
       title: newTitle.trim(),
       content: newContent.trim(),
       likes: 1,
@@ -212,11 +204,9 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
     setNewContent('');
   };
 
-  // Filter communities related ONLY to the destination of the selected trip
   const destinationCommunities = communities.filter(c => {
     if (!plannedTrip) return false;
 
-    // Check against active destination or all planned destinations of the trip
     const destinationsToMatch = activeDestination && activeDestination !== 'ALL_PLANNED'
       ? [activeDestination]
       : (plannedDestinations.length > 0 ? plannedDestinations : [plannedTrip.destinations || plannedTrip.title]);
@@ -241,80 +231,80 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
   });
 
   return (
-    <div style={{ marginTop: '20px', maxWidth: '980px', margin: '20px auto 40px', padding: '0 16px' }}>
+    <div style={{ marginTop: '20px', maxWidth: '1080px', margin: '20px auto 60px', padding: '0 16px' }}>
       
-      {/* ==================================================================== */}
       {/* 1. TRAVEL COMMUNITIES FOR TRAVELER'S TRIP DESTINATION */}
-      {/* ==================================================================== */}
-      {/* CASE 1: USER HAS NOT SELECTED OR STARTED A TRIP YET */}
       {!plannedTrip ? (
         <section
           style={{
-            background: 'rgba(255, 255, 255, 0.94)',
-            borderRadius: '24px',
-            border: '1.5px solid #E8E2F0',
-            padding: '50px 28px',
+            background: '#FFFFFF',
+            borderRadius: '16px',
+            border: '2px solid #101010',
+            padding: '48px 32px',
             textAlign: 'center',
-            boxShadow: '0 10px 30px rgba(129, 120, 232, 0.08)',
+            boxShadow: '4px 4px 0px #101010',
             marginBottom: '40px',
-            backdropFilter: 'blur(16px)'
+            position: 'relative'
           }}
         >
           {/* Animated GlobalTrotter Logo */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '22px' }}>
-            <AnimatedLogo size="lg" title="GlobalTrotter" badge="COMMUNITIES" />
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <AnimatedLogo size="lg" title="GlobalTrotter" badge="COHORTS" />
           </div>
 
+          <span style={{ fontSize: '11px', fontWeight: 900, color: '#101010', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'inline-block', marginBottom: '8px' }}>
+            CURATED TRAVEL COHORTS
+          </span>
           <h2
             style={{
-              fontSize: '22px',
+              fontSize: '28px',
               fontWeight: 900,
-              color: '#292833',
-              letterSpacing: '-0.4px',
-              maxWidth: '680px',
+              color: '#101010',
+              letterSpacing: '-0.03em',
+              maxWidth: '720px',
               margin: '0 auto 12px',
-              lineHeight: 1.4
+              lineHeight: 1.25
             }}
           >
-            Select a destination and start your trip to discover related travel communities.
+            Select an expedition destination to reveal curated traveler cohorts.
           </h2>
 
           <p
             style={{
-              fontSize: '14.5px',
-              color: '#777584',
-              maxWidth: '540px',
-              margin: '0 auto 28px',
+              fontSize: '14px',
+              color: '#555555',
+              maxWidth: '560px',
+              margin: '0 auto 32px',
               lineHeight: 1.6
             }}
           >
             {userTrips.length > 0
-              ? 'Select one of your expeditions below to reveal verified travel groups and cohorts heading to that exact destination.'
-              : 'You have not started any trips yet. Create or plan your first expedition to discover destination communities.'}
+              ? 'Select one of your active or planned voyages below to connect with verified travelers and group cohorts heading to that exact destination.'
+              : 'You have not scheduled any expeditions yet. Plan your first journey to unlock destination-specific community circles.'}
           </p>
 
           {userTrips.length > 0 ? (
-            <div style={{ textAlign: 'left', maxWidth: '820px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'left', maxWidth: '880px', margin: '0 auto' }}>
               <div
                 style={{
-                  fontSize: '12px',
-                  fontWeight: 800,
+                  fontSize: '11px',
+                  fontWeight: 900,
                   textTransform: 'uppercase',
-                  color: '#64748B',
-                  letterSpacing: '0.06em',
-                  marginBottom: '14px',
+                  color: '#101010',
+                  letterSpacing: '0.1em',
+                  marginBottom: '16px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '8px'
                 }}
               >
-                <span>🗺️ Select From Your Expeditions ({userTrips.length}):</span>
+                <span>🗺️ SELECT ACTIVE EXPEDITION ({userTrips.length}):</span>
               </div>
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-                  gap: '16px'
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                  gap: '18px'
                 }}
               >
                 {userTrips.map((trip) => {
@@ -326,40 +316,38 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                       key={trip.id}
                       onClick={() => handleSelectTrip(trip)}
                       style={{
-                        background: '#F8FAFC',
-                        border: '1.5px solid #E2E8F0',
-                        borderRadius: '16px',
-                        padding: '16px',
+                        background: '#F7F6F2',
+                        border: '2px solid #101010',
+                        borderRadius: '12px',
+                        padding: '18px',
                         cursor: 'pointer',
-                        transition: 'all 0.2s ease',
+                        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
-                        gap: '14px'
+                        gap: '14px',
+                        boxShadow: '2px 2px 0px #101010'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#C39AD9';
-                        e.currentTarget.style.background = '#FAF9FC';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(129, 120, 232, 0.12)';
+                        e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                        e.currentTarget.style.boxShadow = '4px 4px 0px #101010';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#E2E8F0';
-                        e.currentTarget.style.background = '#F8FAFC';
                         e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.boxShadow = '2px 2px 0px #101010';
                       }}
                     >
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                           <span
                             style={{
-                              background: '#F1E9F7',
-                              color: '#8178E8',
+                              background: '#36B7B3',
+                              border: '1.5px solid #101010',
+                              color: '#101010',
                               fontSize: '11px',
-                              fontWeight: 800,
-                              padding: '2px 8px',
-                              borderRadius: '6px',
+                              fontWeight: 900,
+                              padding: '3px 8px',
+                              borderRadius: '4px',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '4px'
@@ -369,9 +357,14 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                           </span>
                           <span
                             style={{
-                              fontSize: '11px',
-                              fontWeight: 700,
-                              color: '#64748B'
+                              fontSize: '10.5px',
+                              fontWeight: 900,
+                              color: '#101010',
+                              background: '#FFD84D',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              border: '1.5px solid #101010',
+                              textTransform: 'uppercase'
                             }}
                           >
                             {trip.status || 'Active'}
@@ -380,8 +373,8 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                         <h4
                           style={{
                             fontSize: '16px',
-                            fontWeight: 800,
-                            color: '#0F172A',
+                            fontWeight: 900,
+                            color: '#101010',
                             margin: '0 0 6px',
                             lineHeight: 1.3
                           }}
@@ -389,8 +382,8 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                           {trip.title}
                         </h4>
                         {trip.start_date && (
-                          <span style={{ fontSize: '12px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Calendar className="w-3 h-3 text-slate-400" />
+                          <span style={{ fontSize: '12px', color: '#555555', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <Calendar className="w-3 h-3 text-gold-400" />
                             {trip.start_date} {trip.end_date ? `→ ${trip.end_date}` : ''}
                           </span>
                         )}
@@ -398,17 +391,26 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
 
                       <button
                         type="button"
-                        className="btn-plan-budget"
                         style={{
                           width: '100%',
-                          padding: '8px 12px',
+                          padding: '10px 14px',
                           fontSize: '12px',
-                          fontWeight: 800,
+                          fontWeight: 900,
                           justifyContent: 'center',
-                          borderRadius: '10px'
+                          borderRadius: '8px',
+                          background: '#FFD84D',
+                          color: '#101010',
+                          border: '2px solid #101010',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                          boxShadow: '2px 2px 0px #101010'
                         }}
                       >
-                        Select Trip & View Communities →
+                        Select & View Cohorts →
                       </button>
                     </div>
                   );
@@ -419,73 +421,79 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
             <button
               type="button"
               onClick={() => onNavigate('my-trips')}
-              className="btn-plan-budget"
               style={{
                 padding: '12px 26px',
-                fontSize: '14px',
-                fontWeight: 800,
+                fontSize: '13px',
+                fontWeight: 900,
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                margin: '0 auto'
+                margin: '0 auto',
+                borderRadius: '10px',
+                background: '#FFD84D',
+                color: '#101010',
+                border: '2px solid #101010',
+                cursor: 'pointer',
+                boxShadow: '3px 3px 0px #101010',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
               }}
             >
-              <Sparkles className="w-4 h-4" /> Start a New Trip
+              <Sparkles className="w-4 h-4" /> Start a New Expedition
             </button>
           )}
         </section>
       ) : (
-        /* ==================================================================== */
         /* 1. TRAVEL COMMUNITIES FOR SELECTED TRIP DESTINATION */
-        /* ==================================================================== */
         <section style={{ marginBottom: '40px' }}>
           {/* Active Trip Banner HUD */}
           <div
             style={{
               background: '#FFFFFF',
-              border: '1.5px solid #E2E8F0',
-              borderRadius: '20px',
-              padding: '16px 20px',
-              marginBottom: '20px',
+              border: '2px solid #101010',
+              borderRadius: '14px',
+              padding: '18px 24px',
+              marginBottom: '24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'wrap',
-              gap: '12px',
-              boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)'
+              gap: '16px',
+              boxShadow: '3px 3px 0px #101010'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               <div
                 style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '12px',
-                  background: '#F6EEFA',
-                  border: '1px solid #E8E2F0',
-                  color: '#8178E8',
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '10px',
+                  background: '#FFD84D',
+                  border: '2px solid #101010',
+                  color: '#101010',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  boxShadow: '2px 2px 0px #101010'
                 }}
               >
                 <Compass className="w-5 h-5" />
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#8178E8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Selected Trip Destination
+                  <span style={{ fontSize: '11px', fontWeight: 900, color: '#101010', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    ACTIVE EXPEDITION COHORT
                   </span>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#777584', background: '#F1F5F9', padding: '2px 8px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#101010', background: '#F7F6F2', border: '1px solid #101010', padding: '1px 7px', borderRadius: '4px' }}>
                     {plannedTrip.start_date ? `${plannedTrip.start_date} ${plannedTrip.end_date ? '→ ' + plannedTrip.end_date : ''}` : 'Upcoming'}
                   </span>
                 </div>
-                <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#292833', margin: '2px 0 0' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#101010', margin: '2px 0 0', letterSpacing: '-0.02em' }}>
                   {plannedTrip.title}
                 </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px', fontSize: '12.5px', color: '#777584' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', fontSize: '12.5px', color: '#555555' }}>
                   <MapPin className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Destination: <strong>{plannedDestinations.length > 0 ? plannedDestinations.join(', ') : plannedTrip.destinations || plannedTrip.title}</strong></span>
+                  <span>Target Destination: <strong style={{ color: '#101010' }}>{plannedDestinations.length > 0 ? plannedDestinations.join(', ') : plannedTrip.destinations || plannedTrip.title}</strong></span>
                 </div>
               </div>
             </div>
@@ -495,62 +503,61 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
               type="button"
               onClick={handleClearSelectedTrip}
               style={{
-                padding: '8px 16px',
-                borderRadius: '10px',
-                background: '#F8FAFC',
-                border: '1px solid #CBD5E1',
-                color: '#334155',
+                padding: '9px 18px',
+                borderRadius: '8px',
+                background: '#FFFFFF',
+                border: '2px solid #101010',
+                color: '#101010',
                 fontSize: '12.5px',
-                fontWeight: 700,
+                fontWeight: 800,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                transition: 'all 0.15s ease'
+                boxShadow: '2px 2px 0px #101010'
               }}
             >
-              <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-              <span>Switch Trip</span>
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Switch Expedition</span>
             </button>
           </div>
 
           {/* Section Heading & Multi-Destination Tabs */}
-          <div style={{ marginBottom: '22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
               <div>
-                <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.5px', margin: '0 0 4px' }}>
+                <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#101010', letterSpacing: '-0.03em', margin: '0 0 6px' }}>
                   {activeDestination === 'ALL_PLANNED'
-                    ? `Communities for ${plannedDestinations.join(' & ')}`
-                    : `Communities for ${activeDestination}`}
+                    ? `Curated Cohorts for ${plannedDestinations.join(' & ')}`
+                    : `Curated Cohorts for ${activeDestination}`}
                 </h2>
-                <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
+                <p style={{ fontSize: '13.5px', color: '#555555', margin: 0 }}>
                   {activeDestination === 'ALL_PLANNED'
-                    ? `Showing verified travel groups and cohorts heading to ${plannedDestinations.join(' and ')} for your selected trip.`
-                    : `Showing verified travel groups and cohorts heading to ${activeDestination} for your selected trip.`}
+                    ? `Showing verified voyager circles and travel cohorts heading to ${plannedDestinations.join(' and ')}.`
+                    : `Showing verified voyager circles and travel cohorts heading to ${activeDestination}.`}
                 </p>
               </div>
 
-              {/* Destination Selector Tabs if multiple destinations on this trip */}
+              {/* Destination Selector Tabs */}
               {plannedDestinations.length > 1 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', background: '#F8FAFC', padding: '6px 10px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', marginRight: '4px' }}>Filter Destination:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', background: '#FFFFFF', padding: '6px 10px', borderRadius: '10px', border: '2px solid #101010', boxShadow: '2px 2px 0px #101010' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 900, color: '#101010', marginRight: '4px', textTransform: 'uppercase' }}>Filter Destination:</span>
                   
                   <button
                     type="button"
                     onClick={() => setActiveDestination('ALL_PLANNED')}
                     style={{
-                      padding: '4px 12px',
-                      borderRadius: '8px',
+                      padding: '5px 12px',
+                      borderRadius: '6px',
                       fontSize: '12px',
-                      fontWeight: 700,
+                      fontWeight: 800,
                       cursor: 'pointer',
-                      border: activeDestination === 'ALL_PLANNED' ? '1px solid #8178E8' : '1px solid transparent',
-                      background: activeDestination === 'ALL_PLANNED' ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : 'transparent',
-                      color: activeDestination === 'ALL_PLANNED' ? '#FFFFFF' : '#777584',
-                      transition: 'all 0.15s ease'
+                      border: '1.5px solid #101010',
+                      background: activeDestination === 'ALL_PLANNED' ? '#FFD84D' : '#FFFFFF',
+                      color: '#101010'
                     }}
                   >
-                    ✨ All Trip Destinations ({plannedDestinations.length})
+                    ✨ All Destinations ({plannedDestinations.length})
                   </button>
 
                   {plannedDestinations.map(dest => (
@@ -559,15 +566,14 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                       type="button"
                       onClick={() => setActiveDestination(dest)}
                       style={{
-                        padding: '4px 12px',
-                        borderRadius: '8px',
+                        padding: '5px 12px',
+                        borderRadius: '6px',
                         fontSize: '12px',
-                        fontWeight: 700,
+                        fontWeight: 800,
                         cursor: 'pointer',
-                        border: activeDestination.toLowerCase() === dest.toLowerCase() ? '1px solid #8178E8' : '1px solid transparent',
-                        background: activeDestination.toLowerCase() === dest.toLowerCase() ? 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)' : 'transparent',
-                        color: activeDestination.toLowerCase() === dest.toLowerCase() ? '#FFFFFF' : '#777584',
-                        transition: 'all 0.15s ease'
+                        border: '1.5px solid #101010',
+                        background: activeDestination.toLowerCase() === dest.toLowerCase() ? '#FFD84D' : '#FFFFFF',
+                        color: '#101010'
                       }}
                     >
                       📍 {dest}
@@ -587,14 +593,15 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                 justifyContent: 'center',
                 padding: '48px',
                 background: '#FFFFFF',
-                borderRadius: '24px',
-                border: '1.5px solid #E2E8F0',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                borderRadius: '16px',
+                border: '2px solid #101010',
+                boxShadow: '3px 3px 0px #101010',
+                color: '#101010'
               }}
             >
-              <RefreshCw className="w-6 h-6 text-teal-600 animate-spin mr-3" />
-              <span style={{ fontSize: '14px', fontWeight: 700, color: '#475569' }}>
-                Loading travel cohorts for {plannedDestinations.join(', ')}...
+              <RefreshCw className="w-5 h-5 animate-spin mr-3" />
+              <span style={{ fontSize: '14px', fontWeight: 800 }}>
+                Connecting to cohorts for {plannedDestinations.join(', ')}...
               </span>
             </div>
           ) : destinationCommunities.length === 0 ? (
@@ -603,513 +610,565 @@ export const CommunityTab: React.FC<Props> = ({ user, onNavigate, initialOpenCre
                 textAlign: 'center',
                 padding: '44px 24px',
                 background: '#FFFFFF',
-                borderRadius: '24px',
-                border: '1.5px solid #E2E8F0',
-                boxShadow: '0 6px 20px rgba(0,0,0,0.03)'
+                borderRadius: '16px',
+                border: '2px solid #101010',
+                boxShadow: '4px 4px 0px #101010'
               }}
             >
               <div
                 style={{
-                  width: '56px',
-                  height: '56px',
-                  borderRadius: '16px',
-                  background: '#F6EEFA',
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '50%',
+                  background: '#FFD84D',
+                  border: '2px solid #101010',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '0 auto 14px',
-                  color: '#8178E8'
+                  margin: '0 auto 16px',
+                  color: '#101010'
                 }}
               >
-                <Compass className="w-7 h-7" />
+                <Compass className="w-6 h-6" />
               </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', margin: '0 0 6px' }}>
-                No Communities Found for {activeDestination === 'ALL_PLANNED' ? (plannedDestinations.length > 0 ? plannedDestinations.join(' & ') : plannedTrip.title) : activeDestination} Yet
+              <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#101010', margin: '0 0 8px' }}>
+                No Cohorts Found for {activeDestination === 'ALL_PLANNED' ? (plannedDestinations.length > 0 ? plannedDestinations.join(' & ') : plannedTrip.title) : activeDestination} Yet
               </h3>
-              <p style={{ fontSize: '13.5px', color: '#64748B', maxWidth: '440px', margin: '0 auto 16px', lineHeight: 1.5 }}>
-                Check back soon as new cohorts for your trip destination are curated, or switch to another trip.
+              <p style={{ fontSize: '14px', color: '#555555', maxWidth: '460px', margin: '0 auto 20px', lineHeight: 1.6 }}>
+                Check back soon as new voyager circles for your expedition destination are verified, or switch to another expedition.
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                <button
-                  type="button"
-                  onClick={handleClearSelectedTrip}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '10px',
-                    background: '#F1F5F9',
-                    color: '#334155',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    border: '1px solid #CBD5E1',
-                    cursor: 'pointer'
-                  }}
-                >
-                  🔄 Switch Trip
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleClearSelectedTrip}
+                style={{
+                  padding: '9px 20px',
+                  borderRadius: '8px',
+                  background: '#FFD84D',
+                  color: '#101010',
+                  fontWeight: 900,
+                  fontSize: '13px',
+                  border: '2px solid #101010',
+                  cursor: 'pointer',
+                  boxShadow: '2px 2px 0px #101010'
+                }}
+              >
+                🔄 Switch Expedition
+              </button>
             </div>
           ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
-              gap: '24px'
-            }}
-          >
-            {destinationCommunities.map((community) => {
-              const isCreator = community.creator_id === user.id || community.is_creator;
-              const isMember = community.is_member || isCreator;
-              const isFull = (community.current_members || 0) >= community.max_members;
-
-              return (
-                <div
-                  key={community.id}
-                  style={{
-                    background: '#FFFFFF',
-                    borderRadius: '20px',
-                    border: '1.5px solid #E2E8F0',
-                    overflow: 'hidden',
-                    boxShadow: '0 8px 25px -4px rgba(15, 23, 42, 0.08)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'relative',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.boxShadow = '0 16px 36px -8px rgba(15, 23, 42, 0.14)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '0 8px 25px -4px rgba(15, 23, 42, 0.08)';
-                  }}
-                >
-                  {/* Card Banner */}
-                  <div style={{ position: 'relative', height: '190px', width: '100%', overflow: 'hidden' }}>
-                    <img
-                      src={community.cover_image || 'https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=1000&q=80'}
-                      alt={community.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: 'linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.25) 55%, transparent 100%)'
-                      }}
-                    />
-
-                    {/* Status badges */}
-                    <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span
-                        style={{
-                          background: 'rgba(15, 23, 42, 0.8)',
-                          backdropFilter: 'blur(8px)',
-                          color: '#2DD4BF',
-                          border: '1px solid rgba(45, 212, 191, 0.35)',
-                          fontSize: '11px',
-                          fontWeight: 800,
-                          padding: '4px 10px',
-                          borderRadius: '9999px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px'
-                        }}
-                      >
-                        <MapPin className="w-3 h-3 text-teal-400" />
-                        {community.destination}
-                      </span>
-
-                      {isCreator ? (
-                        <span
-                          style={{
-                            background: '#7C3AED',
-                            color: '#FFFFFF',
-                            fontSize: '10.5px',
-                            fontWeight: 800,
-                            padding: '3px 10px',
-                            borderRadius: '9999px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            boxShadow: '0 2px 8px rgba(124, 58, 237, 0.4)'
-                          }}
-                        >
-                          <Sparkles className="w-3 h-3" /> Creator
-                        </span>
-                      ) : isMember ? (
-                        <span
-                          style={{
-                            background: '#059669',
-                            color: '#FFFFFF',
-                            fontSize: '10.5px',
-                            fontWeight: 800,
-                            padding: '3px 10px',
-                            borderRadius: '9999px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            boxShadow: '0 2px 8px rgba(5, 150, 105, 0.4)'
-                          }}
-                        >
-                          <Check className="w-3 h-3" /> Member
-                        </span>
-                      ) : null}
-                    </div>
-
-                    {/* Community Name & Dates on Banner */}
-                    <div style={{ position: 'absolute', bottom: '12px', left: '16px', right: '16px' }}>
-                      <h3
-                        style={{
-                          fontSize: '18px',
-                          fontWeight: 900,
-                          color: '#FFFFFF',
-                          margin: '0 0 4px',
-                          textShadow: '0 2px 4px rgba(0,0,0,0.6)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {community.name}
-                      </h3>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#CBD5E1' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Calendar className="w-3.5 h-3.5 text-teal-400" />
-                          {community.start_date || 'Flexible'} → {community.end_date || 'Ongoing'}
-                        </span>
-                        <span>•</span>
-                        <span>Lead by {community.creator_name || 'Voyager'}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Card Body */}
-                  <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '14px' }}>
-                    {community.description && (
-                      <p
-                        style={{
-                          fontSize: '12.5px',
-                          color: '#64748B',
-                          lineHeight: '1.5',
-                          margin: 0,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden'
-                        }}
-                      >
-                        {community.description}
-                      </p>
-                    )}
-
-                    {/* Capacity Indicator */}
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <Users className="w-3.5 h-3.5 text-teal-600" /> Cohort Capacity
-                        </span>
-                        <span style={{ color: isFull ? '#EF4444' : '#0F172A', fontWeight: 800 }}>
-                          {community.current_members} / {community.max_members} spots
-                        </span>
-                      </div>
-                      <div style={{ width: '100%', height: '7px', borderRadius: '9999px', background: '#F1F5F9', overflow: 'hidden' }}>
-                        <div
-                          style={{
-                            height: '100%',
-                            borderRadius: '9999px',
-                            background: isFull ? '#EF4444' : 'linear-gradient(90deg, #8178E8 0%, #F3AFCF 100%)',
-                            width: `${Math.min(100, ((community.current_members || 1) / community.max_members) * 100)}%`,
-                            transition: 'width 0.4s ease'
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Action Button - Direct Join / Member Indicator (No QR button) */}
-                    <div style={{ paddingTop: '4px' }}>
-                      {!isMember ? (
-                        <button
-                          type="button"
-                          onClick={() => handleJoinDirect(community)}
-                          disabled={isFull || joiningId === community.id}
-                          className="btn-plan-budget"
-                          style={{
-                            width: '100%',
-                            padding: '11px 16px',
-                            fontSize: '13px',
-                            fontWeight: 800,
-                            justifyContent: 'center',
-                            opacity: isFull ? 0.6 : 1,
-                            cursor: isFull ? 'not-allowed' : 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                          }}
-                        >
-                          {joiningId === community.id ? (
-                            <RefreshCw className="w-4 h-4 animate-spin" />
-                          ) : isFull ? (
-                            'Cohort Full'
-                          ) : (
-                            <>
-                              <span>Join {activeDestination} Cohort</span>
-                              <ArrowRight className="w-4 h-4" />
-                            </>
-                          )}
-                        </button>
-                      ) : (
-                        <div
-                          style={{
-                            width: '100%',
-                            padding: '10px 14px',
-                            borderRadius: '9999px',
-                            background: '#F0FDF4',
-                            color: '#16A34A',
-                            border: '1px solid #BBF7D0',
-                            fontSize: '12.5px',
-                            fontWeight: 800,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '6px'
-                          }}
-                        >
-                          <Check className="w-4 h-4" />
-                          <span>Joined Explorer</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-      )}
-
-      {/* ==================================================================== */}
-      {/* 2. COMMUNITY VOYAGE STORIES & EXPERIENCES FEED (TEXT-ONLY) */}
-      {/* Only rendered when a trip is selected */}
-      {/* ==================================================================== */}
-      {plannedTrip && (
-        <section style={{ borderTop: '1px solid #E2E8F0', paddingTop: '32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '14px' }}>
-            <div>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
-                Traveler Experience Feed
-              </h2>
-          <p style={{ fontSize: '13.5px', color: '#64748B', margin: 0 }}>
-            Community stories, insider tips, and reviews from fellow verified voyagers
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowCreatePost(!showCreatePost)}
-          className="btn-plan-budget"
-          style={{ padding: '10px 20px', fontSize: '13.5px' }}
-        >
-          <span>{showCreatePost ? '✕ Cancel Post' : '+ Share Your Experience'}</span>
-        </button>
-      </div>
-
-      {/* Global Search Bar */}
-      <GlobalSearchBar
-        placeholder="Search stories, forts, desert camps..."
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        groupByOptions={['Default', 'By Location', 'By Activity Category']}
-        filterOptions={['All', 'Heritage Cruise', 'Adventure', 'Wilderness Camping']}
-        sortByOptions={['Newest', 'Most Liked', 'Most Comments']}
-        selectedGroup={selectedGroup}
-        onGroupChange={setSelectedGroup}
-        selectedFilter={selectedFilter}
-        onFilterChange={setSelectedFilter}
-        selectedSort={selectedSort}
-        onSortChange={setSelectedSort}
-      />
-
-      {/* Create New Community Post Box - Strictly Text-Only As In Screenshot */}
-      {showCreatePost && (
-        <form
-          onSubmit={handleCreatePost}
-          style={{
-            background: '#FFFFFF',
-            borderRadius: '20px',
-            border: '1.5px solid #2DD4BF',
-            padding: '24px',
-            marginBottom: '24px',
-            boxShadow: '0 6px 20px rgba(13, 148, 136, 0.1)'
-          }}
-        >
-          <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', marginBottom: '14px' }}>
-            Share your Voyage Story with the GlobalTrotter Community
-          </h3>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Title of your experience..."
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Location (e.g. Jaipur, Manali, Goa)..."
-              value={newLocation}
-              onChange={(e) => setNewLocation(e.target.value)}
-              required
-            />
-          </div>
-
-          <textarea
-            className="form-input"
-            rows={3}
-            placeholder="Share details, tips, recommended activities, best time to visit..."
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            required
-            style={{ marginBottom: '14px' }}
-          />
-
-          <button
-            type="submit"
-            className="btn-plan-budget"
-            style={{ padding: '10px 22px' }}
-          >
-            Post Story to Community
-          </button>
-        </form>
-      )}
-
-      {/* Community Feed Posts - Pure Text Story Layout (No Images) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {filteredPosts.length === 0 ? (
-          <div
-            style={{
-              textAlign: 'center',
-              padding: '40px 20px',
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E2E8F0',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
-            }}
-          >
-            <div style={{ fontSize: '32px', marginBottom: '10px' }}>✍️</div>
-            <h4 style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', margin: '0 0 6px' }}>
-              No Traveler Stories Shared for {activeDestination === 'ALL_PLANNED' ? plannedDestinations.join(' & ') : (activeDestination || plannedTrip.title)} Yet
-            </h4>
-            <p style={{ fontSize: '13.5px', color: '#64748B', maxWidth: '440px', margin: '0 auto 16px' }}>
-              Be the first to share an insider tip or experience from your expedition!
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowCreatePost(true)}
-              className="btn-plan-budget"
-              style={{ padding: '8px 18px', fontSize: '13px', margin: '0 auto' }}
-            >
-              + Share First Story
-            </button>
-          </div>
-        ) : (
-          filteredPosts.map(post => (
             <div
-              key={post.id}
               style={{
-                background: '#FFFFFF',
-                borderRadius: '20px',
-                border: '1px solid #E2E8F0',
-                overflow: 'hidden',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.03)'
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+                gap: '24px'
               }}
             >
-              {/* Post Header: Avatar, Author, Location, Time */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '18px 20px 12px' }}>
-                <img
-                  src={post.authorAvatar}
-                  alt={post.author}
-                  style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover' }}
-                />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: 800, fontSize: '15px', color: '#0F172A' }}>{post.author}</span>
-                    <span style={{
-                      background: '#F0FDFA',
-                      color: '#0D9488',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      padding: '2px 8px',
-                      borderRadius: '6px'
-                    }}>
-                      {post.category}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#64748B' }}>
-                    📍 {post.location} • {post.timeAgo}
-                  </div>
-                </div>
-              </div>
+              {destinationCommunities.map((community) => {
+                const isCreator = community.creator_id === user.id || community.is_creator;
+                const isMember = community.is_member || isCreator;
+                const isFull = (community.current_members || 0) >= community.max_members;
 
-              {/* Post Content - Text Only */}
-              <div style={{ padding: '0 20px 16px' }}>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', marginBottom: '8px' }}>
-                  {post.title}
-                </h3>
-                <p style={{ fontSize: '13.5px', color: '#334155', lineHeight: '1.6', margin: 0 }}>
-                  {post.content}
-                </p>
-              </div>
-
-              {/* Post Footer: Likes, Comments (User can like only once) */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 20px',
-                borderTop: '1px solid #F1F5F9',
-                background: '#F8FAFC'
-              }}>
-                <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
-                  <button
-                    type="button"
-                    onClick={() => handleLike(post.id)}
+                return (
+                  <div
+                    key={community.id}
                     style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
+                      background: '#FFFFFF',
+                      borderRadius: '16px',
+                      border: '2px solid #101010',
+                      overflow: 'hidden',
+                      boxShadow: '4px 4px 0px #101010',
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      color: likedPostIds.has(post.id) ? '#E11D48' : '#64748B',
-                      transition: 'all 0.15s ease'
+                      flexDirection: 'column',
+                      position: 'relative',
+                      transition: 'transform 0.15s ease, box-shadow 0.15s ease'
                     }}
-                    title={likedPostIds.has(post.id) ? 'Unlike this story' : 'Like this story (once)'}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                      e.currentTarget.style.boxShadow = '6px 6px 0px #101010';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '4px 4px 0px #101010';
+                    }}
                   >
-                    <span style={{ transform: likedPostIds.has(post.id) ? 'scale(1.15)' : 'scale(1)', transition: 'transform 0.15s ease' }}>
-                      {likedPostIds.has(post.id) ? '❤️' : '🤍'}
-                    </span>
-                    <span>{post.likes} {post.likes === 1 ? 'Like' : 'Likes'}</span>
-                  </button>
+                    {/* Card Banner */}
+                    <div style={{ position: 'relative', height: '180px', width: '100%', overflow: 'hidden', borderBottom: '2px solid #101010' }}>
+                      <img
+                        src={community.cover_image || 'https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=1000&q=80'}
+                        alt={community.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#64748B', fontWeight: 600 }}>
-                    <span>💬</span>
-                    <span>{post.commentsCount} Comments</span>
+                      {/* Status badges */}
+                      <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span
+                          style={{
+                            background: '#101010',
+                            color: '#FFFFFF',
+                            fontSize: '11px',
+                            fontWeight: 900,
+                            padding: '4px 10px',
+                            borderRadius: '999px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            textTransform: 'uppercase'
+                          }}
+                        >
+                          <MapPin className="w-3 h-3" />
+                          {community.destination}
+                        </span>
+
+                        {isCreator ? (
+                          <span
+                            style={{
+                              background: '#FFD84D',
+                              color: '#101010',
+                              border: '1.5px solid #101010',
+                              fontSize: '10.5px',
+                              fontWeight: 900,
+                              padding: '3px 10px',
+                              borderRadius: '999px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <Sparkles className="w-3 h-3" /> Creator
+                          </span>
+                        ) : isMember ? (
+                          <span
+                            style={{
+                              background: '#36B7B3',
+                              color: '#101010',
+                              border: '1.5px solid #101010',
+                              fontSize: '10.5px',
+                              fontWeight: 900,
+                              padding: '3px 10px',
+                              borderRadius: '999px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <Check className="w-3 h-3" /> Member
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Community Name & Dates on Banner */}
+                      <div style={{ position: 'absolute', bottom: '10px', left: '14px', right: '14px', background: 'rgba(16, 16, 16, 0.75)', padding: '6px 10px', borderRadius: '6px' }}>
+                        <h3
+                          style={{
+                            fontSize: '17px',
+                            fontWeight: 900,
+                            color: '#FFFFFF',
+                            margin: '0 0 2px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}
+                        >
+                          {community.name}
+                        </h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#E8E6E0' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Calendar className="w-3 h-3 text-gold-400" />
+                            {community.start_date || 'Flexible'} → {community.end_date || 'Ongoing'}
+                          </span>
+                          <span>•</span>
+                          <span>By {community.creator_name || 'Voyager'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Body */}
+                    <div style={{ padding: '18px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '14px' }}>
+                      {community.description && (
+                        <p
+                          style={{
+                            fontSize: '13px',
+                            color: '#555555',
+                            lineHeight: '1.5',
+                            margin: 0,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {community.description}
+                        </p>
+                      )}
+
+                      {/* Capacity Indicator */}
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 800, color: '#101010', marginBottom: '6px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <Users className="w-3.5 h-3.5" /> Cohort Capacity
+                          </span>
+                          <span style={{ fontWeight: 900 }}>
+                            {community.current_members} / {community.max_members} spots
+                          </span>
+                        </div>
+                        <div style={{ width: '100%', height: '7px', borderRadius: '4px', background: '#E8E6E0', border: '1px solid #101010', overflow: 'hidden' }}>
+                          <div
+                            style={{
+                              height: '100%',
+                              background: isFull ? '#F4AFC1' : '#36B7B3',
+                              width: `${Math.min(100, ((community.current_members || 1) / community.max_members) * 100)}%`
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <div>
+                        {!isMember ? (
+                          <button
+                            type="button"
+                            onClick={() => handleJoinDirect(community)}
+                            disabled={isFull || joiningId === community.id}
+                            style={{
+                              width: '100%',
+                              padding: '11px 16px',
+                              fontSize: '12.5px',
+                              fontWeight: 900,
+                              justifyContent: 'center',
+                              opacity: isFull ? 0.6 : 1,
+                              cursor: isFull ? 'not-allowed' : 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              borderRadius: '8px',
+                              background: '#FFD84D',
+                              color: '#101010',
+                              border: '2px solid #101010',
+                              boxShadow: '2px 2px 0px #101010',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.04em'
+                            }}
+                          >
+                            {joiningId === community.id ? (
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                            ) : isFull ? (
+                              'Cohort Full'
+                            ) : (
+                              <>
+                                <span>Join {activeDestination} Cohort</span>
+                                <ArrowRight className="w-4 h-4" />
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          <div
+                            style={{
+                              width: '100%',
+                              padding: '9px 14px',
+                              borderRadius: '8px',
+                              background: '#36B7B3',
+                              color: '#101010',
+                              border: '2px solid #101010',
+                              fontSize: '12px',
+                              fontWeight: 900,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            <Check className="w-4 h-4" />
+                            <span>Joined Explorer</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* 2. COMMUNITY VOYAGE STORIES & EXPERIENCES FEED */}
+      {plannedTrip && (
+        <section style={{ borderTop: '2px solid #101010', paddingTop: '36px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+            <div>
+              <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#101010', letterSpacing: '-0.03em', margin: '0 0 6px 0' }}>
+                Voyager Chronicle & Field Notes
+              </h2>
+              <p style={{ fontSize: '13.5px', color: '#555555', margin: 0 }}>
+                First-hand expedition stories, cultural notes, and reflections from verified voyagers
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowCreatePost(!showCreatePost)}
+              style={{
+                padding: '10px 20px',
+                fontSize: '13px',
+                fontWeight: 900,
+                borderRadius: '8px',
+                background: showCreatePost ? '#FFFFFF' : '#FFD84D',
+                color: '#101010',
+                border: '2px solid #101010',
+                cursor: 'pointer',
+                boxShadow: '2px 2px 0px #101010',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
+              }}
+            >
+              <span>{showCreatePost ? '✕ Cancel Post' : '+ Share Expedition Story'}</span>
+            </button>
+          </div>
+
+          <GlobalSearchBar
+            placeholder="Search stories, ancient forts, alpine trails..."
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            groupByOptions={['Default', 'By Location', 'By Activity Category']}
+            filterOptions={['All', 'Heritage Cruise', 'Adventure', 'Wilderness Camping']}
+            sortByOptions={['Newest', 'Most Liked', 'Most Comments']}
+            selectedGroup={selectedGroup}
+            onGroupChange={setSelectedGroup}
+            selectedFilter={selectedFilter}
+            onFilterChange={setSelectedFilter}
+            selectedSort={selectedSort}
+            onSortChange={setSelectedSort}
+          />
+
+          {/* Create New Community Post Box */}
+          {showCreatePost && (
+            <form
+              onSubmit={handleCreatePost}
+              style={{
+                background: '#FFFFFF',
+                borderRadius: '16px',
+                border: '2px solid #101010',
+                padding: '24px',
+                marginBottom: '26px',
+                boxShadow: '4px 4px 0px #101010'
+              }}
+            >
+              <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', marginBottom: '16px', textTransform: 'uppercase' }}>
+                Chronicle Your Experience
+              </h3>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+                <input
+                  type="text"
+                  placeholder="Title of your expedition dispatch..."
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  required
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid #101010',
+                    background: '#F7F6F2',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    color: '#101010',
+                    outline: 'none'
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Location (e.g. Santorini, Kyoto, Amalfi)..."
+                  value={newLocation}
+                  onChange={(e) => setNewLocation(e.target.value)}
+                  required
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid #101010',
+                    background: '#F7F6F2',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    color: '#101010',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <textarea
+                rows={3}
+                placeholder="Share your personal insights, hidden vistas, recommended routes, and optimal seasons..."
+                value={newContent}
+                onChange={(e) => setNewContent(e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #101010',
+                  background: '#F7F6F2',
+                  fontSize: '13.5px',
+                  fontWeight: 500,
+                  color: '#101010',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  marginBottom: '16px'
+                }}
+              />
+
+              <button
+                type="submit"
+                style={{
+                  padding: '11px 24px',
+                  borderRadius: '8px',
+                  background: '#FFD84D',
+                  color: '#101010',
+                  fontSize: '13px',
+                  fontWeight: 900,
+                  border: '2px solid #101010',
+                  cursor: 'pointer',
+                  boxShadow: '3px 3px 0px #101010',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Publish Chronicle Entry
+              </button>
+            </form>
+          )}
+
+          {/* Community Feed Posts */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {filteredPosts.length === 0 ? (
+              <div
+                style={{
+                  textAlign: 'center',
+                  padding: '44px 20px',
+                  background: '#FFFFFF',
+                  borderRadius: '16px',
+                  border: '2px solid #101010',
+                  boxShadow: '3px 3px 0px #101010'
+                }}
+              >
+                <div style={{ fontSize: '32px', marginBottom: '12px' }}>✍️</div>
+                <h4 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: '0 0 6px' }}>
+                  No Dispatches Recorded for {activeDestination === 'ALL_PLANNED' ? plannedDestinations.join(' & ') : (activeDestination || plannedTrip.title)} Yet
+                </h4>
+                <p style={{ fontSize: '13.5px', color: '#555555', maxWidth: '440px', margin: '0 auto 18px', lineHeight: 1.5 }}>
+                  Be the first traveler to document an insider perspective or trail reflection from this route.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowCreatePost(true)}
+                  style={{
+                    padding: '9px 20px',
+                    fontSize: '12.5px',
+                    fontWeight: 900,
+                    borderRadius: '8px',
+                    background: '#FFD84D',
+                    color: '#101010',
+                    border: '2px solid #101010',
+                    cursor: 'pointer',
+                    boxShadow: '2px 2px 0px #101010',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  + Record First Entry
+                </button>
+              </div>
+            ) : (
+              filteredPosts.map(post => (
+                <div
+                  key={post.id}
+                  style={{
+                    background: '#FFFFFF',
+                    borderRadius: '16px',
+                    border: '2px solid #101010',
+                    overflow: 'hidden',
+                    boxShadow: '3px 3px 0px #101010'
+                  }}
+                >
+                  {/* Post Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '18px 22px 14px' }}>
+                    <img
+                      src={post.authorAvatar}
+                      alt={post.author}
+                      style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #101010' }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontWeight: 900, fontSize: '15px', color: '#101010' }}>{post.author}</span>
+                        <span style={{
+                          background: '#429FE8',
+                          color: '#101010',
+                          border: '1px solid #101010',
+                          fontSize: '11px',
+                          fontWeight: 800,
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          textTransform: 'uppercase'
+                        }}>
+                          {post.category}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#555555', marginTop: '2px', fontWeight: 600 }}>
+                        📍 {post.location} • {post.timeAgo}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Post Content */}
+                  <div style={{ padding: '0 22px 18px' }}>
+                    <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#101010', marginBottom: '8px' }}>
+                      {post.title}
+                    </h3>
+                    <p style={{ fontSize: '13.5px', color: '#333333', lineHeight: '1.6', margin: 0 }}>
+                      {post.content}
+                    </p>
+                  </div>
+
+                  {/* Post Footer */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px 22px',
+                    borderTop: '1.5px solid #E8E6E0',
+                    background: '#F7F6F2'
+                  }}>
+                    <div style={{ display: 'flex', gap: '18px', alignItems: 'center' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleLike(post.id)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          fontSize: '13px',
+                          fontWeight: 800,
+                          color: '#101010'
+                        }}
+                      >
+                        <span>{likedPostIds.has(post.id) ? '❤️' : '🤍'}</span>
+                        <span>{post.likes} {post.likes === 1 ? 'Like' : 'Likes'}</span>
+                      </button>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#555555', fontWeight: 700 }}>
+                        <span>💬</span>
+                        <span>{post.commentsCount} Comments</span>
+                      </div>
+                    </div>
+
+                    <span style={{ fontSize: '11px', color: '#101010', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 800 }}>
+                      Verified Dispatch
+                    </span>
                   </div>
                 </div>
-
-                <span style={{ fontSize: '12px', color: '#94A3B8' }}>Verified Voyager Story</span>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              ))
+            )}
+          </div>
         </section>
       )}
 

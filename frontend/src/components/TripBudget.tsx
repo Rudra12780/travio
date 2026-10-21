@@ -83,7 +83,6 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
   const isOverBudget = remaining < 0;
   const spentPercent = Math.min(100, Math.round((totalSpent / (totalBudget || 1)) * 100));
 
-  // Estimate days of trip for daily avg
   let tripDays = 1;
   if (trip?.start_date && trip?.end_date) {
     const d1 = new Date(trip.start_date);
@@ -93,38 +92,43 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
   const avgCostPerDay = Math.round(totalSpent / tripDays);
 
   return (
-    <div style={{ marginTop: '24px' }}>
+    <div style={{ marginTop: '24px', paddingBottom: '60px' }}>
       {/* Title Bar & Trip Selector */}
       <div style={{
         background: '#FFFFFF',
-        border: '1.5px solid #E8E2F0',
-        borderRadius: '22px',
-        padding: '26px',
+        border: '2px solid #101010',
+        borderRadius: '16px',
+        padding: '24px',
         marginBottom: '28px',
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: '20px',
-        boxShadow: '0 8px 24px rgba(32, 63, 112, 0.05)'
+        boxShadow: '4px 4px 0px #101010'
       }}>
         <div>
-          <span style={{ fontSize: '12px', fontWeight: 800, color: '#8178E8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            🌸 FINANCIAL INTELLIGENCE & TRACKING
+          <span style={{ fontSize: '11px', fontWeight: 900, color: '#101010', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'inline-block', marginBottom: '4px' }}>
+            EDITORIAL FINANCIAL INTELLIGENCE
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#292833' }}>Expedition Budget for</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px', flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#101010', margin: 0, letterSpacing: '-0.03em' }}>
+              Expedition Budget:
+            </h2>
             <select
               value={currentTripId}
               onChange={(e) => handleTripChange(Number(e.target.value))}
               style={{
                 fontSize: '20px',
                 fontWeight: 900,
-                color: '#8178E8',
-                border: 'none',
-                background: 'transparent',
+                color: '#101010',
+                border: '2px solid #101010',
+                borderRadius: '8px',
+                padding: '4px 10px',
+                background: '#FFD84D',
                 cursor: 'pointer',
-                outline: 'none'
+                outline: 'none',
+                boxShadow: '2px 2px 0px #101010'
               }}
             >
               {trips.map(t => (
@@ -132,13 +136,32 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
               ))}
             </select>
           </div>
-          <p style={{ fontSize: '13.5px', color: '#777584', marginTop: '4px' }}>
-            {trip?.start_date} → {trip?.end_date} ({tripDays} Days)
+          <p style={{ fontSize: '13.5px', color: '#555555', marginTop: '6px', margin: 0 }}>
+            📅 {trip?.start_date} → {trip?.end_date} • <strong>{tripDays} Days Duration</strong>
           </p>
         </div>
 
-        <button type="button" className="btn-plan-budget" onClick={() => setShowLogModal(true)}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+        <button
+          type="button"
+          onClick={() => setShowLogModal(true)}
+          style={{
+            background: '#FFD84D',
+            color: '#101010',
+            fontWeight: 900,
+            border: '2px solid #101010',
+            borderRadius: '10px',
+            padding: '12px 24px',
+            fontSize: '13px',
+            cursor: 'pointer',
+            boxShadow: '3px 3px 0px #101010',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em'
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
           <span>+ Log Expense</span>
         </button>
       </div>
@@ -146,85 +169,99 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
       {/* Overbudget Warning Alert */}
       {isOverBudget && (
         <div style={{
-          background: '#FFF2F0',
-          border: '1.5px solid #F5B0A4',
-          borderRadius: '16px',
+          background: '#F4AFC1',
+          border: '2px solid #101010',
+          borderRadius: '12px',
           padding: '16px 20px',
           marginBottom: '24px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          color: '#C65335'
+          color: '#101010',
+          boxShadow: '3px 3px 0px #101010'
         }}>
-          <span style={{ fontSize: '24px' }}>⚠️</span>
+          <span style={{ fontSize: '26px' }}>⚠️</span>
           <div>
-            <h4 style={{ fontSize: '15px', fontWeight: 800 }}>Budget Alert: Target Exceeded</h4>
-            <p style={{ fontSize: '13px', opacity: 0.9 }}>
-              You have surpassed your allocated budget of ${totalBudget} by <strong>${Math.abs(remaining)}</strong>. Consider adjusting lodging or activity parameters.
+            <h4 style={{ fontSize: '15px', fontWeight: 900, margin: '0 0 4px' }}>Budget Alert: Target Exceeded</h4>
+            <p style={{ fontSize: '13px', margin: 0, fontWeight: 600 }}>
+              You have surpassed your allocated budget of ${totalBudget} by <strong>${Math.abs(remaining)}</strong>. Consider adjusting lodging or activities.
             </p>
           </div>
         </div>
       )}
 
       {/* Metrics Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px', marginBottom: '28px' }}>
-        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
-          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Allocated</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${totalBudget}</p>
-          <span style={{ fontSize: '12px', color: '#8178E8', fontWeight: 800 }}>Planned Target</span>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '14px', border: '2px solid #101010', boxShadow: '4px 4px 0px #101010' }}>
+          <p style={{ fontSize: '11px', fontWeight: 900, color: '#555555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Total Allocated</p>
+          <p style={{ fontSize: '32px', fontWeight: 900, color: '#101010', margin: '6px 0 4px', letterSpacing: '-0.03em' }}>${totalBudget}</p>
+          <span style={{ fontSize: '12px', color: '#101010', fontWeight: 800, background: '#FFD84D', padding: '2px 8px', borderRadius: '4px', border: '1px solid #101010' }}>Target Baseline</span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
-          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Logged</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#8178E8', marginTop: '4px' }}>${totalSpent}</p>
-          <span style={{ fontSize: '12px', color: '#777584' }}>{spentPercent}% of total</span>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '14px', border: '2px solid #101010', boxShadow: '4px 4px 0px #101010' }}>
+          <p style={{ fontSize: '11px', fontWeight: 900, color: '#555555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Total Logged</p>
+          <p style={{ fontSize: '32px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#101010', margin: '6px 0 4px', letterSpacing: '-0.03em' }}>${totalSpent}</p>
+          <span style={{ fontSize: '12px', color: '#555555', fontWeight: 700 }}>{spentPercent}% of total</span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
-          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Remaining Balance</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#292833', marginTop: '4px' }}>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '14px', border: '2px solid #101010', boxShadow: '4px 4px 0px #101010' }}>
+          <p style={{ fontSize: '11px', fontWeight: 900, color: '#555555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Remaining Balance</p>
+          <p style={{ fontSize: '32px', fontWeight: 900, color: isOverBudget ? '#E11D48' : '#101010', margin: '6px 0 4px', letterSpacing: '-0.03em' }}>
             {isOverBudget ? `-$${Math.abs(remaining)}` : `$${remaining}`}
           </p>
-          <span style={{ fontSize: '12px', color: isOverBudget ? '#E11D48' : '#10B981', fontWeight: 800, background: isOverBudget ? '#FFE4E6' : '#ECFDF5', padding: '2px 8px', borderRadius: '6px' }}>
+          <span style={{
+            fontSize: '11px',
+            color: '#101010',
+            fontWeight: 900,
+            background: isOverBudget ? '#F4AFC1' : '#36B7B3',
+            padding: '3px 8px',
+            borderRadius: '4px',
+            border: '1px solid #101010',
+            textTransform: 'uppercase'
+          }}>
             {isOverBudget ? 'Over Budget' : 'Safe to spend'}
           </span>
         </div>
 
-        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '24px', border: '1.5px solid #E8E2F0', boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)' }}>
-          <p style={{ fontSize: '11.5px', fontWeight: 800, color: '#777584', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Daily Burn Rate</p>
-          <p style={{ fontSize: '28px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${avgCostPerDay} <span style={{ fontSize: '13px', color: '#777584', fontWeight: 500 }}>/ day</span></p>
-          <span style={{ fontSize: '12px', color: '#777584' }}>Across {tripDays} days</span>
+        <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '14px', border: '2px solid #101010', boxShadow: '4px 4px 0px #101010' }}>
+          <p style={{ fontSize: '11px', fontWeight: 900, color: '#555555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Daily Burn Rate</p>
+          <p style={{ fontSize: '32px', fontWeight: 900, color: '#101010', margin: '6px 0 4px', letterSpacing: '-0.03em' }}>
+            ${avgCostPerDay} <span style={{ fontSize: '14px', color: '#555555', fontWeight: 600 }}>/ day</span>
+          </p>
+          <span style={{ fontSize: '12px', color: '#555555', fontWeight: 700 }}>Across {tripDays} planned days</span>
         </div>
       </div>
 
       {/* Category Breakdown Cards */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '24px',
-        border: '1.5px solid #E8E2F0',
+        borderRadius: '16px',
+        border: '2px solid #101010',
         padding: '24px',
         marginBottom: '28px',
-        boxShadow: '0 8px 24px -4px rgba(32, 63, 112, 0.05)'
+        boxShadow: '4px 4px 0px #101010'
       }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', marginBottom: '16px' }}>Category Allocations</h3>
+        <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', marginBottom: '18px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          Category Allocations
+        </h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           {[
-            { cat: 'Transit', label: '🚗 Transit & Flights', amount: breakdown.Transit || 0, color: '#8178E8' },
-            { cat: 'Stay', label: '🏨 Lodging & Hotels', amount: breakdown.Stay || 0, color: '#38BDF8' },
-            { cat: 'Activities', label: '🎟️ Experiences & Tours', amount: breakdown.Activities || 0, color: '#F3AFCF' },
-            { cat: 'Food', label: '🍽️ Dining & Cuisine', amount: breakdown.Food || 0, color: '#F59E0B' },
-            { cat: 'Misc', label: '📦 Shopping & Misc', amount: breakdown.Misc || 0, color: '#A678BD' }
+            { cat: 'Transit', label: '🚗 Transit & Flights', amount: breakdown.Transit || 0, color: '#429FE8' },
+            { cat: 'Stay', label: '🏨 Lodging & Stays', amount: breakdown.Stay || 0, color: '#36B7B3' },
+            { cat: 'Activities', label: '🎟️ Experiences & Tours', amount: breakdown.Activities || 0, color: '#FFD84D' },
+            { cat: 'Food', label: '🍽️ Dining & Cuisine', amount: breakdown.Food || 0, color: '#F4AFC1' },
+            { cat: 'Misc', label: '📦 Shopping & Misc', amount: breakdown.Misc || 0, color: '#E8E6E0' }
           ].map(item => {
             const percent = totalSpent > 0 ? Math.round((item.amount / totalSpent) * 100) : 0;
             return (
-              <div key={item.cat} style={{ background: '#FAF9FC', padding: '16px', borderRadius: '18px', border: '1.5px solid #E8E2F0' }}>
-                <p style={{ fontSize: '13px', fontWeight: 750, color: '#292833' }}>{item.label}</p>
-                <p style={{ fontSize: '20px', fontWeight: 900, color: '#292833', marginTop: '4px' }}>${item.amount}</p>
-                <div style={{ marginTop: '8px', height: '7px', background: '#E8E2F0', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div style={{ width: `${percent}%`, height: '100%', background: item.color, borderRadius: '9999px' }} />
+              <div key={item.cat} style={{ background: '#F7F6F2', padding: '16px', borderRadius: '12px', border: '1.5px solid #101010' }}>
+                <p style={{ fontSize: '13px', fontWeight: 800, color: '#101010', margin: 0 }}>{item.label}</p>
+                <p style={{ fontSize: '22px', fontWeight: 900, color: '#101010', margin: '6px 0' }}>${item.amount}</p>
+                <div style={{ marginTop: '6px', height: '8px', background: '#FFFFFF', borderRadius: '4px', overflow: 'hidden', border: '1px solid #101010' }}>
+                  <div style={{ width: `${percent}%`, height: '100%', background: item.color }} />
                 </div>
-                <span style={{ fontSize: '11px', color: '#777584', marginTop: '4px', display: 'block', fontWeight: 600 }}>{percent}% of spent</span>
+                <span style={{ fontSize: '11px', color: '#555555', marginTop: '6px', display: 'block', fontWeight: 700 }}>{percent}% of spent</span>
               </div>
             );
           })}
@@ -234,24 +271,44 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
       {/* Expenses History Table */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '20px',
-        border: '1px solid #E2E8F0',
+        borderRadius: '16px',
+        border: '2px solid #101010',
         padding: '24px',
-        overflowX: 'auto'
+        overflowX: 'auto',
+        boxShadow: '4px 4px 0px #101010'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#111827' }}>Logged Financial Ledger ({expenses.length})</h3>
-          <button type="button" className="btn-plan-budget" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => setShowLogModal(true)}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Logged Financial Ledger ({expenses.length})
+          </h3>
+          <button
+            type="button"
+            style={{
+              padding: '8px 18px',
+              fontSize: '12px',
+              background: '#FFD84D',
+              color: '#101010',
+              fontWeight: 900,
+              border: '2px solid #101010',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              boxShadow: '2px 2px 0px #101010',
+              textTransform: 'uppercase'
+            }}
+            onClick={() => setShowLogModal(true)}
+          >
             + Add Expense
           </button>
         </div>
 
         {expenses.length === 0 ? (
-          <p style={{ fontSize: '14px', color: '#94A3B8', textAlign: 'center', padding: '30px' }}>No expenses logged yet for this trip.</p>
+          <p style={{ fontSize: '14px', color: '#555555', textAlign: 'center', padding: '36px', background: '#F7F6F2', borderRadius: '8px', border: '1.5px dashed #101010' }}>
+            No expenses logged yet for this trip. Click "+ Log Expense" above to add receipts.
+          </p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13.5px' }}>
             <thead>
-              <tr style={{ borderBottom: '1.5px solid #E2E8F0', color: '#64748B', fontSize: '12px', textTransform: 'uppercase' }}>
+              <tr style={{ borderBottom: '2px solid #101010', color: '#101010', fontSize: '11.5px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 <th style={{ padding: '12px 14px' }}>Date</th>
                 <th style={{ padding: '12px 14px' }}>Category</th>
                 <th style={{ padding: '12px 14px' }}>Description</th>
@@ -261,33 +318,38 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
             </thead>
             <tbody>
               {expenses.map(exp => (
-                <tr key={exp.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                  <td style={{ padding: '14px', color: '#475569' }}>{exp.date}</td>
+                <tr key={exp.id} style={{ borderBottom: '1px solid #E8E6E0' }}>
+                  <td style={{ padding: '14px', color: '#555555', fontWeight: 600 }}>{exp.date}</td>
                   <td style={{ padding: '14px' }}>
                     <span style={{
-                      background: '#F1F5F9',
-                      color: '#0F172A',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      padding: '3px 8px',
-                      borderRadius: '6px'
+                      background: exp.category === 'Transit' ? '#429FE8' : exp.category === 'Stay' ? '#36B7B3' : exp.category === 'Food' ? '#F4AFC1' : '#FFD84D',
+                      color: '#101010',
+                      fontSize: '11px',
+                      fontWeight: 900,
+                      padding: '3px 9px',
+                      borderRadius: '4px',
+                      border: '1px solid #101010',
+                      textTransform: 'uppercase'
                     }}>
                       {exp.category}
                     </span>
                   </td>
-                  <td style={{ padding: '14px', fontWeight: 600, color: '#111827' }}>{exp.description}</td>
-                  <td style={{ padding: '14px', fontWeight: 800, color: '#111827' }}>${exp.amount}</td>
+                  <td style={{ padding: '14px', fontWeight: 800, color: '#101010' }}>{exp.description}</td>
+                  <td style={{ padding: '14px', fontWeight: 900, color: '#101010' }}>${exp.amount}</td>
                   <td style={{ padding: '14px', textAlign: 'right' }}>
                     <button
                       type="button"
                       onClick={() => handleDeleteExpense(exp.id)}
                       style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#E11D48',
+                        background: '#F4AFC1',
+                        border: '1.5px solid #101010',
+                        color: '#101010',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
                         cursor: 'pointer',
-                        fontWeight: 600,
-                        fontSize: '13px'
+                        fontWeight: 800,
+                        fontSize: '12px',
+                        boxShadow: '1px 1px 0px #101010'
                       }}
                     >
                       Delete
@@ -303,73 +365,154 @@ export const TripBudget: React.FC<Props> = ({ tripId, userId = 1, onNavigate }) 
       {/* Log Expense Modal */}
       {showLogModal && (
         <div className="modal-overlay" onClick={() => setShowLogModal(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="modal-close-btn" onClick={() => setShowLogModal(false)}>✕</button>
-            <h2 className="modal-title">Log Trip Expense</h2>
-            <p className="modal-desc">Record a payment for transit, stays, food, or experiences.</p>
+          <div
+            className="modal-card"
+            style={{
+              maxWidth: '480px',
+              padding: '28px',
+              background: '#FFFFFF',
+              border: '2px solid #101010',
+              borderRadius: '16px',
+              boxShadow: '6px 6px 0px #101010'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="modal-close-btn"
+              onClick={() => setShowLogModal(false)}
+              style={{ color: '#101010', fontWeight: 900 }}
+            >
+              ✕
+            </button>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#101010', margin: '0 0 6px' }}>
+              Log Trip Expense
+            </h2>
+            <p style={{ fontSize: '13px', color: '#555555', margin: '0 0 20px' }}>
+              Record a payment for transit, stays, food, or experiences.
+            </p>
 
-            <form onSubmit={handleAddExpenseSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div className="form-group">
-                <label className="form-label">CATEGORY</label>
-                <div className="input-container">
-                  <select
-                    className="form-input"
-                    value={expCategory}
-                    onChange={(e) => setExpCategory(e.target.value)}
-                  >
-                    <option value="Transit">🚗 Transit & Flights</option>
-                    <option value="Stay">🏨 Lodging & Stays</option>
-                    <option value="Activities">🎟️ Activities & Entries</option>
-                    <option value="Food">🍽️ Dining & Food</option>
-                    <option value="Misc">📦 Shopping & Miscellaneous</option>
-                  </select>
-                </div>
+            <form onSubmit={handleAddExpenseSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                  Category
+                </label>
+                <select
+                  value={expCategory}
+                  onChange={(e) => setExpCategory(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid #101010',
+                    background: '#F7F6F2',
+                    color: '#101010',
+                    fontSize: '13.5px',
+                    fontWeight: 700,
+                    outline: 'none'
+                  }}
+                >
+                  <option value="Transit">🚗 Transit & Flights</option>
+                  <option value="Stay">🏨 Lodging & Stays</option>
+                  <option value="Activities">🎟️ Activities & Entries</option>
+                  <option value="Food">🍽️ Dining & Food</option>
+                  <option value="Misc">📦 Shopping & Miscellaneous</option>
+                </select>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">DESCRIPTION</label>
-                <div className="input-container">
+              <div>
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                  Description
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Oia Sunset Cliffside Dinner"
+                  value={expDesc}
+                  onChange={(e) => setExpDesc(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid #101010',
+                    background: '#F7F6F2',
+                    color: '#101010',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                    Amount ($)
+                  </label>
                   <input
-                    type="text"
-                    className="form-input"
-                    placeholder="e.g. Udaipur Lakeside Dinner"
-                    value={expDesc}
-                    onChange={(e) => setExpDesc(e.target.value)}
+                    type="number"
+                    value={expAmount}
+                    onChange={(e) => setExpAmount(Number(e.target.value))}
                     required
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      border: '1.5px solid #101010',
+                      background: '#F7F6F2',
+                      color: '#101010',
+                      fontSize: '13.5px',
+                      fontWeight: 700,
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={expDate}
+                    onChange={(e) => setExpDate(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      border: '1.5px solid #101010',
+                      background: '#F7F6F2',
+                      color: '#101010',
+                      fontSize: '13.5px',
+                      fontWeight: 700,
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
                   />
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div className="form-group">
-                  <label className="form-label">AMOUNT ($)</label>
-                  <div className="input-container">
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={expAmount}
-                      onChange={(e) => setExpAmount(Number(e.target.value))}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">DATE</label>
-                  <div className="input-container">
-                    <input
-                      type="date"
-                      className="form-input"
-                      value={expDate}
-                      onChange={(e) => setExpDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <button type="submit" className="btn-submit" style={{ marginTop: '8px' }}>
-                <span>Record Expense</span>
+              <button
+                type="submit"
+                style={{
+                  marginTop: '10px',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: '#FFD84D',
+                  color: '#101010',
+                  border: '2px solid #101010',
+                  fontSize: '13px',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  boxShadow: '3px 3px 0px #101010',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em'
+                }}
+              >
+                Record Expense
               </button>
             </form>
           </div>

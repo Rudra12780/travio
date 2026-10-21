@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { AdminStats, UserProfile, Trip, City, Activity } from '../types';
 import { api } from '../api';
 import { GlobalSearchBar } from './GlobalSearchBar';
-import { AdminPlaneRadarBackground } from './AdminPlaneRadarBackground';
 import { AnimatedLogo } from './AnimatedLogo';
 
 interface Props {
@@ -277,35 +276,30 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onAdminSignOut, onU
     return matchSearch && matchFilter;
   });
 
-  // Dynamic Pastel Dreamscape Styling Tokens
+  // Dynamic Editorial Styling Tokens
   const isDark = false;
   const cardStyle: React.CSSProperties = {
     background: '#FFFFFF',
-    borderRadius: '24px',
-    border: '1.5px solid #E8E2F0',
-    padding: '32px',
-    boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
-    color: '#292833',
-    transition: 'all 0.3s ease'
+    borderRadius: '16px',
+    border: '2px solid #101010',
+    padding: '28px',
+    boxShadow: '4px 4px 0px #101010',
+    color: '#101010',
+    transition: 'all 0.2s ease'
   };
-  const titleColor = '#292833';
-  const descColor = '#777584';
+  const titleColor = '#101010';
+  const descColor = '#555555';
   const subCardBg = '#FFFFFF';
-  const subCardBorder = '1.5px solid #E8E2F0';
+  const subCardBorder = '1.5px solid #101010';
 
   return (
     <>
-      {/* Background Animated 3D Commercial Traveler Flight Radar across FULL Admin Panel */}
-      <AdminPlaneRadarBackground theme={adminTheme} />
-
       {/* 1. PROPER FULL-WIDTH ADMIN TOP NAVIGATION BAR */}
       <header className="dash-navbar admin-top-navbar theme-glass-light">
         <div className="dash-container admin-nav-container">
-          <div className="dash-nav-inner admin-nav-inner">
+          <div className="dash-nav-inner admin-nav-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '16px' }}>
             {/* Brand Logo */}
-            <div className="nav-brand admin-nav-brand" onClick={() => setActiveTab('manage-users')} style={{ cursor: 'pointer', flexShrink: 0, marginRight: '24px' }}>
+            <div className="nav-brand admin-nav-brand" onClick={() => setActiveTab('manage-users')} style={{ cursor: 'pointer', flexShrink: 0, minWidth: 'max-content', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <AnimatedLogo 
                 size="sm" 
                 title="GlobalTrotter" 
@@ -313,9 +307,9 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onAdminSignOut, onU
               />
             </div>
 
-            {/* Navigation Tab Links (The Parts like the user nav: Manage Users, Cities, Activities, Analytics) */}
-            <nav className="dash-nav-links-wrapper admin-nav-links" aria-label="Admin Navigation" style={{ flex: '1 1 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0 }}>
-              <ul className="nav-menu" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+            {/* Navigation Tab Links - Clean, Left-Aligned with guaranteed spacing, Never Overlapping Brand */}
+            <nav className="dash-nav-links-wrapper admin-nav-links" aria-label="Admin Navigation" style={{ flex: '1 1 auto', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', minWidth: 0, overflowX: 'auto', scrollbarWidth: 'none', margin: '0 20px' }}>
+              <ul className="nav-menu" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap', listStyle: 'none', margin: 0, padding: 0 }}>
                 <li>
                   <button
                     type="button"
@@ -371,7 +365,7 @@ export const AdminDashboard: React.FC<Props> = ({ adminUser, onAdminSignOut, onU
             </nav>
 
             {/* Right Header Controls: Schedule Button and Proper Profile Pill */}
-            <div className="nav-actions admin-nav-actions" style={{ flexShrink: 0, marginLeft: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="nav-actions admin-nav-actions" style={{ flexShrink: 0, marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
               {/* + Post & Schedule Trip Button */}
               <button
                 type="button"

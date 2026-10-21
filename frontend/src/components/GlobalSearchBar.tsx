@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const GlobalSearchBar: React.FC<Props> = ({
-  placeholder = 'Search bar .....',
+  placeholder = 'Search destinations, activities, expeditions...',
   searchTerm = '',
   onSearchChange,
   groupByOptions = ['Default', 'By Region', 'By Budget', 'By Duration'],
@@ -59,7 +59,7 @@ export const GlobalSearchBar: React.FC<Props> = ({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
+        gap: '12px',
         margin: '18px 0',
         flexWrap: 'wrap',
         position: 'relative',
@@ -74,14 +74,14 @@ export const GlobalSearchBar: React.FC<Props> = ({
           display: 'flex',
           alignItems: 'center',
           background: '#FFFFFF',
-          border: '1.5px solid #CBD5E1',
-          borderRadius: '999px',
-          padding: '8px 18px',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
-          transition: 'border-color 0.2s, box-shadow 0.2s'
+          border: '2px solid #101010',
+          borderRadius: '12px',
+          padding: '10px 16px',
+          boxShadow: '3px 3px 0px #101010',
+          transition: 'all 0.2s ease'
         }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.2" style={{ marginRight: '10px', flexShrink: 0 }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#101010" strokeWidth="2.5" style={{ marginRight: '10px', flexShrink: 0 }}>
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
@@ -96,7 +96,8 @@ export const GlobalSearchBar: React.FC<Props> = ({
             background: 'transparent',
             width: '100%',
             fontSize: '14px',
-            color: '#0F172A',
+            color: '#101010',
+            fontWeight: 500,
             fontFamily: 'inherit'
           }}
         />
@@ -104,7 +105,7 @@ export const GlobalSearchBar: React.FC<Props> = ({
           <button 
             type="button" 
             onClick={() => onSearchChange && onSearchChange('')}
-            style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '14px' }}
+            style={{ background: 'none', border: 'none', color: '#555555', cursor: 'pointer', fontSize: '14px', fontWeight: 800 }}
           >
             ✕
           </button>
@@ -119,32 +120,33 @@ export const GlobalSearchBar: React.FC<Props> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            background: showGroupMenu ? '#E2E8F0' : '#FFFFFF',
-            border: '1.5px solid #94A3B8',
-            borderRadius: '999px',
+            gap: '8px',
+            padding: '10px 16px',
+            background: showGroupMenu ? '#FFD84D' : '#FFFFFF',
+            border: '2px solid #101010',
+            borderRadius: '12px',
             fontSize: '13px',
-            fontWeight: 600,
-            color: '#1E293B',
+            fontWeight: 800,
+            color: '#101010',
             cursor: 'pointer',
+            boxShadow: '3px 3px 0px #101010',
             transition: 'all 0.15s ease'
           }}
         >
-          <span>Group by</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+          <span style={{ textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '11.5px' }}>Group by</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9" /></svg>
         </button>
 
         {showGroupMenu && (
           <div style={{
             position: 'absolute',
-            top: 'calc(100% + 6px)',
+            top: 'calc(100% + 8px)',
             left: 0,
-            minWidth: '160px',
+            minWidth: '180px',
             background: '#FFFFFF',
-            border: '1.5px solid #CBD5E1',
+            border: '2px solid #101010',
             borderRadius: '12px',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+            boxShadow: '4px 4px 0px #101010',
             padding: '6px',
             zIndex: 9999
           }}>
@@ -153,13 +155,14 @@ export const GlobalSearchBar: React.FC<Props> = ({
                 key={opt}
                 onClick={() => { onGroupChange && onGroupChange(opt); setShowGroupMenu(false); }}
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '8px',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
                   fontSize: '13px',
-                  color: selectedGroup === opt ? '#0D9488' : '#334155',
-                  fontWeight: selectedGroup === opt ? 700 : 500,
-                  background: selectedGroup === opt ? '#F0FDFA' : 'transparent',
-                  cursor: 'pointer'
+                  color: '#101010',
+                  fontWeight: selectedGroup === opt ? 800 : 500,
+                  background: selectedGroup === opt ? '#FFD84D' : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {opt}
@@ -177,32 +180,33 @@ export const GlobalSearchBar: React.FC<Props> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            background: showFilterMenu ? '#E2E8F0' : '#FFFFFF',
-            border: '1.5px solid #94A3B8',
-            borderRadius: '999px',
+            gap: '8px',
+            padding: '10px 16px',
+            background: showFilterMenu ? '#429FE8' : '#FFFFFF',
+            border: '2px solid #101010',
+            borderRadius: '12px',
             fontSize: '13px',
-            fontWeight: 600,
-            color: '#1E293B',
+            fontWeight: 800,
+            color: '#101010',
             cursor: 'pointer',
+            boxShadow: '3px 3px 0px #101010',
             transition: 'all 0.15s ease'
           }}
         >
-          <span>Filter</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+          <span style={{ textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '11.5px' }}>Filter</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9" /></svg>
         </button>
 
         {showFilterMenu && (
           <div style={{
             position: 'absolute',
-            top: 'calc(100% + 6px)',
+            top: 'calc(100% + 8px)',
             left: 0,
-            minWidth: '160px',
+            minWidth: '180px',
             background: '#FFFFFF',
-            border: '1.5px solid #CBD5E1',
+            border: '2px solid #101010',
             borderRadius: '12px',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+            boxShadow: '4px 4px 0px #101010',
             padding: '6px',
             zIndex: 9999
           }}>
@@ -211,13 +215,14 @@ export const GlobalSearchBar: React.FC<Props> = ({
                 key={opt}
                 onClick={() => { onFilterChange && onFilterChange(opt); setShowFilterMenu(false); }}
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '8px',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
                   fontSize: '13px',
-                  color: selectedFilter === opt ? '#0D9488' : '#334155',
-                  fontWeight: selectedFilter === opt ? 700 : 500,
-                  background: selectedFilter === opt ? '#F0FDFA' : 'transparent',
-                  cursor: 'pointer'
+                  color: '#101010',
+                  fontWeight: selectedFilter === opt ? 800 : 500,
+                  background: selectedFilter === opt ? '#429FE8' : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {opt}
@@ -227,7 +232,7 @@ export const GlobalSearchBar: React.FC<Props> = ({
         )}
       </div>
 
-      {/* Sort by... Button */}
+      {/* Sort by Button */}
       <div style={{ position: 'relative' }}>
         <button
           type="button"
@@ -235,32 +240,33 @@ export const GlobalSearchBar: React.FC<Props> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            background: showSortMenu ? '#E2E8F0' : '#FFFFFF',
-            border: '1.5px solid #94A3B8',
-            borderRadius: '999px',
+            gap: '8px',
+            padding: '10px 16px',
+            background: showSortMenu ? '#F4AFC1' : '#FFFFFF',
+            border: '2px solid #101010',
+            borderRadius: '12px',
             fontSize: '13px',
-            fontWeight: 600,
-            color: '#1E293B',
+            fontWeight: 800,
+            color: '#101010',
             cursor: 'pointer',
+            boxShadow: '3px 3px 0px #101010',
             transition: 'all 0.15s ease'
           }}
         >
-          <span>Sort by...</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+          <span style={{ textTransform: 'uppercase', letterSpacing: '0.04em', fontSize: '11.5px' }}>Sort by</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9" /></svg>
         </button>
 
         {showSortMenu && (
           <div style={{
             position: 'absolute',
-            top: 'calc(100% + 6px)',
+            top: 'calc(100% + 8px)',
             right: 0,
-            minWidth: '190px',
+            minWidth: '210px',
             background: '#FFFFFF',
-            border: '1.5px solid #CBD5E1',
+            border: '2px solid #101010',
             borderRadius: '12px',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+            boxShadow: '4px 4px 0px #101010',
             padding: '6px',
             zIndex: 9999
           }}>
@@ -269,13 +275,14 @@ export const GlobalSearchBar: React.FC<Props> = ({
                 key={opt}
                 onClick={() => { onSortChange && onSortChange(opt); setShowSortMenu(false); }}
                 style={{
-                  padding: '8px 12px',
-                  borderRadius: '8px',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
                   fontSize: '13px',
-                  color: selectedSort === opt ? '#0D9488' : '#334155',
-                  fontWeight: selectedSort === opt ? 700 : 500,
-                  background: selectedSort === opt ? '#F0FDFA' : 'transparent',
-                  cursor: 'pointer'
+                  color: '#101010',
+                  fontWeight: selectedSort === opt ? 800 : 500,
+                  background: selectedSort === opt ? '#F4AFC1' : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {opt}

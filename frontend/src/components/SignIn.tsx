@@ -312,7 +312,7 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
 
           {/* Integrated Brand Header Inside Card */}
           <div className="modal-brand-header" style={{ justifyContent: 'center', marginBottom: '8px' }}>
-            <AnimatedLogo size="sm" title="GlobalTrotter" badge="Island Explorer" />
+            <AnimatedLogo size="sm" title="GlobalTrotter" badge="PERSONALIZED TRAVEL EXPERIENCES" />
           </div>
 
           <header className="auth-header modal-header-compact">
@@ -339,7 +339,7 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
         />
         {toastMessage && (
           <div className="auth-toast-notification">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8178E8" strokeWidth="2.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101010" strokeWidth="2.5">
               <polyline points="20 6 9 17 4 12" />
             </svg>
             <span>{toastMessage}</span>
@@ -354,13 +354,13 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
     <div className="auth-wrapper">
       {/* Brand Header */}
       <div className="brand-header" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-        <AnimatedLogo size="md" title="GlobalTrotter" badge="Pastel Dreamscape" />
+        <AnimatedLogo size="md" title="GlobalTrotter" badge="PERSONALIZED TRAVEL EXPERIENCES" />
       </div>
 
       <section className="auth-card" aria-label="Sign In Container">
         <header className="auth-header">
           <h1 className="auth-title">Unlock Your Journey</h1>
-          <p className="auth-subtitle">Sign in to access your luxury itineraries and saved voyages</p>
+          <p className="auth-subtitle">Sign in to access your itineraries and saved voyages</p>
         </header>
 
         {formFields}
@@ -381,7 +381,7 @@ export const SignIn: React.FC<Props> = ({ onSignInSuccess, onClose, isModal }) =
       />
       {toastMessage && (
         <div className="auth-toast-notification">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8178E8" strokeWidth="2.5">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101010" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
           <span>{toastMessage}</span>

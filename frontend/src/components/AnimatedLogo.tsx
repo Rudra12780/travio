@@ -13,14 +13,14 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   size = 'md',
   showText = true,
   title = 'GlobalTrotter',
-  badge = 'AI Travel Hub',
+  badge = 'PERSONALIZED TRAVEL EXPERIENCES',
   className = '',
   onClick,
 }) => {
   const iconSizes = {
-    sm: { container: 34, svg: 22 },
-    md: { container: 42, svg: 28 },
-    lg: { container: 52, svg: 34 },
+    sm: { container: 32, svg: 20 },
+    md: { container: 40, svg: 26 },
+    lg: { container: 48, svg: 32 },
   };
 
   const currentSize = iconSizes[size] || iconSizes.md;
@@ -33,107 +33,88 @@ export const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => (e.key === 'Enter' || e.key === ' ') && onClick() : undefined}
       aria-label="GlobalTrotter Logo"
+      style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', cursor: onClick ? 'pointer' : 'default' }}
     >
       <div 
         className="logo-emblem-wrapper"
-        style={{ width: currentSize.container, height: currentSize.container }}
+        style={{ 
+          width: currentSize.container, 
+          height: currentSize.container,
+          borderRadius: '50%',
+          background: '#101010',
+          border: '1.5px solid #101010',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          boxShadow: '2px 2px 0px #429FE8',
+          flexShrink: 0
+        }}
       >
-        {/* Orbital Halo Flare */}
-        <div className="logo-ambient-aura" aria-hidden="true" />
+        <svg 
+          width={currentSize.svg} 
+          height={currentSize.svg} 
+          viewBox="0 0 36 36" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Outer Compass Circle */}
+          <circle 
+            cx="18" 
+            cy="18" 
+            r="15" 
+            stroke="#E8E6E0" 
+            strokeWidth="1.2" 
+            strokeDasharray="2 3"
+          />
 
-        {/* Orbiting Flight Ring */}
-        <div className="logo-orbital-ring" aria-hidden="true">
-          <span className="orbital-flight-dot" style={{ background: '#F3AFCF', boxShadow: '0 0 10px #F3AFCF' }} />
-        </div>
+          {/* Bold Crosshairs */}
+          <line x1="18" y1="4" x2="18" y2="8" stroke="#FFD84D" strokeWidth="2" strokeLinecap="round" />
+          <line x1="18" y1="28" x2="18" y2="32" stroke="#429FE8" strokeWidth="2" strokeLinecap="round" />
+          <line x1="4" y1="18" x2="8" y2="18" stroke="#F4AFC1" strokeWidth="2" strokeLinecap="round" />
+          <line x1="28" y1="18" x2="32" y2="18" stroke="#36B7B3" strokeWidth="2" strokeLinecap="round" />
 
-        {/* Dynamic Glass Badge */}
-        <div className="logo-glass-badge" style={{ background: 'linear-gradient(135deg, #203F70 0%, #8178E8 55%, #C39AD9 100%)', borderColor: 'rgba(232, 226, 240, 0.7)' }}>
-          <svg 
-            width={currentSize.svg} 
-            height={currentSize.svg} 
-            viewBox="0 0 36 36" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-            className="logo-compass-svg"
-          >
-            <defs>
-              <linearGradient id="logoGradPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8178E8" />
-                <stop offset="50%" stopColor="#C39AD9" />
-                <stop offset="100%" stopColor="#F3AFCF" />
-              </linearGradient>
+          {/* Sharp Modern Needles */}
+          <polygon points="18,5 21.5,18 18,15.5" fill="#FFFFFF" />
+          <polygon points="18,5 14.5,18 18,15.5" fill="#FFD84D" />
+          <polygon points="18,31 21.5,18 18,20.5" fill="#429FE8" />
+          <polygon points="18,31 14.5,18 18,20.5" fill="#36B7B3" />
 
-              <linearGradient id="needleNorth" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFFFFF" />
-                <stop offset="100%" stopColor="#F3AFCF" />
-              </linearGradient>
-
-              <linearGradient id="needleSouth" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8178E8" />
-                <stop offset="100%" stopColor="#203F70" />
-              </linearGradient>
-
-              <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            {/* Subtle Outer Dial Ring */}
-            <circle 
-              cx="18" 
-              cy="18" 
-              r="15" 
-              stroke="rgba(232, 226, 240, 0.5)" 
-              strokeWidth="1.2" 
-              strokeDasharray="2 3"
-              className="logo-dial-ring"
-            />
-
-            {/* Radar Sweep Arc */}
-            <circle 
-              cx="18" 
-              cy="18" 
-              r="11.5" 
-              stroke="url(#logoGradPrimary)" 
-              strokeWidth="1.8" 
-              strokeLinecap="round"
-              strokeDasharray="18 45"
-              className="logo-radar-sweep"
-            />
-
-            {/* 4 Cardinal Point Ticks */}
-            <line x1="18" y1="4" x2="18" y2="7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="18" y1="29" x2="18" y2="32" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="4" y1="18" x2="7" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="29" y1="18" x2="32" y2="18" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
-
-            {/* Dynamic Animated Compass Needle Group */}
-            <g className="logo-compass-needle-group">
-              {/* North Needle Point (White / Soft Pink Accent) */}
-              <polygon points="18,5 21.5,18 18,16" fill="url(#needleNorth)" filter="url(#logoGlow)" />
-              <polygon points="18,5 14.5,18 18,16" fill="#F3AFCF" />
-
-              {/* South Needle Point (Periwinkle / Deep Blue) */}
-              <polygon points="18,31 21.5,18 18,20" fill="url(#needleSouth)" />
-              <polygon points="18,31 14.5,18 18,20" fill="#203F70" />
-
-              {/* East / West Micro-Fins */}
-              <polygon points="31,18 18,20.5 19.5,18" fill="rgba(255,255,255,0.85)" />
-              <polygon points="5,18 18,15.5 16.5,18" fill="rgba(255,255,255,0.6)" />
-
-              {/* Center Pivot Jewel */}
-              <circle cx="18" cy="18" r="3.2" fill="#203F70" stroke="#FFFFFF" strokeWidth="1.2" />
-              <circle cx="18" cy="18" r="1.4" fill="#F3AFCF" className="logo-center-sparkle" />
-            </g>
-          </svg>
-        </div>
+          {/* Center Pivot Point */}
+          <circle cx="18" cy="18" r="3" fill="#101010" stroke="#FFFFFF" strokeWidth="1.5" />
+        </svg>
       </div>
 
       {showText && (
-        <div className="brand-logo-text">
-          <span className="logo-title">{title}</span>
-          {badge && <span className="logo-badge">{badge}</span>}
+        <div className="brand-logo-text" style={{ display: 'flex', flexDirection: 'column' }}>
+          <span 
+            className="logo-title" 
+            style={{ 
+              fontFamily: "'Syne', -apple-system, sans-serif", 
+              fontWeight: 900, 
+              fontSize: size === 'lg' ? '22px' : size === 'sm' ? '16px' : '18px', 
+              color: '#101010', 
+              letterSpacing: '-0.04em',
+              lineHeight: 1.1
+            }}
+          >
+            {title}
+          </span>
+          {badge && (
+            <span 
+              className="logo-badge" 
+              style={{ 
+                fontSize: '9.5px', 
+                fontWeight: 800, 
+                color: '#555555', 
+                letterSpacing: '0.12em', 
+                textTransform: 'uppercase',
+                marginTop: '2px'
+              }}
+            >
+              {badge}
+            </span>
+          )}
         </div>
       )}
     </div>

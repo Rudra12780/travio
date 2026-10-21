@@ -77,14 +77,19 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
   const categories = ['All', 'Sightseeing', 'Adventure', 'Culture', 'Food Tour', 'Nightlife'];
 
   return (
-    <div style={{ marginTop: '24px' }}>
+    <div style={{ marginTop: '24px', color: '#101010' }}>
       {/* Title */}
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '26px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px', margin: '0 0 6px 0' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#36B7B3', border: '1.5px solid #101010', borderRadius: '4px', padding: '2px 8px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '10.5px', fontWeight: 900, color: '#101010', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            LOCAL EXPERIENCES // CURATED DISCOVERY
+          </span>
+        </div>
+        <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#101010', letterSpacing: '-0.5px', margin: '0 0 6px 0', fontFamily: "'Syne', sans-serif" }}>
           Curated Activities & Experiences
         </h2>
-        <p style={{ fontSize: '13.5px', color: '#777584', margin: 0 }}>
-          Discover curated activities, desert safaris, food walks, and heritage monuments
+        <p style={{ fontSize: '14px', color: '#555555', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          Discover curated activities, desert safaris, aquatic charters, and heritage excursions
         </p>
       </div>
 
@@ -104,19 +109,19 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
         onSortChange={setSelectedSort}
       />
 
-      <div style={{ fontSize: '16px', fontWeight: 800, color: '#292833', margin: '20px 0 12px 0' }}>
-        Recommended Experiences
+      <div style={{ fontSize: '16px', fontWeight: 900, color: '#101010', margin: '24px 0 14px 0', fontFamily: "'Syne', sans-serif" }}>
+        Experiences Available ({activities.length})
       </div>
 
       {/* Activities Grid */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#8178E8' }} />
-          <p style={{ color: '#777584' }}>Loading experiences catalog...</p>
+        <div style={{ textAlign: 'center', padding: '60px 0', color: '#555555' }}>
+          <div className="spinner" style={{ margin: '0 auto 16px', borderTopColor: '#101010' }} />
+          <p style={{ color: '#555555', fontWeight: 700 }}>Loading experiences catalog...</p>
         </div>
       ) : activities.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#FFFFFF', borderRadius: '24px', border: '1.5px solid #E8E2F0' }}>
-          <p style={{ color: '#777584' }}>No experiences found matching this filter.</p>
+        <div style={{ textAlign: 'center', padding: '48px 20px', background: '#FFFFFF', borderRadius: '14px', border: '2px solid #101010', color: '#555555', boxShadow: '4px 4px 0px #101010' }}>
+          <p style={{ color: '#555555', fontSize: '15px', fontWeight: 700, margin: 0 }}>No experiences found matching this filter.</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
@@ -125,15 +130,16 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
               key={act.id}
               style={{
                 background: '#FFFFFF',
-                borderRadius: '24px',
-                border: '1.5px solid #E8E2F0',
+                borderRadius: '16px',
+                border: '2px solid #101010',
                 overflow: 'hidden',
-                boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
+                boxShadow: '4px 4px 0px #101010',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                transition: 'transform 0.15s ease'
               }}
             >
-              <div style={{ position: 'relative', height: '180px' }}>
+              <div style={{ position: 'relative', height: '190px', borderBottom: '2px solid #101010' }}>
                 <img
                   src={act.image_url}
                   alt={act.name}
@@ -143,13 +149,13 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   position: 'absolute',
                   top: '12px',
                   left: '12px',
-                  background: 'rgba(25, 43, 77, 0.75)',
-                  backdropFilter: 'blur(8px)',
-                  color: '#FFFFFF',
+                  background: '#36B7B3',
+                  color: '#101010',
                   fontSize: '11px',
-                  fontWeight: 700,
-                  padding: '4px 10px',
-                  borderRadius: '9999px'
+                  fontWeight: 900,
+                  padding: '3px 10px',
+                  borderRadius: '4px',
+                  border: '1.5px solid #101010'
                 }}>
                   {act.category}
                 </span>
@@ -158,13 +164,14 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   position: 'absolute',
                   top: '12px',
                   right: '12px',
-                  background: '#FFFFFF',
-                  color: '#A678BD',
+                  background: '#FFD84D',
+                  border: '1.5px solid #101010',
+                  color: '#101010',
                   fontSize: '11.5px',
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: '9999px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                  fontWeight: 900,
+                  padding: '3px 10px',
+                  borderRadius: '4px',
+                  boxShadow: '2px 2px 0px #101010'
                 }}>
                   ★ {act.rating}
                 </span>
@@ -173,23 +180,23 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   position: 'absolute',
                   bottom: '12px',
                   left: '12px',
-                  background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.9) 0%, rgba(195, 154, 217, 0.9) 100%)',
-                  color: '#203F70',
+                  background: '#FFFFFF',
+                  color: '#101010',
                   fontSize: '11px',
                   fontWeight: 800,
-                  padding: '4px 10px',
-                  borderRadius: '9999px',
-                  border: '1px solid #E8E2F0'
+                  padding: '3px 10px',
+                  borderRadius: '4px',
+                  border: '1.5px solid #101010'
                 }}>
                   📍 {act.city_name}, {act.city_country}
                 </span>
               </div>
 
               <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#292833', marginBottom: '8px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: '0 0 8px 0', fontFamily: "'Syne', sans-serif" }}>
                   {act.name}
                 </h3>
-                <p style={{ fontSize: '13px', color: '#777584', lineHeight: '1.45', marginBottom: '16px' }}>
+                <p style={{ fontSize: '13px', color: '#555555', lineHeight: '1.5', margin: '0 0 16px 0' }}>
                   {act.description}
                 </p>
 
@@ -197,30 +204,31 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  paddingTop: '12px',
-                  borderTop: '1px solid #E8E2F0',
+                  paddingTop: '14px',
+                  borderTop: '1px solid #E8E6E0',
                   marginTop: 'auto'
                 }}>
                   <div>
-                    <span style={{ fontSize: '11px', color: '#777584', display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>
+                    <span style={{ fontSize: '11px', color: '#555555', display: 'block', textTransform: 'uppercase', fontWeight: 800 }}>
                       ⏱️ {act.duration_hours} Hours
                     </span>
-                    <span style={{ fontSize: '17px', fontWeight: 800, color: '#203F70' }}>${act.cost}</span>
+                    <span style={{ fontSize: '18px', fontWeight: 900, color: '#101010' }}>${act.cost}</span>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setTargetActivity(act)}
                     style={{
-                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      borderRadius: '9999px',
-                      padding: '8px 18px',
+                      background: '#FFD84D',
+                      color: '#101010',
+                      border: '1.5px solid #101010',
+                      borderRadius: '6px',
+                      padding: '9px 18px',
                       fontSize: '13px',
-                      fontWeight: 800,
+                      fontWeight: 900,
                       cursor: 'pointer',
-                      boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
+                      boxShadow: '2px 2px 0px #101010',
+                      transition: 'transform 0.15s ease'
                     }}
                   >
                     + Add to Stop
@@ -235,22 +243,42 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
       {/* Add Activity to Stop Modal */}
       {targetActivity && (
         <div className="modal-overlay" onClick={() => setTargetActivity(null)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="modal-close-btn" onClick={() => setTargetActivity(null)}>✕</button>
-            <h2 className="modal-title">Schedule Experience</h2>
-            <p className="modal-desc">
-              Add <strong>{targetActivity.name}</strong> (${targetActivity.cost}) to an itinerary stop.
+          <div 
+            className="modal-card" 
+            style={{ 
+              maxWidth: '480px', 
+              padding: '28px', 
+              background: '#FFFFFF', 
+              border: '2px solid #101010', 
+              borderRadius: '16px', 
+              boxShadow: '6px 6px 0px #101010',
+              color: '#101010'
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              type="button" 
+              className="modal-close-btn" 
+              onClick={() => setTargetActivity(null)} 
+              style={{ color: '#101010', fontWeight: 800, fontSize: '16px' }}
+            >
+              ✕
+            </button>
+            <h2 className="modal-title" style={{ color: '#101010', fontFamily: "'Syne', sans-serif", fontSize: '20px', fontWeight: 900, margin: '0 0 6px 0' }}>Schedule Experience</h2>
+            <p className="modal-desc" style={{ color: '#555555', fontSize: '13px', margin: '0 0 16px 0' }}>
+              Add <strong style={{ color: '#101010' }}>{targetActivity.name}</strong> (<span style={{ color: '#429FE8', fontWeight: 800 }}>${targetActivity.cost}</span>) to an itinerary stop.
             </p>
 
             <form onSubmit={handleAddActivityToStop} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div className="form-group">
-                <label className="form-label">CHOOSE TRIP</label>
+                <label className="form-label" style={{ color: '#101010', fontSize: '11.5px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em' }}>CHOOSE TRIP</label>
                 <div className="input-container">
                   <select
                     className="form-input"
                     value={selectedTripId}
                     onChange={(e) => handleTripSelectChange(Number(e.target.value))}
                     required
+                    style={{ background: '#FFFFFF', color: '#101010', border: '1.5px solid #101010', borderRadius: '8px', padding: '10px 12px', width: '100%', fontSize: '13px', fontWeight: 700 }}
                   >
                     {trips.map(t => (
                       <option key={t.id} value={t.id}>{t.title}</option>
@@ -260,16 +288,17 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">ASSIGN TO DESTINATION STOP</label>
+                <label className="form-label" style={{ color: '#101010', fontSize: '11.5px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em' }}>ASSIGN TO DESTINATION STOP</label>
                 <div className="input-container">
                   {tripStops.length === 0 ? (
-                    <span style={{ fontSize: '13px', color: '#EF4444', padding: '10px' }}>No stops in this trip. Add a stop first.</span>
+                    <span style={{ fontSize: '13px', color: '#DC2626', padding: '10px', display: 'block', fontWeight: 700 }}>No stops in this trip. Add a stop first.</span>
                   ) : (
                     <select
                       className="form-input"
                       value={selectedStopId}
                       onChange={(e) => setSelectedStopId(Number(e.target.value))}
                       required
+                      style={{ background: '#FFFFFF', color: '#101010', border: '1.5px solid #101010', borderRadius: '8px', padding: '10px 12px', width: '100%', fontSize: '13px', fontWeight: 700 }}
                     >
                       {tripStops.map(s => (
                         <option key={s.id} value={s.id}>Stop {s.order_index}: {s.city_name} ({s.start_date})</option>
@@ -280,13 +309,14 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">SCHEDULE TIME</label>
+                <label className="form-label" style={{ color: '#101010', fontSize: '11.5px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em' }}>SCHEDULE TIME</label>
                 <div className="input-container">
                   <input
                     type="time"
                     className="form-input"
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
+                    style={{ background: '#FFFFFF', color: '#101010', border: '1.5px solid #101010', borderRadius: '8px', padding: '10px 12px', width: '100%', fontSize: '13px', fontWeight: 700 }}
                   />
                 </div>
               </div>
@@ -295,9 +325,21 @@ export const ActivitySearch: React.FC<Props> = ({ userId = 1, onNavigate }) => {
                 type="submit"
                 className="btn-submit"
                 disabled={tripStops.length === 0}
-                style={{ marginTop: '8px', opacity: tripStops.length === 0 ? 0.5 : 1 }}
+                style={{
+                  marginTop: '8px',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  background: '#101010',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  fontSize: '14px',
+                  fontWeight: 900,
+                  cursor: tripStops.length === 0 ? 'not-allowed' : 'pointer',
+                  opacity: tripStops.length === 0 ? 0.5 : 1,
+                  boxShadow: '3px 3px 0px #FFD84D'
+                }}
               >
-                <span>Confirm Experience</span>
+                <span>Confirm Experience ↗</span>
               </button>
             </form>
           </div>

@@ -358,6 +358,7 @@ export const SavedPlaces: React.FC<Props> = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <button
               type="button"
+              className="preserve-discover-font"
               onClick={() => setShowDiscover(!showDiscover)}
               style={{
                 padding: '10px 20px',
@@ -372,7 +373,8 @@ export const SavedPlaces: React.FC<Props> = ({
                 alignItems: 'center',
                 gap: '6px',
                 boxShadow: '0 2px 8px rgba(32, 63, 112, 0.05)',
-                transition: 'all 0.15s'
+                transition: 'all 0.15s',
+                fontFamily: "'Syne', 'Plus Jakarta Sans', sans-serif"
               }}
             >
               <span>{showDiscover ? '✕ Close' : '+ Discover Places'}</span>
@@ -712,6 +714,7 @@ export const SavedPlaces: React.FC<Props> = ({
           <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
             <button
               type="button"
+              className="preserve-discover-font"
               onClick={() => setShowDiscover(true)}
               style={{
                 padding: '10px 22px',
@@ -722,7 +725,8 @@ export const SavedPlaces: React.FC<Props> = ({
                 fontSize: '13px',
                 fontWeight: 800,
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)'
+                boxShadow: '0 4px 12px rgba(129, 120, 232, 0.25)',
+                fontFamily: "'Syne', 'Plus Jakarta Sans', sans-serif"
               }}
             >
               + Discover Places

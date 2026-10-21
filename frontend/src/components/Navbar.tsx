@@ -18,6 +18,7 @@ export const Navbar: React.FC<Props> = ({
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMenuDrawer, setShowMenuDrawer] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [savedCount, setSavedCount] = useState<number>(0);
 
@@ -55,7 +56,6 @@ export const Navbar: React.FC<Props> = ({
         if (activeNotifs.length > 0) {
           setNotifications(activeNotifs);
         } else if (!cleared) {
-          // Default initial travel notifications ONLY if user has never cleared them
           const defaultNotifs = [
             { id: 991, icon: '✈️', title: 'Flight 6E-204 Confirmed', message: 'Delhi to Udaipur boarding at 08:30 AM', sender: 'Aviation Dispatch' },
             { id: 992, icon: '🏨', title: 'Lake Palace Upgrade', message: 'Heritage suite upgrade unlocked for Udaipur stay', sender: 'Concierge' },
@@ -80,7 +80,7 @@ export const Navbar: React.FC<Props> = ({
   useEffect(() => {
     loadNotifications();
     loadSavedCount();
-    const interval = setInterval(loadNotifications, 8000); // Polling for live admin messages
+    const interval = setInterval(loadNotifications, 8000);
     const handleWishlistUpdated = () => loadSavedCount();
     window.addEventListener('wishlist-updated', handleWishlistUpdated);
     return () => {
@@ -133,217 +133,205 @@ export const Navbar: React.FC<Props> = ({
 
   const isAdmin = user.role === 'Admin';
 
+  const handleDrawerNavigate = (tab: ActiveTab) => {
+    onTabChange(tab);
+    setShowMenuDrawer(false);
+  };
+
   return (
-    <header className="dash-navbar">
-      <div className="dash-container">
-        <div className="dash-nav-inner">
-          {/* Brand Logo */}
-          <div className="nav-brand" onClick={() => onTabChange('dashboard')}>
+    <header className="dash-navbar" style={{ background: '#F7F6F2', borderBottom: '1px solid #E8E6E0', position: 'sticky', top: 0, zIndex: 100 }}>
+      <div className="dash-container" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 24px' }}>
+        <div className="dash-nav-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px' }}>
+          
+          {/* Left Side: GlobalTrotter Wordmark + Small uppercase descriptor */}
+          <div 
+            className="nav-brand" 
+            onClick={() => onTabChange('dashboard')} 
+            style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer', flexShrink: 0 }}
+          >
             <AnimatedLogo 
               size="sm" 
-              title="GlobalTrotters" 
-              badge={isAdmin ? 'ADMIN' : 'VOYAGER'} 
+              title="GlobalTrotter" 
+              badge="PERSONALIZED TRAVEL EXPERIENCES" 
             />
           </div>
 
-          {/* Navigation Pill Links - Clean, Spacious, Never Cut Off */}
-          <nav className="dash-nav-links-wrapper" aria-label="Main Navigation">
-            <ul className="nav-menu">
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'my-trips' ? 'active' : ''}`}
-                  onClick={() => onTabChange('my-trips')}
-                  title="My Trips & Expeditions"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                  </svg>
-                  <span>My Trips</span>
-                </button>
-              </li>
+          {/* Center: Editorial Navigation Links */}
+          <nav className="editorial-nav-links" aria-label="Main Navigation" style={{ display: 'flex', alignItems: 'center', gap: '22px', flexShrink: 1, minWidth: 0, overflowX: 'auto' }}>
+            <button
+              type="button"
+              className={`editorial-nav-item editorial-nav-item-discover preserve-discover-font ${activeTab === 'dashboard' ? 'active' : ''}`}
+              onClick={() => onTabChange('dashboard')}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontFamily: "'Syne', 'Plus Jakarta Sans', sans-serif",
+                fontSize: '13px',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: activeTab === 'dashboard' ? '#101010' : '#555555',
+                borderBottom: activeTab === 'dashboard' ? '2px solid #101010' : '2px solid transparent',
+                padding: '6px 2px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Discover
+            </button>
 
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'itinerary-builder' ? 'active' : ''}`}
-                  onClick={() => onTabChange('itinerary-builder')}
-                  title="Itinerary Builder"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="3 11 22 2 13 21 11 13 3 11" />
-                  </svg>
-                  <span>Itinerary</span>
-                </button>
-              </li>
+            <button
+              type="button"
+              className={`editorial-nav-item ${activeTab === 'cities' ? 'active' : ''}`}
+              onClick={() => onTabChange('cities')}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontFamily: '"Noto Sans Kharoshthi", sans-serif',
+                fontSize: '13px',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: activeTab === 'cities' ? '#101010' : '#555555',
+                borderBottom: activeTab === 'cities' ? '2px solid #101010' : '2px solid transparent',
+                padding: '6px 2px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Destinations
+            </button>
 
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'live-trip' ? 'active' : ''}`}
-                  onClick={() => onTabChange('live-trip')}
-                  title="Live Trip Telemetry"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
-                    <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
-                    <circle cx="12" cy="12" r="2" />
-                    <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
-                    <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
-                  </svg>
-                  <span>Live Trip</span>
-                </button>
-              </li>
+            <button
+              type="button"
+              className={`editorial-nav-item ${activeTab === 'my-trips' ? 'active' : ''}`}
+              onClick={() => onTabChange('my-trips')}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontFamily: '"Noto Sans Kharoshthi", sans-serif',
+                fontSize: '13px',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: activeTab === 'my-trips' ? '#101010' : '#555555',
+                borderBottom: activeTab === 'my-trips' ? '2px solid #101010' : '2px solid transparent',
+                padding: '6px 2px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              My Trips
+            </button>
 
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'cities' ? 'active' : ''}`}
-                  onClick={() => onTabChange('cities')}
-                  title="Destinations & Cities"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                  <span>Destinations</span>
-                </button>
-              </li>
+            <button
+              type="button"
+              className={`editorial-nav-item ${activeTab === 'itinerary-builder' ? 'active' : ''}`}
+              onClick={() => onTabChange('itinerary-builder')}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontFamily: '"Noto Sans Kharoshthi", sans-serif',
+                fontSize: '13px',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: activeTab === 'itinerary-builder' ? '#101010' : '#555555',
+                borderBottom: activeTab === 'itinerary-builder' ? '2px solid #101010' : '2px solid transparent',
+                padding: '6px 2px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Itinerary
+            </button>
 
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'activities' ? 'active' : ''}`}
-                  onClick={() => onTabChange('activities')}
-                  title="Activities & Experiences"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="m7.5 4.27 9 5.15" />
-                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                  </svg>
-                  <span>Activities</span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'saved-places' ? 'active' : ''}`}
-                  onClick={() => onTabChange('saved-places')}
-                  title="Saved Places"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                  <span>Saved Places</span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'expenses' ? 'active' : ''}`}
-                  onClick={() => onTabChange('expenses')}
-                  title="Expenses & Budget"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect width="18" height="18" x="3" y="3" rx="2" />
-                    <line x1="12" y1="8" x2="12" y2="16" />
-                    <line x1="8" y1="12" x2="16" y2="12" />
-                  </svg>
-                  <span>Expenses</span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'calendar' ? 'active' : ''}`}
-                  onClick={() => onTabChange('calendar')}
-                  title="Trip Calendar"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                  <span>Calendar</span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  className={`nav-link ${activeTab === 'community' ? 'active' : ''}`}
-                  onClick={() => onTabChange('community')}
-                  title="Travel Communities"
-                >
-                  <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                  <span>Community</span>
-                </button>
-              </li>
-
-              {/* Strict Requirement: Regular travelers get ZERO hints of Admin */}
-              {isAdmin && (
-                <li>
-                  <button
-                    type="button"
-                    className={`nav-link ${activeTab === 'admin' ? 'active' : ''}`}
-                    onClick={() => onTabChange('admin')}
-                    style={{ color: '#0D9488', fontWeight: 800 }}
-                    title="Mission Control Central"
-                  >
-                    <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                      <polyline points="2 17 12 22 22 17" />
-                      <polyline points="2 12 12 17 22 12" />
-                    </svg>
-                    <span>Mission Control</span>
-                  </button>
-                </li>
-              )}
-            </ul>
+            {isAdmin && (
+              <button
+                type="button"
+                className={`editorial-nav-item ${activeTab === 'admin' ? 'active' : ''}`}
+                onClick={() => onTabChange('admin')}
+                style={{
+                  background: '#FFD84D',
+                  border: '1.5px solid #101010',
+                  color: '#101010',
+                  padding: '4px 10px',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  boxShadow: '1.5px 1.5px 0px #101010'
+                }}
+              >
+                Mission Control
+              </button>
+            )}
           </nav>
 
-          {/* Right Header Controls - Without redundant plan trip button so Calendar is NEVER cut off */}
-          <div className="nav-actions">
+          {/* Far Right: Notifications, User Profile & Circular Black Menu Button */}
+          <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0, marginLeft: 'auto', zIndex: 50 }}>
+            {/* Notifications Button */}
             <button
               type="button"
               className="btn-notification"
               onClick={() => setShowNotifications(!showNotifications)}
               aria-label="Notifications"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: '#FFFFFF',
+                border: '1.5px solid #101010',
+                color: '#101010',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                position: 'relative',
+                boxShadow: '2px 2px 0px #101010',
+                transition: 'transform 0.15s ease'
+              }}
             >
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
                 <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
               </svg>
-              {notifications.length > 0 && <span className="notif-dot" aria-hidden="true" />}
+              {notifications.length > 0 && (
+                <span 
+                  style={{
+                    position: 'absolute',
+                    top: '-2px',
+                    right: '-2px',
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    background: '#F4AFC1',
+                    border: '2px solid #101010'
+                  }}
+                  aria-hidden="true" 
+                />
+              )}
             </button>
 
-            {/* Notifications Modal / Dropdown Box */}
+            {/* Notifications Dropdown Modal */}
             {showNotifications && (
               <div style={{
                 position: 'absolute',
-                top: '58px',
-                right: '70px',
-                width: '330px',
+                top: '64px',
+                right: '80px',
+                width: '360px',
                 background: '#FFFFFF',
                 borderRadius: '16px',
-                boxShadow: '0 12px 30px rgba(0,0,0,0.18)',
-                border: '1px solid #E2E8F0',
-                padding: '16px',
-                zIndex: 300
+                border: '2px solid #101010',
+                boxShadow: '6px 6px 0px #101010',
+                padding: '20px',
+                zIndex: 400
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#111827', margin: 0 }}>
-                    Voyage & Admin Alerts
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid #E8E6E0', paddingBottom: '10px' }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#101010', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    Voyage Alerts
                   </h4>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {notifications.length > 0 && (
@@ -351,39 +339,35 @@ export const Navbar: React.FC<Props> = ({
                         type="button"
                         onClick={clearAllNotifications}
                         style={{
-                          background: '#F1F5F9',
-                          border: 'none',
-                          color: '#64748B',
+                          background: '#F7F6F2',
+                          border: '1px solid #101010',
+                          color: '#101010',
                           padding: '3px 8px',
-                          borderRadius: '6px',
+                          borderRadius: '4px',
                           fontSize: '11px',
                           fontWeight: 700,
-                          cursor: 'pointer',
-                          transition: 'all 0.15s ease'
+                          cursor: 'pointer'
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = '#FEE2E2'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = '#64748B'; e.currentTarget.style.background = '#F1F5F9'; }}
-                        title="Clear all alerts"
                       >
                         Clear All
                       </button>
                     )}
-                    <span style={{ fontSize: '10.5px', background: notifications.length > 0 ? '#EC4899' : '#94A3B8', color: '#fff', padding: '2px 7px', borderRadius: '9999px', fontWeight: 800 }}>
+                    <span style={{ fontSize: '11px', background: '#FFD84D', color: '#101010', padding: '2px 8px', borderRadius: '4px', fontWeight: 800, border: '1px solid #101010' }}>
                       {notifications.length} NEW
                     </span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12.5px', color: '#475569', maxHeight: '340px', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#555555', maxHeight: '320px', overflowY: 'auto' }}>
                   {notifications.map(n => (
-                    <div key={n.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '10px', background: '#F8FAFC', borderRadius: '10px', border: '1px solid #F1F5F9' }}>
+                    <div key={n.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '10px 12px', background: '#F7F6F2', borderRadius: '8px', border: '1px solid #E8E6E0' }}>
                       <div style={{ paddingRight: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span>{n.icon || '✈️'}</span>
-                          <p style={{ fontWeight: 700, color: '#0F172A', margin: 0, fontSize: '13px' }}>{n.title}</p>
+                          <p style={{ fontWeight: 700, color: '#101010', margin: 0, fontSize: '13px' }}>{n.title}</p>
                         </div>
-                        <p style={{ fontSize: '11.5px', color: '#475569', margin: '4px 0 2px 0', lineHeight: '1.4' }}>{n.message}</p>
+                        <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 4px 0', lineHeight: '1.4' }}>{n.message}</p>
                         {n.sender && (
-                          <span style={{ fontSize: '10px', color: '#0D9488', fontWeight: 700, background: '#E6FFFA', padding: '1px 5px', borderRadius: '4px' }}>
+                          <span style={{ fontSize: '10px', color: '#101010', fontWeight: 800, background: '#F4AFC1', padding: '1px 6px', borderRadius: '4px' }}>
                             {n.sender}
                           </span>
                         )}
@@ -391,7 +375,7 @@ export const Navbar: React.FC<Props> = ({
                       <button
                         type="button"
                         onClick={() => dismissNotification(n.id)}
-                        style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '14px', padding: '2px' }}
+                        style={{ background: 'none', border: 'none', color: '#101010', cursor: 'pointer', fontSize: '14px', padding: '2px', fontWeight: 800 }}
                         title="Dismiss alert"
                       >
                         ✕
@@ -399,61 +383,361 @@ export const Navbar: React.FC<Props> = ({
                     </div>
                   ))}
                   {notifications.length === 0 && (
-                    <p style={{ textAlign: 'center', color: '#94A3B8', padding: '12px 0', margin: 0 }}>All caught up! No unread messages.</p>
+                    <p style={{ textAlign: 'center', color: '#555555', padding: '16px 0', margin: 0, fontStyle: 'italic' }}>No pending alerts.</p>
                   )}
                 </div>
               </div>
             )}
 
             {/* User Profile Pill */}
-            <div className="user-profile-menu">
+            <div className="user-profile-menu" style={{ position: 'relative' }}>
               <button
                 type="button"
                 className="user-profile-pill"
                 onClick={() => setShowDropdown(!showDropdown)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: '#FFFFFF',
+                  border: '1.5px solid #101010',
+                  borderRadius: '9999px',
+                  padding: '4px 12px 4px 4px',
+                  cursor: 'pointer',
+                  boxShadow: '2px 2px 0px #101010'
+                }}
               >
                 <img
                   src={user.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80'}
                   alt={user.name}
-                  className="user-avatar"
+                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
                 />
-                <span className="user-name">{user.name || 'panther'}</span>
+                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#101010' }}>{user.name || 'Traveler'}</span>
               </button>
 
               {showDropdown && (
-                <div className="user-dropdown">
-                  <div style={{ padding: '6px 12px', borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
-                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{user.name}</p>
-                    <p style={{ fontSize: '11px', color: '#64748B', margin: '2px 0 0 0' }}>{user.email}</p>
+                <div style={{
+                  position: 'absolute',
+                  top: '46px',
+                  right: 0,
+                  width: '230px',
+                  background: '#FFFFFF',
+                  border: '2px solid #101010',
+                  borderRadius: '12px',
+                  boxShadow: '4px 4px 0px #101010',
+                  padding: '8px',
+                  zIndex: 400
+                }}>
+                  <div style={{ padding: '8px 12px', borderBottom: '1px solid #E8E6E0', marginBottom: '6px' }}>
+                    <p style={{ fontSize: '13px', fontWeight: 800, color: '#101010', margin: 0 }}>{user.name}</p>
+                    <p style={{ fontSize: '11px', color: '#555555', margin: '2px 0 0 0' }}>{user.email}</p>
                   </div>
                   <button
                     type="button"
-                    className="user-dropdown-item"
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#101010',
+                      fontSize: '12.5px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      borderRadius: '6px'
+                    }}
                     onClick={() => {
                       setShowDropdown(false);
                       onTabChange('settings');
                     }}
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                     <span>Traveler Profile & Settings</span>
                   </button>
                   <button
                     type="button"
-                    className="user-dropdown-item danger"
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#DC2626',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      borderRadius: '6px'
+                    }}
                     onClick={() => {
                       setShowDropdown(false);
                       onSignOut();
                     }}
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
                     <span>Sign Out</span>
                   </button>
                 </div>
               )}
             </div>
+
+            {/* FAR RIGHT: CIRCULAR BLACK MENU BUTTON WITH WHITE ICON */}
+            <button
+              type="button"
+              id="dash-right-sidebar-menu-btn"
+              className="editorial-circular-menu-btn"
+              onClick={() => setShowMenuDrawer(true)}
+              aria-label="Open Navigation Directory"
+              title="Open Navigation Menu"
+              style={{
+                width: '44px',
+                height: '44px',
+                minWidth: '44px',
+                minHeight: '44px',
+                borderRadius: '50%',
+                background: '#101010',
+                border: '2px solid #101010',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+                boxShadow: '2px 2px 0px #429FE8',
+                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                visibility: 'visible',
+                opacity: 1,
+                zIndex: 100
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* EDITORIAL NAVIGATION DRAWER / OVERLAY */}
+      {showMenuDrawer && (
+        <div 
+          className="editorial-menu-overlay"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(16, 16, 16, 0.45)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 999,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            animation: 'fadeIn 0.2s ease'
+          }}
+          onClick={() => setShowMenuDrawer(false)}
+        >
+          <div
+            className="editorial-drawer"
+            style={{
+              width: '100%',
+              maxWidth: '440px',
+              height: '100%',
+              background: '#F7F6F2',
+              borderLeft: '2px solid #101010',
+              padding: '36px 32px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              boxShadow: '-8px 0px 0px rgba(16, 16, 16, 0.15)',
+              overflowY: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drawer Header */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.12em', color: '#429FE8', textTransform: 'uppercase' }}>
+                    DIRECTORY // INDEX
+                  </span>
+                  <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#101010', margin: '4px 0 0 0', fontFamily: "'Syne', sans-serif" }}>
+                    GlobalTrotter
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowMenuDrawer(false)}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#101010',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    fontSize: '16px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Numbered Editorial Directory Links */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {[
+                  { num: '01', label: 'Discover', tab: 'dashboard' as ActiveTab, desc: 'Editorial Travel Feed', isDiscover: true },
+                  { num: '02', label: 'Destinations', tab: 'cities' as ActiveTab, desc: 'Global City Dossiers' },
+                  { num: '03', label: 'My Trips', tab: 'my-trips' as ActiveTab, desc: 'Active & Upcoming Itineraries' },
+                  { num: '04', label: 'Itinerary Builder', tab: 'itinerary-builder' as ActiveTab, desc: 'Day-by-Day Timeline Planner' },
+                  { num: '05', label: 'Activities & Experiences', tab: 'activities' as ActiveTab, desc: 'Curated Local Discoveries' },
+                  { num: '06', label: 'Saved Places', tab: 'saved-places' as ActiveTab, desc: `Wishlist (${savedCount} spots)` },
+                  { num: '07', label: 'Budget & Expenses', tab: 'expenses' as ActiveTab, desc: 'Financial Tracker & Currency' },
+                  { num: '08', label: 'Trip Calendar', tab: 'calendar' as ActiveTab, desc: 'Departure Timelines' },
+                  { num: '09', label: 'Live Trip Telemetry', tab: 'live-trip' as ActiveTab, desc: 'In-Transit Travel Assistant' }
+                ].map((item) => (
+                  <button
+                    key={item.num}
+                    type="button"
+                    onClick={() => handleDrawerNavigate(item.tab)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 16px',
+                      background: activeTab === item.tab ? '#FFFFFF' : 'transparent',
+                      border: activeTab === item.tab ? '1.5px solid #101010' : '1px solid transparent',
+                      borderRadius: '8px',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      boxShadow: activeTab === item.tab ? '3px 3px 0px #101010' : 'none',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 800, color: '#36B7B3', fontFamily: 'monospace' }}>
+                        {item.num}
+                      </span>
+                      <div>
+                        <div 
+                          className={item.isDiscover ? 'preserve-discover-font' : ''}
+                          style={{ 
+                            fontSize: '15px', 
+                            fontWeight: 800, 
+                            color: '#101010', 
+                            fontFamily: item.isDiscover ? "'Syne', 'Plus Jakarta Sans', sans-serif" : '"Noto Sans Kharoshthi", sans-serif' 
+                          }}
+                        >
+                          {item.label}
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#555555', fontFamily: '"Noto Sans Kharoshthi", sans-serif' }}>
+                          {item.desc}
+                        </div>
+                      </div>
+                    </div>
+                    <span style={{ fontSize: '16px', color: '#101010', fontWeight: 800 }}>↗</span>
+                  </button>
+                ))}
+
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => handleDrawerNavigate('admin')}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 16px',
+                      background: '#FFD84D',
+                      border: '2px solid #101010',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      boxShadow: '3px 3px 0px #101010',
+                      marginTop: '8px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 800, color: '#101010', fontFamily: 'monospace' }}>99</span>
+                      <div>
+                        <div style={{ fontSize: '15px', fontWeight: 900, color: '#101010', fontFamily: "'Syne', sans-serif" }}>
+                          Mission Control Center
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#101010' }}>Platform Administration</div>
+                      </div>
+                    </div>
+                    <span style={{ fontSize: '16px', color: '#101010', fontWeight: 800 }}>↗</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Drawer Footer */}
+            <div style={{ borderTop: '1px solid #E8E6E0', paddingTop: '18px', marginTop: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img
+                    src={user.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80'}
+                    alt={user.name}
+                    style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid #101010' }}
+                  />
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#101010' }}>{user.name}</div>
+                    <div style={{ fontSize: '11px', color: '#555555' }}>{user.role} Member</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowMenuDrawer(false);
+                    onTabChange('settings');
+                  }}
+                  style={{
+                    background: '#FFFFFF',
+                    border: '1.5px solid #101010',
+                    color: '#101010',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Settings
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMenuDrawer(false);
+                  onSignOut();
+                }}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#101010',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  letterSpacing: '0.04em'
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

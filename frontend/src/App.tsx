@@ -7,7 +7,6 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { CommunityInvitePage } from './components/CommunityInvitePage';
 import { SignIn } from './components/SignIn';
 import { RegisterModal } from './components/RegisterModal';
-import { BackgroundAnimation } from './components/BackgroundAnimation';
 import { Creative3DClickEffect } from './components/Creative3DClickEffect';
 
 const extractInviteToken = (pathname: string): string | null => {
@@ -139,19 +138,10 @@ export const App: React.FC = () => {
   const isGenericAdminRoute =
     decodedPath.startsWith('/admin') && !isAdminSecretGate;
 
-  const isCreateCommunityRoute =
-    decodedPath === '/create-community' ||
-    decodedPath === '/community/create' ||
-    decodedPath.startsWith('/create-community') ||
-    decodedPath.startsWith('/community/create');
-
   const inviteToken = extractInviteToken(currentPath);
 
   return (
     <>
-      {/* Background Animated Flight Arcs / Cinematic Video / Aurora Glow */}
-      <BackgroundAnimation />
-
       {/* Global Interactive 3D Spatial Holographic On-Click Effect */}
       <Creative3DClickEffect />
 
@@ -318,8 +308,6 @@ export const App: React.FC = () => {
             user={currentUser}
             onUpdateUser={handleUpdateUser}
             onSignOut={handleUserSignOut}
-            initialTab={isCreateCommunityRoute ? 'community' : undefined}
-            initialOpenCreateCommunity={isCreateCommunityRoute}
           />
         ) : (
           <LandingPage onSignInSuccess={handleUserSignIn} />

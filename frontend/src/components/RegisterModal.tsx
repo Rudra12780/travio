@@ -76,8 +76,29 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
 
   return (
     <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="reg-title">
-      <div className="modal-card" style={{ maxWidth: '580px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close modal">✕</button>
+      <div
+        className="modal-card"
+        style={{
+          maxWidth: '560px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          background: '#FFFFFF',
+          border: '2px solid #101010',
+          borderRadius: '16px',
+          boxShadow: '6px 6px 0px #101010',
+          padding: '32px'
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="modal-close-btn"
+          onClick={onClose}
+          aria-label="Close modal"
+          style={{ color: '#101010', fontWeight: 900 }}
+        >
+          ✕
+        </button>
 
         {/* Top Photo Circle */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
@@ -87,12 +108,12 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               height: '80px',
               borderRadius: '50%',
               overflow: 'hidden',
-              border: '3px solid #8178E8',
-              boxShadow: '0 4px 14px rgba(129, 120, 232, 0.25)',
+              border: '2px solid #101010',
+              boxShadow: '2px 2px 0px #101010',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: '#FAF9FC'
+              background: '#F7F6F2'
             }}>
               <img src={avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
@@ -100,55 +121,59 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
               position: 'absolute',
               bottom: 0,
               right: 0,
-              background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
-              color: '#FFFFFF',
+              background: '#FFD84D',
+              color: '#101010',
+              border: '1.5px solid #101010',
               borderRadius: '50%',
               width: '24px',
               height: '24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '12px',
-              boxShadow: '0 2px 6px rgba(129, 120, 232, 0.3)'
+              fontSize: '12px'
             }}>
               📷
             </div>
             <input type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display: 'none' }} />
           </label>
-          <span style={{ fontSize: '11px', color: '#777584', marginTop: '6px', fontWeight: 700 }}>Click to Upload Photo</span>
+          <span style={{ fontSize: '11px', color: '#555555', marginTop: '6px', fontWeight: 800, textTransform: 'uppercase' }}>
+            Click to Upload Photo
+          </span>
         </div>
 
-        <h2 className="modal-title" id="reg-title" style={{ textAlign: 'center', margin: '0 0 6px 0', color: '#292833', fontSize: '22px', fontWeight: 900 }}>
+        <h2 className="modal-title" id="reg-title" style={{ textAlign: 'center', margin: '0 0 6px 0', color: '#101010', fontSize: '24px', fontWeight: 900, letterSpacing: '-0.02em' }}>
           Create Voyager Account
         </h2>
-        <p className="modal-desc" style={{ textAlign: 'center', margin: '0 0 20px 0', color: '#777584', fontSize: '13.5px' }}>
-          Join GlobalTrotter to craft luxury itineraries, track real-time telemetry, and discover world destinations.
+        <p className="modal-desc" style={{ textAlign: 'center', margin: '0 0 20px 0', color: '#555555', fontSize: '13.5px' }}>
+          Join GlobalTrotter to craft personalized itineraries, track budgets, and explore destination dossiers.
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {/* First Name & Last Name (2 columns) */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
-              <label className="form-label">FIRST NAME</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>FIRST NAME</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Panther"
+                placeholder="e.g. Alex"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
               {errors.firstName && <span className="field-error">{errors.firstName}</span>}
             </div>
             <div className="form-group">
-              <label className="form-label">LAST NAME</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>LAST NAME</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Voyageur"
+                placeholder="e.g. Miller"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
               {errors.lastName && <span className="field-error">{errors.lastName}</span>}
             </div>
@@ -157,25 +182,27 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
           {/* Email Address & Phone Number (2 columns) */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
-              <label className="form-label">EMAIL ADDRESS</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>EMAIL ADDRESS</label>
               <input
                 type="email"
                 className="form-input"
-                placeholder="panther@globaltrotter.com"
+                placeholder="alex@globaltrotter.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
               {errors.email && <span className="field-error">{errors.email}</span>}
             </div>
             <div className="form-group">
-              <label className="form-label">PHONE NUMBER</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>PHONE NUMBER</label>
               <input
                 type="tel"
                 className="form-input"
-                placeholder="+91 98765 43210"
+                placeholder="+1 555 123 4567"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
             </div>
           </div>
@@ -183,45 +210,61 @@ export const RegisterModal: React.FC<Props> = ({ isOpen, onClose, onRegisterSucc
           {/* City & Country (2 columns) */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
-              <label className="form-label">CITY</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>CITY</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Udaipur"
+                placeholder="e.g. Zurich"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
             </div>
             <div className="form-group">
-              <label className="form-label">COUNTRY</label>
+              <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>COUNTRY</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. India"
+                placeholder="e.g. Switzerland"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
+                style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
               />
             </div>
           </div>
 
           {/* Additional Information textarea */}
           <div className="form-group">
-            <label className="form-label">TRAVEL PREFERENCES</label>
+            <label className="form-label" style={{ color: '#101010', fontWeight: 900, fontSize: '11px' }}>TRAVEL PREFERENCES</label>
             <textarea
               className="form-input"
               rows={3}
-              placeholder="Tell us about your travel style, dietary preferences, favorite circuits..."
+              placeholder="Tell us about your travel style, dietary preferences, favorite destinations..."
               value={additionalInfo}
               onChange={(e) => setAdditionalInfo(e.target.value)}
+              style={{ background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px' }}
             />
           </div>
 
-          {/* Register Users button */}
+          {/* Register button */}
           <button
             type="submit"
-            className="btn-plan-budget"
             disabled={loading}
-            style={{ width: '100%', marginTop: '8px', padding: '13px', fontSize: '15px', justifyContent: 'center' }}
+            style={{
+              width: '100%',
+              marginTop: '8px',
+              padding: '13px',
+              fontSize: '13.5px',
+              fontWeight: 900,
+              borderRadius: '8px',
+              background: '#FFD84D',
+              color: '#101010',
+              border: '2px solid #101010',
+              cursor: 'pointer',
+              boxShadow: '3px 3px 0px #101010',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em'
+            }}
           >
             {loading ? 'Creating Voyager Account...' : 'Register Voyager Account'}
           </button>

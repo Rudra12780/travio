@@ -60,30 +60,34 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
   };
 
   return (
-    <div style={{ marginTop: '24px', maxWidth: '880px', margin: '24px auto 0' }}>
+    <div style={{ marginTop: '20px', maxWidth: '920px', margin: '20px auto 60px', padding: '0 16px' }}>
       {/* Page Header */}
-      <div style={{ marginBottom: '28px' }}>
-        <h2 style={{ fontSize: '28px', fontWeight: 900, color: '#292833', letterSpacing: '-0.5px' }}>
+      <div style={{ marginBottom: '24px' }}>
+        <span style={{ fontSize: '11px', fontWeight: 900, color: '#101010', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'inline-block', marginBottom: '6px' }}>
+          TRAVELER SETTINGS
+        </span>
+        <h2 style={{ fontSize: '32px', fontWeight: 900, color: '#101010', letterSpacing: '-0.03em', margin: '0 0 6px' }}>
           Traveler Dossier & Settings
         </h2>
-        <p style={{ fontSize: '14px', color: '#777584' }}>
-          Manage your personal voyage identity, currency localization, and saved wishlist destinations
+        <p style={{ fontSize: '14px', color: '#555555', margin: 0 }}>
+          Manage your personal voyage identity, currency preferences, and saved wishlist destinations.
         </p>
       </div>
 
       {savedSuccess && (
         <div style={{
-          background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)',
-          border: '1.5px solid #E8E2F0',
-          color: '#203F70',
+          background: '#FFD84D',
+          border: '2px solid #101010',
+          color: '#101010',
           padding: '14px 20px',
-          borderRadius: '16px',
-          fontSize: '14px',
-          fontWeight: 700,
-          marginBottom: '20px',
+          borderRadius: '10px',
+          fontSize: '13.5px',
+          fontWeight: 800,
+          marginBottom: '24px',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px'
+          gap: '10px',
+          boxShadow: '3px 3px 0px #101010'
         }}>
           <span>✨</span>
           <span>Your traveler profile and preferences have been updated!</span>
@@ -93,27 +97,27 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Profile Form Card */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '24px',
-        border: '1.5px solid #E8E2F0',
+        borderRadius: '16px',
+        border: '2px solid #101010',
         padding: '32px',
-        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.05)',
+        boxShadow: '4px 4px 0px #101010',
         marginBottom: '28px'
       }}>
-        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Avatar & Image Selection from PC or Library */}
-          <div style={{ paddingBottom: '20px', borderBottom: '1px solid #E8E2F0' }}>
-            <label className="form-label" style={{ marginBottom: '12px', display: 'block', color: '#203F70' }}>
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+          {/* Avatar Identity */}
+          <div style={{ paddingBottom: '22px', borderBottom: '2px solid #E8E6E0' }}>
+            <label style={{ marginBottom: '14px', display: 'block', color: '#101010', fontSize: '11.5px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               TRAVELER AVATAR IDENTITY
             </label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
               <img
                 src={avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80'}
                 alt={name}
-                style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #8178E8', boxShadow: '0 4px 14px rgba(129, 120, 232, 0.3)' }}
+                style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #101010', boxShadow: '2px 2px 0px #101010' }}
               />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                   <input
                     type="file"
                     id="pc-avatar-upload"
@@ -137,21 +141,22 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                   <label
                     htmlFor="pc-avatar-upload"
                     style={{
-                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
-                      color: '#FFFFFF',
-                      padding: '10px 22px',
-                      borderRadius: '9999px',
-                      fontSize: '13px',
-                      fontWeight: 800,
+                      background: '#FFD84D',
+                      color: '#101010',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '12.5px',
+                      fontWeight: 900,
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      boxShadow: '0 4px 14px rgba(129, 120, 232, 0.25)',
-                      transition: 'all 0.2s ease'
+                      border: '2px solid #101010',
+                      boxShadow: '2px 2px 0px #101010',
+                      textTransform: 'uppercase'
                     }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="17 8 12 3 7 8" />
                       <line x1="12" y1="3" x2="12" y2="15" />
@@ -164,15 +169,15 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                       type="button"
                       onClick={() => setAvatarUrl('')}
                       style={{
-                        background: '#FAF9FC',
-                        color: '#777584',
-                        border: '1px solid #E8E2F0',
+                        background: '#FFFFFF',
+                        color: '#101010',
+                        border: '2px solid #101010',
                         padding: '10px 16px',
-                        borderRadius: '9999px',
+                        borderRadius: '8px',
                         fontSize: '12px',
-                        fontWeight: 700,
+                        fontWeight: 800,
                         cursor: 'pointer',
-                        transition: 'all 0.15s ease'
+                        boxShadow: '2px 2px 0px #101010'
                       }}
                       title="Reset to default avatar"
                     >
@@ -180,96 +185,164 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
                     </button>
                   )}
                 </div>
-                <span style={{ fontSize: '11.5px', color: '#777584' }}>
+                <span style={{ fontSize: '11.5px', color: '#555555', fontWeight: 600 }}>
                   PNG, JPG, or WebP up to 5MB from your computer
                 </span>
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div className="form-group">
-              <label className="form-label">FULL NAME</label>
-              <div className="input-container">
-                <input
-                  type="text"
-                  className="form-input"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                FULL NAME
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #101010',
+                  background: '#F7F6F2',
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  color: '#101010',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">EMAIL ADDRESS</label>
-              <div className="input-container" style={{ background: '#F1F5F9', opacity: 0.8 }}>
-                <input
-                  type="email"
-                  className="form-input"
-                  value={user.email}
-                  readOnly
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">BIO & TRAVEL MANIFESTO</label>
-            <div className="input-container" style={{ height: 'auto', padding: '10px 14px' }}>
-              <textarea
-                className="form-input"
-                rows={3}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Share your travel philosophy..."
-                style={{ resize: 'none' }}
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                EMAIL ADDRESS
+              </label>
+              <input
+                type="email"
+                value={user.email}
+                readOnly
+                disabled
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #E8E6E0',
+                  background: '#F7F6F2',
+                  fontSize: '13.5px',
+                  fontWeight: 600,
+                  color: '#777777',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div className="form-group">
-              <label className="form-label">BASE COUNTRY</label>
-              <div className="input-container">
-                <input
-                  type="text"
-                  className="form-input"
-                  value={homeCountry}
-                  onChange={(e) => setHomeCountry(e.target.value)}
-                />
-              </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+              BIO & TRAVEL MANIFESTO
+            </label>
+            <textarea
+              rows={3}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Share your travel philosophy..."
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                borderRadius: '8px',
+                border: '1.5px solid #101010',
+                background: '#F7F6F2',
+                fontSize: '13.5px',
+                fontWeight: 500,
+                color: '#101010',
+                outline: 'none',
+                resize: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                BASE COUNTRY
+              </label>
+              <input
+                type="text"
+                value={homeCountry}
+                onChange={(e) => setHomeCountry(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #101010',
+                  background: '#F7F6F2',
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  color: '#101010',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">DEFAULT CURRENCY</label>
-              <div className="input-container">
-                <select
-                  className="form-input"
-                  value={currencyPref}
-                  onChange={(e) => setCurrencyPref(e.target.value)}
-                >
-                  <option value="USD">USD ($) - US Dollar</option>
-                  <option value="INR">INR (₹) - Indian Rupee</option>
-                  <option value="EUR">EUR (€) - Euro</option>
-                  <option value="GBP">GBP (£) - British Pound</option>
-                  <option value="JPY">JPY (¥) - Japanese Yen</option>
-                </select>
-              </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 900, color: '#101010', marginBottom: '6px', textTransform: 'uppercase' }}>
+                DEFAULT CURRENCY
+              </label>
+              <select
+                value={currencyPref}
+                onChange={(e) => setCurrencyPref(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1.5px solid #101010',
+                  background: '#F7F6F2',
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  color: '#101010',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <option value="USD">USD ($) - US Dollar</option>
+                <option value="INR">INR (₹) - Indian Rupee</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - British Pound</option>
+                <option value="JPY">JPY (¥) - Japanese Yen</option>
+              </select>
             </div>
           </div>
 
           <button
             type="submit"
-            className="btn-submit"
             disabled={saving}
-            style={{ maxWidth: '240px', marginTop: '10px' }}
+            style={{
+              maxWidth: '240px',
+              marginTop: '6px',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              background: '#FFD84D',
+              color: '#101010',
+              fontWeight: 900,
+              fontSize: '13px',
+              border: '2px solid #101010',
+              cursor: 'pointer',
+              boxShadow: '3px 3px 0px #101010',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em'
+            }}
           >
             {!saving ? (
               <span>Save Preferences</span>
             ) : (
-              <div className="spinner" />
+              <div className="spinner" style={{ width: '16px', height: '16px', borderTopColor: '#101010' }} />
             )}
           </button>
         </form>
@@ -278,39 +351,62 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Saved Wishlist Destinations */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '24px',
-        border: '1.5px solid #E8E2F0',
-        padding: '32px',
-        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
+        borderRadius: '16px',
+        border: '2px solid #101010',
+        padding: '28px',
+        boxShadow: '4px 4px 0px #101010',
+        marginBottom: '28px'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#292833' }}>Saved Wishlist Destinations</h3>
-            <p style={{ fontSize: '13px', color: '#777584' }}>Places you intend to visit on future journeys</p>
+            <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#101010', margin: 0 }}>
+              Saved Wishlist Destinations
+            </h3>
+            <p style={{ fontSize: '13px', color: '#555555', margin: '3px 0 0' }}>
+              Places you intend to visit on future journeys
+            </p>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
               type="button"
-              className="nav-link"
-              style={{ color: '#203F70', fontWeight: 700, background: 'linear-gradient(135deg, rgba(247, 191, 213, 0.25) 0%, rgba(195, 154, 217, 0.25) 100%)', border: '1px solid #E8E2F0', borderRadius: '9999px', padding: '8px 16px' }}
+              style={{
+                color: '#101010',
+                fontWeight: 800,
+                fontSize: '12px',
+                background: '#F4AFC1',
+                border: '2px solid #101010',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                boxShadow: '2px 2px 0px #101010'
+              }}
               onClick={() => onNavigate('saved-places')}
             >
-              ❤️ Go to Saved Places Page
+              ❤️ Saved Places
             </button>
             <button
               type="button"
-              className="nav-link"
-              style={{ color: '#FFFFFF', fontWeight: 700, background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)', border: 'none', borderRadius: '9999px', padding: '8px 16px' }}
+              style={{
+                color: '#101010',
+                fontWeight: 800,
+                fontSize: '12px',
+                background: '#FFD84D',
+                border: '2px solid #101010',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                boxShadow: '2px 2px 0px #101010'
+              }}
               onClick={() => onNavigate('cities')}
             >
-              + Explore More Cities
+              + Explore Cities
             </button>
           </div>
         </div>
 
         {wishlist.length === 0 ? (
-          <p style={{ fontSize: '14px', color: '#777584', textAlign: 'center', padding: '30px' }}>
-            Your wishlist is empty. Tap the heart icon on any destination in the Destinations tab.
+          <p style={{ fontSize: '14px', color: '#555555', textAlign: 'center', padding: '30px', background: '#F7F6F2', borderRadius: '8px', border: '1.5px dashed #101010' }}>
+            Your wishlist is empty. Tap the bookmark icon on any destination in the Destinations explorer.
           </p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
@@ -318,36 +414,39 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
               <div
                 key={city.id}
                 style={{
-                  background: '#FAF9FC',
-                  borderRadius: '16px',
-                  border: '1.5px solid #E8E2F0',
+                  background: '#F7F6F2',
+                  borderRadius: '12px',
+                  border: '1.5px solid #101010',
                   overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   padding: '12px',
-                  boxShadow: '0 2px 8px rgba(32, 63, 112, 0.03)'
+                  boxShadow: '2px 2px 0px #101010'
                 }}
               >
                 <img
                   src={city.image_url}
                   alt={city.name}
-                  style={{ width: '56px', height: '56px', borderRadius: '12px', objectFit: 'cover' }}
+                  style={{ width: '54px', height: '54px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #101010' }}
                 />
                 <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>{city.name}</h4>
-                  <p style={{ fontSize: '12px', color: '#777584' }}>{city.country}</p>
+                  <h4 style={{ fontSize: '15px', fontWeight: 900, color: '#101010', margin: 0 }}>{city.name}</h4>
+                  <p style={{ fontSize: '12px', color: '#555555', margin: '2px 0 0' }}>{city.country}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleRemoveWishlist(city.id)}
                   title="Remove from wishlist"
                   style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#8178E8',
+                    background: '#FFFFFF',
+                    border: '1.5px solid #101010',
+                    color: '#101010',
+                    borderRadius: '6px',
                     cursor: 'pointer',
-                    padding: '8px'
+                    padding: '6px 8px',
+                    fontWeight: 900,
+                    fontSize: '12px'
                   }}
                 >
                   ✕
@@ -361,47 +460,51 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Preplanned Trips */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '24px',
-        border: '1.5px solid #E8E2F0',
+        borderRadius: '16px',
+        border: '2px solid #101010',
         padding: '24px',
-        marginTop: '24px',
-        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
+        marginBottom: '24px',
+        boxShadow: '4px 4px 0px #101010'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', margin: 0 }}>Preplanned Trips</h3>
-            <p style={{ fontSize: '13px', color: '#777584', margin: '4px 0 0 0' }}>Itineraries currently in design or scheduled for upcoming dates</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: 0 }}>Preplanned Expeditions</h3>
+            <p style={{ fontSize: '13px', color: '#555555', margin: '4px 0 0 0' }}>Itineraries currently in design or scheduled for upcoming departures</p>
           </div>
         </div>
 
         {trips.filter(t => t.status === 'Planning' || t.status === 'Active').length === 0 ? (
-          <p style={{ fontSize: '13.5px', color: '#777584', textAlign: 'center', padding: '24px' }}>No preplanned trips currently in queue.</p>
+          <p style={{ fontSize: '13.5px', color: '#555555', textAlign: 'center', padding: '24px', background: '#F7F6F2', borderRadius: '8px', border: '1.5px dashed #101010' }}>
+            No preplanned expeditions currently in queue.
+          </p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
             {trips.filter(t => t.status === 'Planning' || t.status === 'Active').map(trip => (
-              <div key={trip.id} style={{ background: '#FAF9FC', borderRadius: '18px', border: '1.5px solid #E8E2F0', overflow: 'hidden' }}>
-                <div style={{ height: '110px' }}>
+              <div key={trip.id} style={{ background: '#F7F6F2', borderRadius: '12px', border: '1.5px solid #101010', overflow: 'hidden' }}>
+                <div style={{ height: '110px', borderBottom: '1.5px solid #101010' }}>
                   <img src={trip.cover_image} alt={trip.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '14px' }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#292833', marginBottom: '4px' }}>{trip.title}</div>
-                  <div style={{ fontSize: '12px', color: '#777584', marginBottom: '12px' }}>📅 {trip.start_date} • ${trip.total_budget}</div>
+                  <div style={{ fontWeight: 900, fontSize: '15px', color: '#101010', marginBottom: '4px' }}>{trip.title}</div>
+                  <div style={{ fontSize: '12px', color: '#555555', marginBottom: '12px', fontWeight: 600 }}>📅 {trip.start_date} • ${trip.total_budget}</div>
                   <button
                     type="button"
                     onClick={() => onNavigate('itinerary-view', trip.id)}
                     style={{
                       width: '100%',
                       padding: '8px',
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #8178E8 0%, #A678BD 100%)',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      fontWeight: 700,
-                      fontSize: '13px',
-                      cursor: 'pointer'
+                      borderRadius: '6px',
+                      background: '#FFD84D',
+                      color: '#101010',
+                      border: '1.5px solid #101010',
+                      fontWeight: 800,
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      boxShadow: '1.5px 1.5px 0px #101010',
+                      textTransform: 'uppercase'
                     }}
                   >
-                    View
+                    View Timeline
                   </button>
                 </div>
               </div>
@@ -413,47 +516,50 @@ export const UserProfileSettings: React.FC<Props> = ({ user, onUpdateUser, onNav
       {/* Previous Trips */}
       <div style={{
         background: '#FFFFFF',
-        borderRadius: '24px',
-        border: '1.5px solid #E8E2F0',
+        borderRadius: '16px',
+        border: '2px solid #101010',
         padding: '24px',
-        marginTop: '24px',
-        boxShadow: '0 8px 30px rgba(32, 63, 112, 0.04)'
+        boxShadow: '4px 4px 0px #101010'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#292833', margin: 0 }}>Previous Trips</h3>
-            <p style={{ fontSize: '13px', color: '#777584', margin: '4px 0 0 0' }}>Completed expedition logs and archived voyages</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: 0 }}>Archived Journeys</h3>
+            <p style={{ fontSize: '13px', color: '#555555', margin: '4px 0 0 0' }}>Completed expedition logs and archived voyages</p>
           </div>
         </div>
 
         {trips.length === 0 ? (
-          <p style={{ fontSize: '13.5px', color: '#777584', textAlign: 'center', padding: '24px' }}>No previous trips logged yet.</p>
+          <p style={{ fontSize: '13.5px', color: '#555555', textAlign: 'center', padding: '24px', background: '#F7F6F2', borderRadius: '8px', border: '1.5px dashed #101010' }}>
+            No previous trips logged yet.
+          </p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
             {trips.map(trip => (
-              <div key={trip.id} style={{ background: '#FAF9FC', borderRadius: '18px', border: '1.5px solid #E8E2F0', overflow: 'hidden' }}>
-                <div style={{ height: '110px' }}>
+              <div key={trip.id} style={{ background: '#F7F6F2', borderRadius: '12px', border: '1.5px solid #101010', overflow: 'hidden' }}>
+                <div style={{ height: '110px', borderBottom: '1.5px solid #101010' }}>
                   <img src={trip.cover_image} alt={trip.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '14px' }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#292833', marginBottom: '4px' }}>{trip.title}</div>
-                  <div style={{ fontSize: '12px', color: '#777584', marginBottom: '12px' }}>Completed • ${trip.total_budget}</div>
+                  <div style={{ fontWeight: 900, fontSize: '15px', color: '#101010', marginBottom: '4px' }}>{trip.title}</div>
+                  <div style={{ fontSize: '12px', color: '#555555', marginBottom: '12px', fontWeight: 600 }}>Completed • ${trip.total_budget}</div>
                   <button
                     type="button"
                     onClick={() => onNavigate('itinerary-view', trip.id)}
                     style={{
                       width: '100%',
                       padding: '8px',
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #203F70 0%, #192B4D 100%)',
-                      color: '#FFFFFF',
-                      border: 'none',
-                      fontWeight: 700,
-                      fontSize: '13px',
-                      cursor: 'pointer'
+                      borderRadius: '6px',
+                      background: '#FFFFFF',
+                      color: '#101010',
+                      border: '1.5px solid #101010',
+                      fontWeight: 800,
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      boxShadow: '1.5px 1.5px 0px #101010',
+                      textTransform: 'uppercase'
                     }}
                   >
-                    View
+                    View Archive
                   </button>
                 </div>
               </div>

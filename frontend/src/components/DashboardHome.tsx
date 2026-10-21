@@ -5,7 +5,6 @@ import { LiveNavigatorModal } from './LiveNavigatorModal';
 import { BudgetCrafterModal } from './BudgetCrafterModal';
 import { WaypointDetailModal, WaypointInfo } from './WaypointDetailModal';
 import { WishlistModal } from './WishlistModal';
-import { GlobalSearchBar } from './GlobalSearchBar';
 
 interface Props {
   user: UserProfile;
@@ -16,12 +15,6 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [recommendedCities, setRecommendedCities] = useState<City[]>([]);
   const [showToastBanner, setShowToastBanner] = useState(true);
-
-  // Search & Filters (Screen 3)
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState('Default');
-  const [selectedFilter, setSelectedFilter] = useState('All Status');
-  const [selectedSort, setSelectedSort] = useState('Popularity');
 
   // Interactive Modals State
   const [showLiveNavigator, setShowLiveNavigator] = useState(false);
@@ -461,12 +454,40 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
   ];
 
   return (
-    <div className="dash-main">
-      {/* Card 1: Live Expedition In Progress (Coral Red Gradient from Screenshot) */}
-      <section className="live-expedition-card" aria-label="Live Expedition Details">
-        <div className="expedition-left">
-          <div className="expedition-icon-pulse">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
+    <div className="dash-main" style={{ background: '#F7F6F2', color: '#101010', minHeight: '100%', padding: '24px 0' }}>
+      {/* Card 1: Live Expedition In Progress (Editorial High-Contrast Neo-Brutalist) */}
+      <section 
+        className="live-expedition-card" 
+        aria-label="Live Expedition Details" 
+        style={{
+          background: '#FFFFFF',
+          border: '2px solid #101010',
+          boxShadow: '4px 4px 0px #101010',
+          borderRadius: '16px',
+          padding: '24px 28px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div 
+            style={{ 
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              background: '#FFD84D', 
+              border: '2px solid #101010',
+              color: '#101010',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '2px 2px 0px #101010'
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
               <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
               <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
               <circle cx="12" cy="12" r="2.5" fill="currentColor" />
@@ -475,68 +496,168 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
             </svg>
           </div>
           <div>
-            <span className="expedition-badge">LIVE EXPEDITION IN PROGRESS</span>
-            <h2 className="expedition-title">{activeTrip ? activeTrip.title : 'Rajasthan Royal Heritage Odyssey'}</h2>
-            <p className="expedition-meta">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
-              <span>Currently at <strong>Udaipur (29°C)</strong> • Next stop Jodhpur in 4h 30m</span>
+            <span 
+              style={{ 
+                background: '#429FE8', 
+                color: '#101010', 
+                border: '1px solid #101010',
+                fontSize: '10.5px',
+                fontWeight: 900,
+                letterSpacing: '0.08em',
+                padding: '3px 8px',
+                borderRadius: '4px',
+                textTransform: 'uppercase'
+              }}
+            >
+              ACTIVE EXPEDITION TELEMETRY
+            </span>
+            <h2 style={{ color: '#101010', fontFamily: "'Syne', sans-serif", fontSize: '22px', fontWeight: 900, margin: '6px 0 2px 0' }}>
+              {activeTrip ? activeTrip.title : 'Santorini & Cyclades Archipelago Odyssey'}
+            </h2>
+            <p style={{ color: '#555555', fontSize: '13px', margin: 0 }}>
+              Currently at <strong style={{ color: '#101010' }}>Oia Caldera (24°C)</strong> • Next waypoint Amalfi Coastline
             </p>
           </div>
         </div>
         <button
           type="button"
-          className="btn-open-navigator"
           onClick={() => setShowLiveNavigator(true)}
+          style={{
+            background: '#101010',
+            color: '#FFFFFF',
+            fontWeight: 800,
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px 22px',
+            cursor: 'pointer',
+            boxShadow: '3px 3px 0px #429FE8',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '13.5px'
+          }}
         >
           <span>Open Live Navigator</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
         </button>
       </section>
 
-      {/* Card 2: Smart Travel Planning & Package Bundles (Deep Emerald Card from Screenshot) */}
-      <section className="hero-travel-card" aria-label="Smart AI Travel Planning">
-        <div className="hero-content">
-          <div className="hero-chip">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z" /></svg>
-            <span>SMART TRAVEL PLANNING & PACKAGE BUNDLES</span>
+      {/* Card 2: Editorial Headquarters Welcome Banner */}
+      <section 
+        style={{
+          background: '#FFFFFF',
+          border: '2px solid #101010',
+          borderRadius: '16px',
+          padding: '32px',
+          boxShadow: '6px 6px 0px #101010',
+          margin: '22px 0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '24px'
+        }}
+      >
+        <div style={{ maxWidth: '620px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#F4AFC1', border: '1.5px solid #101010', borderRadius: '4px', padding: '3px 10px', marginBottom: '12px' }}>
+            <span style={{ fontSize: '12px' }}>🧭</span>
+            <span style={{ fontSize: '10.5px', fontWeight: 900, color: '#101010', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              PERSONALIZED TRAVEL EXPERIENCES // DASHBOARD
+            </span>
           </div>
 
-          <h1 className="hero-heading">
-            Namaste, <span className="user-highlight">{user.name || 'panther'}!</span> 👋
+          <h1 style={{ color: '#101010', fontFamily: "'Syne', sans-serif", fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 900, margin: '0 0 10px 0', lineHeight: 1.1 }}>
+            Welcome back, <span style={{ color: '#429FE8' }}>{user.name || 'Voyager'}!</span>
           </h1>
-          <p className="hero-desc">
-            Enter your budget and let AI craft complete packages (Hotel + Transit + Food + Experiences) with smart price comparisons.
+          <p style={{ color: '#555555', fontSize: '14.5px', lineHeight: 1.6, margin: '0 0 20px 0' }}>
+            Bespoke luxury itinerary curation, multi-currency treasury tracking, and real-time waypoint telemetry across world destinations.
           </p>
 
-          <div className="hero-stats-row">
-            <div className="stat-pill" onClick={() => onNavigate('my-trips')} style={{ cursor: 'pointer' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth="2.2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" /></svg>
-              <span>{trips.length} Total Trips</span>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div 
+              onClick={() => onNavigate('my-trips')} 
+              style={{ cursor: 'pointer', background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px', padding: '8px 14px', fontSize: '12.5px', fontWeight: 800, color: '#101010', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '2px 2px 0px #101010' }}
+            >
+              <span>✈️</span>
+              <span>{trips.length} Active Expeditions</span>
             </div>
-            <div className="stat-pill" onClick={() => onNavigate('cities')} style={{ cursor: 'pointer' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" strokeWidth="2.2"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /></svg>
-              <span>15 Ready Packages</span>
+            <div 
+              onClick={() => onNavigate('cities')} 
+              style={{ cursor: 'pointer', background: '#F7F6F2', border: '1.5px solid #101010', borderRadius: '8px', padding: '8px 14px', fontSize: '12.5px', fontWeight: 800, color: '#101010', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '2px 2px 0px #101010' }}
+            >
+              <span>🏙️</span>
+              <span>15 Curated Dossiers</span>
             </div>
           </div>
         </div>
 
-        <div className="hero-actions">
-          <button type="button" className="btn-plan-budget" onClick={() => setShowBudgetCrafter(true)}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <button 
+            type="button" 
+            onClick={() => setShowBudgetCrafter(true)} 
+            style={{ 
+              background: '#FFD84D', 
+              color: '#101010', 
+              fontWeight: 900, 
+              border: '2px solid #101010', 
+              borderRadius: '8px', 
+              padding: '13px 22px', 
+              boxShadow: '3px 3px 0px #101010', 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13.5px'
+            }}
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            <span>Plan With Budget</span>
+            <span>Plan Voyage Budget</span>
           </button>
-          <button type="button" className="btn-explore-packages" onClick={() => onNavigate('cities')}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /></svg>
-            <span>Explore Packages</span>
+          <button 
+            type="button" 
+            onClick={() => onNavigate('cities')} 
+            style={{ 
+              background: '#FFFFFF', 
+              border: '2px solid #101010', 
+              color: '#101010', 
+              borderRadius: '8px', 
+              padding: '12px 22px', 
+              cursor: 'pointer',
+              fontWeight: 800,
+              fontSize: '13.5px',
+              boxShadow: '3px 3px 0px #101010',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+            <span>Explore Destinations</span>
           </button>
         </div>
       </section>
 
-      {/* Interactive Transport Progress Track - Animated moving from left to right with no outer box */}
+      {/* Interactive Transport Progress Track */}
       <section 
         className="route-tracker-container" 
         aria-label="Route waypoints track"
+        style={{
+          background: '#FFFFFF',
+          border: '2px solid #101010',
+          borderRadius: '16px',
+          boxShadow: '4px 4px 0px #101010',
+          padding: '18px 20px',
+          margin: '22px 0'
+        }}
       >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 900, letterSpacing: '0.1em', color: '#101010', textTransform: 'uppercase' }}>
+            WAYPOINTS TRANSIT CORRIDOR // CLICK TO INSPECT
+          </span>
+          <span style={{ fontSize: '11px', color: '#555555' }}>
+            12 Active Expedition Stops
+          </span>
+        </div>
         <div className="route-marquee-track">
           {[1, 2].map((groupNum) => (
             <div
@@ -561,341 +682,175 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
         </div>
       </section>
 
-      {/* -------------------------------------------------------------------- */}
-      {/* GLOBAL TROTTER DASHBOARD CARDS (7 CORE HUBS) */}
-      {/* -------------------------------------------------------------------- */}
-      <section className="dashboard-hubs-grid-section" style={{ margin: '24px 0' }}>
+      {/* Recent Expeditions Section */}
+      <section style={{ margin: '28px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 850, color: '#292833', letterSpacing: '-0.3px' }}>
-              Voyager Planning Hubs
+            <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#101010', fontFamily: "'Syne', sans-serif", margin: 0 }}>
+              Your Recent Expeditions
             </h3>
-            <p style={{ fontSize: '13.5px', color: '#777584' }}>
-              Quick access to your expeditions, budget, destination communities, and saved places
+            <p style={{ fontSize: '13px', color: '#555555', margin: '4px 0 0 0' }}>
+              Continue designing your multi-city journeys
             </p>
           </div>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '16px'
-        }}>
-          {/* 1. My Trips */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('my-trips')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>🧳</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>My Trips</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>{trips.length} Active & upcoming</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#8178E8' }}>Manage Trips →</span>
-          </div>
-
-          {/* 2. Plan a Trip (Pastel Highlight) */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => setShowBudgetCrafter(true)}
-            style={{
-              background: 'linear-gradient(135deg, #FFFFFF 0%, #FDF4F8 100%)',
-              borderRadius: '20px',
-              border: '1.5px solid #F3AFCF',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(247, 191, 213, 0.2)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>✨</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Plan a Trip</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>AI Itinerary & packages</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#A678BD' }}>Start Planning →</span>
-          </div>
-
-          {/* 3. Budget Tracker */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('expenses')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>💰</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Budget Tracker</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>Real-time expenses & charts</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#8178E8' }}>Track Finances →</span>
-          </div>
-
-          {/* 4. Explore Destinations */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('cities')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>🏝️</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Explore Destinations</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>World cities & costs</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#203F70' }}>Discover Places →</span>
-          </div>
-
-          {/* 5. Travel Communities */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('community')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>🌐</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Travel Communities</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>Trip-linked explorer groups</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#8178E8' }}>View Groups →</span>
-          </div>
-
-          {/* 6. Saved Places */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('saved-places')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>🔖</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Saved Places</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>Favorite stays & sights</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#A678BD' }}>Open Wishlist →</span>
-          </div>
-
-          {/* 7. Profile */}
-          <div 
-            className="dashboard-hub-card"
-            onClick={() => onNavigate('settings')}
-            style={{
-              background: '#FFFFFF',
-              borderRadius: '20px',
-              border: '1.5px solid #E8E2F0',
-              padding: '18px',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '0 4px 16px rgba(32, 63, 112, 0.04)'
-            }}
-          >
-            <div style={{ fontSize: '28px', marginBottom: '10px' }}>👤</div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#292833' }}>Profile & Settings</div>
-            <p style={{ fontSize: '12px', color: '#777584', margin: '4px 0 10px' }}>Preferences & account</p>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#203F70' }}>Manage Profile →</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Universal Search & Action Bar (Screen 3) */}
-      <GlobalSearchBar
-        placeholder="Search bar ....."
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedGroup={selectedGroup}
-        onGroupChange={setSelectedGroup}
-        selectedFilter={selectedFilter}
-        onFilterChange={setSelectedFilter}
-        selectedSort={selectedSort}
-        onSortChange={setSelectedSort}
-      />
-
-      {/* Top Regional Selections (Screen 3) */}
-      <section style={{ margin: '20px 0' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginBottom: '12px' }}>
-          Top Regional Selections
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' }}>
-          {recommendedCities.map(city => (
-            <div 
-              key={city.id}
-              onClick={() => onNavigate('cities')}
-              style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                background: '#FFFFFF',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.06)',
-                border: '1px solid #E2E8F0',
-                cursor: 'pointer',
-                transition: 'transform 0.2s, box-shadow 0.2s'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.06)'; }}
-            >
-              <div style={{ height: '110px', overflow: 'hidden' }}>
-                <img src={city.image_url} alt={city.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ padding: '10px 12px' }}>
-                <div style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A' }}>{city.name}</div>
-                <div style={{ fontSize: '12px', color: '#64748B' }}>{city.country} • ${city.avg_cost_per_day}/day</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Recent Trips Section */}
-      <section style={{ margin: '16px 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>Your Recent Expeditions</h3>
-            <p style={{ fontSize: '13.5px', color: '#64748B' }}>Continue designing your multi-city journeys</p>
-          </div>
           <button
             type="button"
-            className="nav-link"
-            style={{ fontWeight: 700, color: '#8178E8' }}
+            style={{ 
+              fontWeight: 800, 
+              color: '#101010', 
+              background: '#FFFFFF', 
+              border: '1.5px solid #101010', 
+              borderRadius: '6px',
+              padding: '6px 14px',
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              fontSize: '12px',
+              boxShadow: '2px 2px 0px #101010'
+            }}
             onClick={() => onNavigate('my-trips')}
           >
-            <span>View All Trips ({trips.length}) →</span>
+            <span>View All Trips ({trips.length}) ↗</span>
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-          {trips.slice(0, 3).map(trip => (
-            <div
-              key={trip.id}
-              onClick={() => onNavigate('itinerary-builder', trip.id)}
+        {trips.length === 0 ? (
+          <div style={{ background: '#FFFFFF', border: '2px solid #101010', borderRadius: '14px', padding: '36px', textAlign: 'center', boxShadow: '4px 4px 0px #101010' }}>
+            <span style={{ fontSize: '36px', display: 'block', marginBottom: '12px' }}>🗺️</span>
+            <h4 style={{ fontSize: '18px', fontWeight: 900, color: '#101010', margin: '0 0 6px 0', fontFamily: "'Syne', sans-serif" }}>No Expeditions Created Yet</h4>
+            <p style={{ fontSize: '13.5px', color: '#555555', maxWidth: '420px', margin: '0 auto 18px auto' }}>
+              Begin your journey by creating a customized itinerary with day-by-day routing, hotel stays, and multi-currency budgets.
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate('my-trips')}
               style={{
-                background: '#FFFFFF',
-                borderRadius: '18px',
-                border: '1px solid #E2E8F0',
-                overflow: 'hidden',
+                background: '#FFD84D',
+                color: '#101010',
+                fontWeight: 900,
+                border: '1.5px solid #101010',
+                borderRadius: '6px',
+                padding: '10px 20px',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+                boxShadow: '2px 2px 0px #101010'
               }}
             >
-              <div style={{ position: 'relative', height: '140px' }}>
-                <img
-                  src={trip.cover_image}
-                  alt={trip.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                <span style={{
-                  position: 'absolute',
-                  top: '12px',
-                  right: '12px',
-                  background: trip.status === 'Active' ? '#8178E8' : '#A678BD',
-                  color: '#FFFFFF',
-                  fontSize: '10.5px',
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: '9999px',
-                  textTransform: 'uppercase'
-                }}>
-                  {trip.status}
-                </span>
-              </div>
-              <div style={{ padding: '16px' }}>
-                <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#111827', marginBottom: '6px' }}>{trip.title}</h4>
-                <p style={{ fontSize: '12.5px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-                  <span>📅 {trip.start_date} → {trip.end_date}</span>
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid #F1F5F9', fontSize: '13px' }}>
-                  <span style={{ fontWeight: 600, color: '#8178E8' }}>📍 {trip.stops_count || 0} Stops</span>
-                  <span style={{ fontWeight: 700, color: '#111827' }}>Budget: ${trip.total_budget}</span>
+              + Create Your First Trip
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+            {trips.slice(0, 3).map(trip => (
+              <div
+                key={trip.id}
+                onClick={() => onNavigate('itinerary-builder', trip.id)}
+                style={{
+                  background: '#FFFFFF',
+                  borderRadius: '14px',
+                  border: '2px solid #101010',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  boxShadow: '4px 4px 0px #101010',
+                  transition: 'transform 0.15s ease'
+                }}
+              >
+                <div style={{ position: 'relative', height: '150px' }}>
+                  <img
+                    src={trip.cover_image}
+                    alt={trip.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    background: trip.status === 'Active' ? '#FFD84D' : '#FFFFFF',
+                    color: '#101010',
+                    fontSize: '10px',
+                    fontWeight: 900,
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    textTransform: 'uppercase',
+                    border: '1.5px solid #101010'
+                  }}>
+                    {trip.status}
+                  </span>
+                </div>
+                <div style={{ padding: '16px 18px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: 900, color: '#101010', marginBottom: '6px', fontFamily: "'Syne', sans-serif" }}>{trip.title}</h4>
+                  <p style={{ fontSize: '12px', color: '#555555', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
+                    <span>📅 {trip.start_date} → {trip.end_date}</span>
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid #E8E6E0', fontSize: '12.5px' }}>
+                    <span style={{ fontWeight: 800, color: '#429FE8' }}>📍 {trip.stops_count || 0} Stops</span>
+                    <span style={{ fontWeight: 800, color: '#101010' }}>Budget: ${trip.total_budget}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* + Plan a trip button (Screen 3) */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-          <button
-            type="button"
-            className="btn-plan-budget"
-            onClick={() => onNavigate('my-trips')}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 22px' }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            <span>+ Plan a trip</span>
-          </button>
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Recommended Global Destinations Showcase */}
-      <section style={{ margin: '16px 0' }}>
+      <section style={{ margin: '28px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#111827' }}>Explore World Destinations</h3>
-            <p style={{ fontSize: '13.5px', color: '#64748B' }}>Discover popular cities with cost indices and daily expenses</p>
+            <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#101010', fontFamily: "'Syne', sans-serif", margin: 0 }}>
+              Curated World Destinations
+            </h3>
+            <p style={{ fontSize: '13px', color: '#555555', margin: '4px 0 0 0' }}>
+              Explore destinations with verified cost indices and daily expenses
+            </p>
           </div>
           <button
             type="button"
-            className="nav-link"
-            style={{ fontWeight: 700, color: '#8178E8' }}
+            style={{ 
+              fontWeight: 800, 
+              color: '#101010', 
+              background: '#FFFFFF', 
+              border: '1.5px solid #101010', 
+              borderRadius: '6px',
+              padding: '6px 14px',
+              cursor: 'pointer', 
+              fontSize: '12px',
+              boxShadow: '2px 2px 0px #101010'
+            }}
             onClick={() => onNavigate('cities')}
           >
-            <span>Explore All Cities →</span>
+            <span>Explore All Cities ↗</span>
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
           {recommendedCities.map(city => (
             <div
               key={city.id}
               onClick={() => onNavigate('cities')}
               style={{
                 background: '#FFFFFF',
-                borderRadius: '18px',
-                border: '1px solid #E2E8F0',
+                borderRadius: '14px',
+                border: '2px solid #101010',
                 overflow: 'hidden',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.03)'
+                boxShadow: '4px 4px 0px #101010',
+                transition: 'transform 0.15s ease'
               }}
             >
-              <div style={{ position: 'relative', height: '140px' }}>
+              <div style={{ position: 'relative', height: '145px' }}>
                 <img src={city.image_url} alt={city.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <span style={{
                   position: 'absolute',
                   bottom: '10px',
                   left: '10px',
-                  background: 'rgba(0,0,0,0.6)',
-                  backdropFilter: 'blur(4px)',
-                  color: '#FFFFFF',
-                  fontSize: '11px',
-                  fontWeight: 700,
+                  background: '#FFFFFF',
+                  color: '#101010',
+                  fontSize: '10.5px',
+                  fontWeight: 800,
                   padding: '3px 8px',
-                  borderRadius: '6px'
+                  borderRadius: '4px',
+                  border: '1px solid #101010'
                 }}>
                   {city.climate}
                 </span>
@@ -903,23 +858,23 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
                   position: 'absolute',
                   top: '10px',
                   right: '10px',
-                  background: '#FFFFFF',
-                  color: '#D97706',
-                  fontSize: '11.5px',
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: '9999px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                  background: '#FFD84D',
+                  color: '#101010',
+                  fontSize: '11px',
+                  fontWeight: 900,
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  border: '1px solid #101010'
                 }}>
                   ★ {city.popularity_score}
                 </span>
               </div>
               <div style={{ padding: '14px 16px' }}>
-                <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#111827' }}>{city.name}</h4>
-                <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '8px' }}>{city.country} • {city.region}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', paddingTop: '8px', borderTop: '1px solid #F1F5F9' }}>
-                  <span style={{ color: '#8178E8', fontWeight: 600 }}>Avg: ${city.avg_cost_per_day}/day</span>
-                  <span style={{ fontWeight: 700, color: '#6366F1' }}>
+                <h4 style={{ fontSize: '16px', fontWeight: 900, color: '#101010', margin: '0 0 2px 0', fontFamily: "'Syne', sans-serif" }}>{city.name}</h4>
+                <p style={{ fontSize: '12px', color: '#555555', margin: '0 0 10px 0' }}>{city.country} • {city.region}</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', paddingTop: '10px', borderTop: '1px solid #E8E6E0' }}>
+                  <span style={{ color: '#101010', fontWeight: 800 }}>${city.avg_cost_per_day}/day</span>
+                  <span style={{ fontWeight: 900, color: '#36B7B3' }}>
                     {'$'.repeat(city.cost_index)}
                   </span>
                 </div>
@@ -929,50 +884,38 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
         </div>
       </section>
 
-      {/* Bottom Section: Notification Banner & Action Tiles (From Screenshot) */}
-      <section className="dash-bottom-grid">
+      {/* Bottom Section: Notification Banner & Action Tiles */}
+      <section className="dash-bottom-grid" style={{ marginTop: '24px' }}>
         {showToastBanner && (
-          <div className="toast-account-card">
-            <div className="toast-msg-left">
-              <div className="toast-check-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-              </div>
-              <span>Welcome aboard GlobalTrotters, {user.name || 'panther'}! Your account is ready.</span>
+          <div 
+            style={{
+              background: '#FFFFFF',
+              border: '2px solid #101010',
+              borderRadius: '12px',
+              color: '#101010',
+              padding: '12px 18px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              boxShadow: '3px 3px 0px #101010'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ background: '#36B7B3', color: '#101010', border: '1px solid #101010', width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 900 }}>
+                ✓
+              </span>
+              <span style={{ fontSize: '13px', fontWeight: 700 }}>Welcome aboard GlobalTrotter, {user.name || 'Voyager'}! Your portal is ready.</span>
             </div>
             <button
               type="button"
-              className="btn-close-toast"
               onClick={() => setShowToastBanner(false)}
               aria-label="Dismiss banner"
+              style={{ background: 'none', border: 'none', color: '#101010', cursor: 'pointer', fontWeight: 900, fontSize: '14px' }}
             >
               ✕
             </button>
           </div>
         )}
-
-        {/* Sync Telemetry Button */}
-        <div
-          className={`quick-action-tile refresh ${isSyncing ? 'syncing-pulse' : ''}`}
-          title="Synchronize live GPS & satellite telemetry"
-          onClick={handleSyncSatellite}
-          style={{ cursor: 'pointer' }}
-        >
-          <svg className="tile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ animation: isSyncing ? 'spin 1s linear infinite' : 'none' }}>
-            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
-          </svg>
-        </div>
-
-        {/* Saved Places / Wishlist Button */}
-        <div
-          className="quick-action-tile fav"
-          title="View Saved Places & Favourites"
-          onClick={() => onNavigate('saved-places')}
-          style={{ cursor: 'pointer' }}
-        >
-          <svg className="tile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
-        </div>
       </section>
 
       {/* Satellite Synchronization Toast Feedback */}
@@ -982,18 +925,18 @@ export const DashboardHome: React.FC<Props> = ({ user, onNavigate }) => {
           bottom: '24px',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: '#0F172A',
+          background: '#101010',
           color: '#FFFFFF',
           padding: '12px 24px',
-          borderRadius: '9999px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+          borderRadius: '8px',
+          border: '2px solid #429FE8',
+          boxShadow: '4px 4px 0px #101010',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           fontSize: '13.5px',
-          fontWeight: 600,
-          zIndex: 2000,
-          border: '1.5px solid #8178E8'
+          fontWeight: 700,
+          zIndex: 2000
         }}>
           <span>{syncToast}</span>
         </div>

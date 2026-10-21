@@ -12,11 +12,11 @@ interface ClickBurst {
 }
 
 const THEME_PALETTES = [
-  { primary: '#0D9488', secondary: '#14B8A6', glow: 'rgba(13, 148, 136, 0.45)' }, // Emerald
-  { primary: '#D97706', secondary: '#F59E0B', glow: 'rgba(217, 119, 6, 0.45)' },  // Gold
-  { primary: '#2563EB', secondary: '#60A5FA', glow: 'rgba(37, 99, 235, 0.45)' },  // Sapphire
-  { primary: '#E11D48', secondary: '#FB7185', glow: 'rgba(225, 29, 72, 0.45)' },  // Rose
-  { primary: '#7C3AED', secondary: '#A78BFA', glow: 'rgba(124, 58, 237, 0.45)' }, // Violet
+  { primary: '#D7B77A', secondary: '#F7F4ED', glow: 'rgba(215, 183, 122, 0.6)' }, // Champagne Gold
+  { primary: '#1A8C91', secondary: '#E6F7F8', glow: 'rgba(26, 140, 145, 0.6)' },  // Ocean Teal
+  { primary: '#79C8FF', secondary: '#F0F8FF', glow: 'rgba(121, 200, 255, 0.5)' }, // Coastal Azure
+  { primary: '#E2C288', secondary: '#FFFDF9', glow: 'rgba(226, 194, 136, 0.5)' }, // Warm Gold Flare
+  { primary: '#38BDF8', secondary: '#E0F2FE', glow: 'rgba(56, 189, 248, 0.5)' },  // Glacial Blue
 ];
 
 export const Creative3DClickEffect: React.FC = () => {
